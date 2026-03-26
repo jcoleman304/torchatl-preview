@@ -195,6 +195,102 @@
             min-height: 100px;
         }
 
+        /* Calendar picker */
+        .cal-wrapper {
+            position: relative;
+        }
+        .cal-input {
+            cursor: pointer;
+        }
+        .cal-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 100;
+            background: #111;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 16px;
+            margin-top: 4px;
+            min-width: 300px;
+        }
+        .cal-dropdown.open {
+            display: block;
+        }
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .cal-header button {
+            background: none;
+            border: none;
+            color: #D4AF37;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .cal-header button:hover {
+            color: #E5C76B;
+        }
+        .cal-month-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #fff;
+        }
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        .cal-day-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.65rem;
+            color: #666;
+            text-align: center;
+            padding: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .cal-day {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: #ccc;
+            text-align: center;
+            padding: 8px 4px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .cal-day:hover {
+            background: rgba(212, 175, 55, 0.15);
+            color: #fff;
+        }
+        .cal-day.disabled {
+            color: #333;
+            cursor: default;
+        }
+        .cal-day.disabled:hover {
+            background: none;
+            color: #333;
+        }
+        .cal-day.selected {
+            background: #D4AF37;
+            color: #0A0A0A;
+            font-weight: 600;
+        }
+        .cal-day.today {
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .cal-day.empty {
+            cursor: default;
+        }
+        .cal-day.empty:hover {
+            background: none;
+        }
+
         /* Two-column row */
         .form-row {
             display: grid;
@@ -599,12 +695,20 @@
 
                         <div class="form-group">
                             <label for="start_date">Preferred Start Date</label>
-                            <input type="date" id="start_date" name="start_date" required>
+                            <div class="cal-wrapper" id="start-cal-wrapper">
+                                <input type="text" id="start_date_display" class="cal-input" placeholder="Select a date" readonly required>
+                                <input type="hidden" id="start_date" name="start_date">
+                                <div class="cal-dropdown" id="start-cal"></div>
+                            </div>
                         </div>
 
                         <div class="form-group" id="end-date-field" style="display:none;">
                             <label for="end_date">End Date</label>
-                            <input type="date" id="end_date" name="end_date">
+                            <div class="cal-wrapper" id="end-cal-wrapper">
+                                <input type="text" id="end_date_display" class="cal-input" placeholder="Select a date" readonly>
+                                <input type="hidden" id="end_date" name="end_date">
+                                <div class="cal-dropdown" id="end-cal"></div>
+                            </div>
                         </div>
 
                         <div class="time-fields" id="time-fields">
@@ -984,10 +1088,92 @@
         document.getElementById('label-fields').classList.toggle('visible', e.target.checked);
     });
 
-    // Set min date to tomorrow
+    // ---- Calendar Picker ----
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    document.getElementById('start_date').min = tomorrow.toISOString().split('T')[0];
+    const minDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
+
+    function createCalendar(containerId, hiddenId, displayId, minDateObj) {
+        const container = document.getElementById(containerId);
+        const hidden = document.getElementById(hiddenId);
+        const display = document.getElementById(displayId);
+        let viewDate = new Date(minDateObj || minDate);
+        let selectedDate = null;
+
+        function render() {
+            const year = viewDate.getFullYear();
+            const month = viewDate.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            let html = `<div class="cal-header">
+                <button onclick="event.preventDefault()" class="cal-prev">&larr;</button>
+                <span class="cal-month-label">${MONTHS[month]} ${year}</span>
+                <button onclick="event.preventDefault()" class="cal-next">&rarr;</button>
+            </div>`;
+            html += `<div class="cal-grid">`;
+            DAYS.forEach(d => html += `<div class="cal-day-name">${d}</div>`);
+            for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(year, month, d);
+                const iso = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const isToday = date.getTime() === today.getTime();
+                const isPast = date < (minDateObj || minDate);
+                const isSelected = selectedDate === iso;
+                const classes = ['cal-day'];
+                if (isPast) classes.push('disabled');
+                if (isToday) classes.push('today');
+                if (isSelected) classes.push('selected');
+                html += `<div class="${classes.join(' ')}" data-date="${iso}">${d}</div>`;
+            }
+            html += `</div>`;
+            container.innerHTML = html;
+
+            container.querySelector('.cal-prev').addEventListener('click', (e) => {
+                e.stopPropagation();
+                viewDate.setMonth(viewDate.getMonth() - 1);
+                render();
+            });
+            container.querySelector('.cal-next').addEventListener('click', (e) => {
+                e.stopPropagation();
+                viewDate.setMonth(viewDate.getMonth() + 1);
+                render();
+            });
+            container.querySelectorAll('.cal-day:not(.disabled):not(.empty)').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectedDate = el.dataset.date;
+                    hidden.value = selectedDate;
+                    const [y,m,day] = selectedDate.split('-');
+                    display.value = `${MONTHS[parseInt(m)-1]} ${parseInt(day)}, ${y}`;
+                    container.classList.remove('open');
+                    render();
+                });
+            });
+        }
+
+        display.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.cal-dropdown').forEach(c => c.classList.remove('open'));
+            container.classList.toggle('open');
+            render();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!container.parentElement.contains(e.target)) {
+                container.classList.remove('open');
+            }
+        });
+
+        return { render };
+    }
+
+    createCalendar('start-cal', 'start_date', 'start_date_display');
+    createCalendar('end-cal', 'end_date', 'end_date_display');
 
     // ---- Pricing Calculation ----
     function calculateTotal() {
