@@ -574,23 +574,20 @@
                             <label for="session_type">Session Type</label>
                             <select id="session_type" name="session_type" required>
                                 <option value="">Select a session type</option>
-                                <option value="half_day">Half-Day Session (7 hours) — from $700</option>
-                                <option value="full_day">Full-Day Session (12 hours) — from $1,000</option>
-                                <option value="estate_daily">Full Estate Overnight — $1,800/day</option>
-                                <option value="estate_weekly">Full Estate — Weekly ($10,500)</option>
-                                <option value="estate_biweekly">Full Estate — Bi-Weekly ($19,500)</option>
-                                <option value="estate_monthly">Full Estate — Monthly ($36,000)</option>
-                                <option value="writing_camp">Writing Camp — $1,800/day (3-day min)</option>
-                                <option value="private_event">Private Event — starting at $1,500</option>
+                                <option value="half_day">Half-Day Session (7 hours) — from $550</option>
+                                <option value="full_day">Full-Day Session (12 hours) — from $850</option>
+                                <option value="estate_daily">Full Estate Overnight — from $1,500/day</option>
+                                <option value="writing_camp">Writing Camp / Lockout — from $1,350/day (4+ days)</option>
+                                <option value="private_event">Private Event — starting at $1,200</option>
                             </select>
                         </div>
 
                         <div class="form-group room-field" id="room-field">
                             <label for="room">Room</label>
                             <select id="room" name="room">
-                                <option value="b_room">B Room — $800 half / $1,200 full</option>
-                                <option value="c_room">C Room — $700 half / $1,000 full</option>
-                                <option value="both">Both Rooms — $1,350 half / $1,600 full</option>
+                                <option value="b_room">B Room — $650 half / $1,000 full</option>
+                                <option value="c_room">C Room — $550 half / $850 full</option>
+                                <option value="both">Both Rooms — $1,100 half / $1,350 full</option>
                             </select>
                         </div>
 
@@ -812,26 +809,32 @@
 
     const API_URL = 'https://bookings.torchatl.com';
 
-    // Pricing (cents) — matches backend
+    // Pricing (cents) — matches backend 2026-2027 rate card
     const RATES = {
-        half_day:  { b_room: 80000, c_room: 70000, both: 135000 },
-        full_day:  { b_room: 120000, c_room: 100000, both: 160000 },
-        estate_daily: 180000,
-        estate_weekly: 1050000,
-        estate_biweekly: 1950000,
-        estate_monthly: 3600000,
-        writing_camp: 180000,
-        private_event: 150000,
+        half_day:  { b_room: 65000, c_room: 55000, both: 110000 },
+        full_day:  { b_room: 100000, c_room: 85000, both: 135000 },
+        estate_base: 150000,    // $1,500/day (days 1-3)
+        estate_camp: 135000,    // $1,350/day (day 4+)
+        estate_monthly: 120000, // $1,200/day (28+ days)
+        private_event: 120000,
     };
     const ENGINEER_RATE = 3500; // per hour
     const CATERING_RATE = 30000; // per day
+    const SECURITY_RATE = 2500; // per hour
+
+    // Calculate tiered estate pricing
+    function calculateEstateDays(days) {
+        if (days >= 28) return RATES.estate_monthly * days;
+        if (days <= 3) return RATES.estate_base * days;
+        return (RATES.estate_base * 3) + (RATES.estate_camp * (days - 3));
+    }
 
     // Session types that need duration field
     const DURATION_TYPES = ['estate_daily', 'writing_camp'];
     // Session types that need room selection
     const ROOM_TYPES = ['half_day', 'full_day'];
     // Session types where time fields don't apply
-    const NO_TIME_TYPES = ['estate_daily', 'estate_weekly', 'estate_biweekly', 'estate_monthly', 'writing_camp'];
+    const NO_TIME_TYPES = ['estate_daily', 'writing_camp'];
 
     // ---- Navigation ----
     const navToggle = document.getElementById('nav-toggle');
@@ -956,11 +959,13 @@
     function updateDurationHint() {
         const type = sessionSelect.value;
         const days = parseInt(durationInput.value) || 1;
-        if (type === 'estate_daily') {
-            durationHint.textContent = `${days} day${days > 1 ? 's' : ''} × $1,800 = $${(days * 1800).toLocaleString()}`;
-        } else if (type === 'writing_camp') {
-            const campDays = Math.max(days, 3);
-            durationHint.textContent = `${campDays} day${campDays > 1 ? 's' : ''} × $1,800 = $${(campDays * 1800).toLocaleString()} (3-day minimum)`;
+        if (type === 'estate_daily' || type === 'writing_camp') {
+            const total = calculateEstateDays(days) / 100;
+            let detail = '';
+            if (days >= 28) detail = ` ($1,200/day — monthly rate)`;
+            else if (days > 3) detail = ` (days 1–3 at $1,500, day 4+ at $1,350)`;
+            else detail = ` ($1,500/day)`;
+            durationHint.textContent = `${days} day${days > 1 ? 's' : ''} = $${total.toLocaleString()}${detail}`;
         }
     }
 
@@ -996,12 +1001,10 @@
         let base = 0;
         if (type === 'half_day' || type === 'full_day') {
             base = RATES[type][room];
-        } else if (type === 'writing_camp') {
-            base = RATES.writing_camp * Math.max(days, 3);
-        } else if (type === 'estate_daily') {
-            base = RATES.estate_daily * days;
-        } else {
-            base = RATES[type] || 0;
+        } else if (type === 'estate_daily' || type === 'writing_camp') {
+            base = calculateEstateDays(days);
+        } else if (type === 'private_event') {
+            base = RATES.private_event;
         }
 
         let addons = 0;
