@@ -1093,7 +1093,7 @@
     tomorrow.setDate(tomorrow.getDate() + 1);
     const minDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
 
-    function createCalendar(containerId, hiddenId, displayId, minDateObj) {
+    function createCalendar(containerId, hiddenId, displayId, minDateObj, onSelect) {
         const container = document.getElementById(containerId);
         const hidden = document.getElementById(hiddenId);
         const display = document.getElementById(displayId);
@@ -1149,6 +1149,7 @@
                     const [y,m,day] = selectedDate.split('-');
                     display.value = `${MONTHS[parseInt(m)-1]} ${parseInt(day)}, ${y}`;
                     container.classList.remove('open');
+                    if (onSelect) onSelect(selectedDate);
                     render();
                 });
             });
@@ -1170,8 +1171,21 @@
         return { render };
     }
 
-    createCalendar('start-cal', 'start_date', 'start_date_display');
-    createCalendar('end-cal', 'end_date', 'end_date_display');
+    function updateDurationFromDates() {
+        const start = document.getElementById('start_date').value;
+        const end = document.getElementById('end_date').value;
+        if (start && end) {
+            const diffMs = new Date(end) - new Date(start);
+            const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1; // inclusive
+            if (diffDays >= 1) {
+                durationInput.value = diffDays;
+                updateDurationHint();
+            }
+        }
+    }
+
+    createCalendar('start-cal', 'start_date', 'start_date_display', null, updateDurationFromDates);
+    createCalendar('end-cal', 'end_date', 'end_date_display', null, updateDurationFromDates);
 
     // ---- Pricing Calculation ----
     function calculateTotal() {
