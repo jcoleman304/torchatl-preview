@@ -702,7 +702,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group" id="end-date-field" style="display:none;">
+                        <div class="form-group" id="end-date-field">
                             <label for="end_date">End Date</label>
                             <div class="cal-wrapper" id="end-cal-wrapper">
                                 <input type="text" id="end_date_display" class="cal-input" placeholder="Select a date" readonly>
@@ -1020,7 +1020,7 @@
     const roomField = document.getElementById('room-field');
     const durationField = document.getElementById('duration-field');
     const timeFields = document.getElementById('time-fields');
-    const endDateField = document.getElementById('end-date-field');
+    // end date field always visible
     const durationInput = document.getElementById('duration_days');
     const durationHint = document.getElementById('duration-hint');
 
@@ -1051,10 +1051,8 @@
         // Time fields visibility
         if (NO_TIME_TYPES.includes(type)) {
             timeFields.classList.add('hidden');
-            endDateField.style.display = 'block';
         } else {
             timeFields.classList.remove('hidden');
-            endDateField.style.display = 'none';
         }
     });
 
