@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TORCH ATL — Internship Program</title>
+<meta name="description" content="Apply for the TORCH ATL Internship Program. Tracks in A&R, Engineering, Studio Operations, Production, and more.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230A0A0A' width='100' height='100' rx='12'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%23D4AF37' font-family='Georgia'>T</text></svg>">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+:root{--black:#0A0A0A;--surface:#141414;--surface2:#1A1A1A;--gold:#C9A84C;--gold-light:#E2CC7E;--gold-dim:#8A7434;--cream:#F5F2EB;--gray:#555;--gray-light:#888;--white:#FAFAF8;--green:#4CAF7A;--red:#C94C4C;--border:rgba(201,168,76,0.10);--border-hover:rgba(201,168,76,0.28)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);min-height:100vh;font-family:'DM Sans',sans-serif;color:var(--cream);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(201,168,76,0.05) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(201,168,76,0.03) 0%,transparent 50%);pointer-events:none}
+body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E");pointer-events:none}
+
+.page{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:60px 24px 80px}
+
+/* Header */
+.header{text-align:center;margin-bottom:48px}
+.brand-logo{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:10px;color:var(--gold);line-height:1;text-decoration:none;display:block}
+.brand-sub{font-size:8px;letter-spacing:4px;color:var(--gray);text-transform:uppercase;margin-top:4px}
+.brand-divider{width:40px;height:1px;background:var(--gold-dim);margin:20px auto 0;opacity:0.4}
+
+/* Tabs */
+.tab-row{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:36px;background:var(--surface)}
+.tab-btn{flex:1;padding:14px;text-align:center;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray-light);cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.tab-btn:hover{color:var(--cream)}
+.tab-btn.active{background:rgba(201,168,76,0.08);color:var(--gold)}
+.tab-divider{width:1px;background:var(--border)}
+
+/* Panels */
+.panel{display:none}
+.panel.active{display:block}
+
+/* Card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 5%,var(--gold-dim) 25%,var(--gold) 50%,var(--gold-dim) 75%,transparent 95%);opacity:0.5}
+
+.card-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--white);margin-bottom:6px;text-align:center}
+.card-sub{font-size:11px;color:var(--gray-light);text-align:center;margin-bottom:28px;line-height:1.6}
+
+/* Form */
+.form-group{margin-bottom:18px}
+.form-label{font-size:8px;letter-spacing:2.5px;color:var(--gray);text-transform:uppercase;margin-bottom:7px;display:block}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:13px 16px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold-dim)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--gray)}
+.form-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.form-select option{background:var(--surface2);color:var(--cream)}
+.form-textarea{resize:vertical;min-height:100px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.submit-btn{width:100%;padding:14px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all 0.2s;margin-top:8px}
+.submit-btn:hover{background:var(--gold-light)}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+.form-error{font-size:11px;color:var(--red);text-align:center;margin-top:14px;min-height:18px}
+.form-success{font-size:11px;color:var(--green);text-align:center;margin-top:14px;min-height:18px}
+
+/* Info section */
+.info-section{margin-top:36px}
+.info-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--white);margin-bottom:16px;text-align:center}
+.track-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:8px;display:flex;align-items:center;gap:14px}
+.track-icon{width:36px;height:36px;border-radius:8px;border:1px solid rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:rgba(201,168,76,0.04)}
+.track-name{font-size:13px;color:var(--cream);font-weight:400}
+.track-desc{font-size:10px;color:var(--gray-light);margin-top:2px}
+
+.what-list{list-style:none;padding:0}
+.what-list li{position:relative;padding:10px 0 10px 18px;font-size:12px;color:var(--gray-light);line-height:1.5;border-bottom:1px solid rgba(201,168,76,0.05)}
+.what-list li:last-child{border-bottom:none}
+.what-list li::before{content:'';position:absolute;left:0;top:16px;width:4px;height:4px;background:var(--gold-dim);border-radius:50%}
+
+.footer{text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+.footer p{font-size:10px;color:var(--gray);line-height:1.6}
+.footer a{color:var(--gold-dim);text-decoration:none}
+.footer a:hover{color:var(--gold)}
+
+@media(max-width:480px){.form-row{grid-template-columns:1fr}.page{padding:40px 20px 60px}}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header">
+    <a href="/" class="brand-logo">TORCH</a>
+    <div class="brand-sub">Atlanta — Internship Program</div>
+    <div class="brand-divider"></div>
+  </div>
+
+  <!-- Tab Toggle -->
+  <div class="tab-row">
+    <button class="tab-btn active" id="tab-apply" onclick="switchPanel('apply')">Apply</button>
+    <div class="tab-divider"></div>
+    <button class="tab-btn" id="tab-login" onclick="switchPanel('login')">Intern Login</button>
+  </div>
+
+  <!-- ═══ APPLY PANEL ═══ -->
+  <div class="panel active" id="panel-apply">
+    <div class="card">
+      <div class="card-title">Apply for the Internship</div>
+      <div class="card-sub">TORCH ATL offers immersive internship tracks in A&R, Engineering, Studio Operations, Production, and more. Apply below and our team will review your submission.</div>
+
+      <form id="apply-form" onsubmit="handleApply(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input class="form-input" type="text" id="apply-name" placeholder="First Last" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-input" type="tel" id="apply-phone" placeholder="(555) 555-5555">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="apply-email" placeholder="you@email.com" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Preferred Track</label>
+            <select class="form-select" id="apply-track" required>
+              <option value="">Select a track</option>
+              <option value="A&R">A&R</option>
+              <option value="Engineering">Engineering</option>
+              <option value="Studio Ops">Studio Operations</option>
+              <option value="Production">Production</option>
+              <option value="Artist Management">Artist Management</option>
+              <option value="Label Support">Label Support</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Preferred Start</label>
+            <select class="form-select" id="apply-cohort">
+              <option value="Spring 2026">Spring 2026</option>
+              <option value="Fall 2026">Fall 2026</option>
+              <option value="Spring 2027">Spring 2027</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Why TORCH ATL?</label>
+          <textarea class="form-textarea" id="apply-why" placeholder="Tell us what drew you to TORCH and what you hope to gain from this experience." required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Relevant Experience (Optional)</label>
+          <textarea class="form-textarea" id="apply-experience" placeholder="Any studio, music industry, or creative experience." style="min-height:70px"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Portfolio / LinkedIn / Social (Optional)</label>
+          <input class="form-input" type="text" id="apply-portfolio" placeholder="Link to your work or profile">
+        </div>
+        <button class="submit-btn" type="submit" id="apply-btn">Submit Application</button>
+        <div class="form-error" id="apply-error"></div>
+        <div class="form-success" id="apply-success"></div>
+      </form>
+    </div>
+
+    <!-- Program Info -->
+    <div class="info-section">
+      <div class="info-title">Available Tracks</div>
+      <div class="track-card"><div class="track-icon">🎧</div><div><div class="track-name">A&R</div><div class="track-desc">Artist scouting, research, brief writing, session support</div></div></div>
+      <div class="track-card"><div class="track-icon">🎛️</div><div><div class="track-name">Engineering</div><div class="track-desc">Recording, mixing fundamentals, session engineering</div></div></div>
+      <div class="track-card"><div class="track-icon">🏠</div><div><div class="track-name">Studio Operations</div><div class="track-desc">Estate management, studio resets, guest coordination</div></div></div>
+      <div class="track-card"><div class="track-icon">🎹</div><div><div class="track-name">Production</div><div class="track-desc">Beat-making, arrangement, production sessions</div></div></div>
+      <div class="track-card"><div class="track-icon">📋</div><div><div class="track-name">Artist Management</div><div class="track-desc">Scheduling, communications, artist support</div></div></div>
+      <div class="track-card"><div class="track-icon">🏷️</div><div><div class="track-name">Label Support</div><div class="track-desc">Release coordination, marketing support, admin</div></div></div>
+    </div>
+
+    <div class="info-section">
+      <div class="info-title">What to Expect</div>
+      <div class="card" style="padding:24px 28px">
+        <ul class="what-list">
+          <li><strong style="color:var(--cream)">Application review</strong> — Our team reviews every submission personally</li>
+          <li><strong style="color:var(--cream)">Approval or feedback</strong> — You'll receive a decision via email</li>
+          <li><strong style="color:var(--cream)">NDA signing</strong> — Required before accessing any training materials</li>
+          <li><strong style="color:var(--cream)">Training guide</strong> — Learn the TORCH Standard before your first day</li>
+          <li><strong style="color:var(--cream)">Readiness test</strong> — A short assessment to make sure you're prepared</li>
+          <li><strong style="color:var(--cream)">You're in</strong> — Shifts assigned, portal access granted, you're part of the team</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ LOGIN PANEL ═══ -->
+  <div class="panel" id="panel-login">
+    <div class="card">
+      <div class="card-title">Intern Login</div>
+      <div class="card-sub">Access your shifts, track progress, training materials, and more.</div>
+
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="login-email" placeholder="you@email.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
+        </div>
+        <button class="submit-btn" type="submit" id="login-btn">Sign In</button>
+        <div class="form-error" id="login-error"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>TORCH ATL — Where Comfort Ignites Creativity</p>
+    <p style="margin-top:8px"><a href="/">Back to torchatl.com</a> &nbsp;·&nbsp; <a href="tel:+14048009507">(404) 800-9507</a></p>
+    <p style="margin-top:12px">&copy; 2026 Torch Music Corporation. All rights reserved.</p>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://bookings.torchatl.com';
+
+function switchPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+// ── APPLICATION ──
+async function handleApply(e) {
+  e.preventDefault();
+  const btn = document.getElementById('apply-btn');
+  const errorEl = document.getElementById('apply-error');
+  const successEl = document.getElementById('apply-success');
+  errorEl.textContent = '';
+  successEl.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  const body = {
+    full_name: document.getElementById('apply-name').value.trim(),
+    email: document.getElementById('apply-email').value.trim(),
+    phone: document.getElementById('apply-phone').value.trim() || null,
+    track: document.getElementById('apply-track').value,
+    preferred_cohort: document.getElementById('apply-cohort').value,
+    why_torch: document.getElementById('apply-why').value.trim(),
+    experience: document.getElementById('apply-experience').value.trim() || null,
+    portfolio: document.getElementById('apply-portfolio').value.trim() || null,
+  };
+
+  try {
+    const res = await fetch(`${API_URL}/api/intern/apply`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      errorEl.textContent = data.error || 'Something went wrong.';
+      btn.disabled = false;
+      btn.textContent = 'Submit Application';
+      return;
+    }
+
+    document.getElementById('apply-form').style.display = 'none';
+    successEl.textContent = '';
+    document.querySelector('#panel-apply .card').innerHTML = `
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:32px;margin-bottom:16px;">✓</div>
+        <div class="card-title">Application Received</div>
+        <div class="card-sub" style="margin-top:12px;">Thank you, ${body.full_name.split(' ')[0]}. We've received your application for the ${body.track} track. Our team will review it and reach out via email.</div>
+      </div>
+    `;
+  } catch (err) {
+    errorEl.textContent = 'Unable to connect. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Submit Application';
+  }
+}
+
+// ── LOGIN ──
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('login-btn');
+  const errorEl = document.getElementById('login-error');
+  errorEl.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+
+  try {
+    const res = await fetch(`${API_URL}/api/intern/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: document.getElementById('login-email').value.trim(),
+        password: document.getElementById('login-password').value,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      errorEl.textContent = data.error || 'Login failed.';
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+      return;
+    }
+
+    if (data.user.role === 'admin') {
+      errorEl.textContent = 'Admin accounts use the operations portal.';
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+      return;
+    }
+
+    localStorage.setItem('torch_intern_token', data.token);
+    localStorage.setItem('torch_intern_user', JSON.stringify(data.user));
+    window.location.href = 'https://ops.torchatl.com/interns.html#intern';
+
+  } catch (err) {
+    errorEl.textContent = 'Unable to connect. Try again.';
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+  }
+}
+
+// Check URL hash for tab
+if (window.location.hash === '#login') switchPanel('login');
+</script>
+</body>
+</html>
