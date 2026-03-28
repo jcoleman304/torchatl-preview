@@ -311,7 +311,7 @@ async function handleLogin(e) {
 
     localStorage.setItem('torch_intern_token', data.token);
     localStorage.setItem('torch_intern_user', JSON.stringify(data.user));
-    window.location.href = 'https://ops.torchatl.com/interns.html#intern';
+    window.location.href = '/intern-portal.html';
 
   } catch (err) {
     errorEl.textContent = 'Unable to connect. Try again.';
