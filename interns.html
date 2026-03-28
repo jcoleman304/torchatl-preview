@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TORCH ATL — Intern Operations System v2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Bebas+Neue&display=swap');
+
+:root {
+  --black: #0A0A0A;
+  --deep: #0D0D0D;
+  --surface: #141414;
+  --surface2: #1A1A1A;
+  --surface3: #202020;
+  --gold: #D4AF37;
+  --gold-light: #E5C76B;
+  --gold-dim: #B8962E;
+  --gold-faint: rgba(212,175,55,0.07);
+  --cream: #F5F2EB;
+  --gray: #555555;
+  --gray-light: #888888;
+  --white: #FAFAF8;
+  --green: #4CAF7A;
+  --red: #C94C4C;
+  --amber: #D4943A;
+  --blue: #4C7FC9;
+  --border: rgba(212,175,55,0.10);
+  --border-hover: rgba(212,175,55,0.28);
+  --border-active: rgba(212,175,55,0.45);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--black);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  color: var(--cream);
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(212,175,55,0.05) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 100%, rgba(212,175,55,0.03) 0%, transparent 40%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── PORTAL SWITCHER ── */
+.portal-switcher {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 42px;
+  background: var(--deep);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  z-index: 500;
+}
+
+.portal-btn {
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 6px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--gray-light);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+}
+
+.portal-btn:hover { color: var(--cream); }
+.portal-btn.active { color: var(--gold); border-color: rgba(212,175,55,0.2); background: var(--gold-faint); }
+
+.portal-divider { width: 1px; height: 16px; background: var(--border); margin: 0 6px; }
+
+/* ── SHELL ── */
+.portal { display: none; padding-top: 42px; }
+.portal.active { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 240px;
+  min-height: calc(100vh - 42px);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 42px; left: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.sidebar-brand {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 7px;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.brand-sub { font-size: 7.5px; letter-spacing: 3px; color: var(--gray); text-transform: uppercase; margin-top: 3px; }
+.brand-module { font-size: 8.5px; letter-spacing: 2px; color: var(--gold-dim); text-transform: uppercase; margin-top: 7px; font-weight: 500; }
+
+.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+
+.nav-section-label {
+  font-size: 7px; letter-spacing: 2.5px; color: var(--gray); text-transform: uppercase;
+  padding: 0 24px; margin-bottom: 4px; margin-top: 18px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 10px 24px;
+  font-size: 11.5px; letter-spacing: 0.3px;
+  color: var(--gray-light);
+  cursor: pointer;
+  transition: all 0.18s;
+  border-left: 2px solid transparent;
+}
+
+.nav-item:hover { color: var(--cream); background: var(--gold-faint); }
+.nav-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(212,175,55,0.05); }
+
+.nav-icon { width: 13px; text-align: center; font-size: 12px; flex-shrink: 0; }
+
+.nav-badge {
+  margin-left: auto; background: var(--gold); color: var(--black);
+  font-size: 8px; font-weight: 700; padding: 2px 6px; border-radius: 10px;
+}
+
+.nav-badge-warn {
+  margin-left: auto; background: rgba(201,76,76,0.15); color: var(--red);
+  font-size: 8px; font-weight: 600; padding: 2px 6px; border-radius: 10px;
+  border: 1px solid rgba(201,76,76,0.2);
+}
+
+.sidebar-footer {
+  padding: 18px 24px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.admin-role { font-size: 8px; letter-spacing: 2px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 3px; }
+.admin-name { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--cream); }
+
+/* ── MAIN ── */
+.main { margin-left: 240px; flex: 1; padding: 44px 48px; position: relative; z-index: 1; }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+.page-header { margin-bottom: 36px; }
+.page-eyebrow { font-size: 8.5px; letter-spacing: 3px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 7px; }
+.page-title { font-family: 'Playfair Display', serif; font-size: 34px; font-weight: 400; color: var(--white); letter-spacing: 0.5px; line-height: 1.1; }
+.page-subtitle { font-size: 11.5px; color: var(--gray-light); margin-top: 7px; letter-spacing: 0.2px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 26px 30px;
+  margin-bottom: 18px;
+}
+
+.card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.card-title { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+
+/* ── ALERT CARDS ── */
+.alert-card {
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  border: 1px solid;
+}
+
+.alert-card.warn { background: rgba(212,148,58,0.06); border-color: rgba(212,148,58,0.2); }
+.alert-card.danger { background: rgba(201,76,76,0.06); border-color: rgba(201,76,76,0.2); }
+.alert-card.info { background: rgba(76,127,201,0.06); border-color: rgba(76,127,201,0.2); }
+.alert-card.success { background: rgba(76,175,122,0.06); border-color: rgba(76,175,122,0.2); }
+
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-body { flex: 1; }
+.alert-title { font-size: 12px; font-weight: 500; color: var(--cream); margin-bottom: 2px; }
+.alert-msg { font-size: 10.5px; color: var(--gray-light); line-height: 1.5; }
+.alert-time { font-size: 9px; color: var(--gray); margin-top: 4px; letter-spacing: 0.5px; }
+.alert-actions { display: flex; gap: 6px; margin-top: 8px; }
+
+/* ── STATS ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; }
+.stat-label { font-size: 8px; letter-spacing: 2.5px; color: var(--gray); text-transform: uppercase; margin-bottom: 9px; }
+.stat-value { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 400; color: var(--white); line-height: 1; }
+.stat-sub { font-size: 9.5px; color: var(--gray); margin-top: 4px; }
+.stat-delta-up { color: var(--green); font-size: 9px; margin-top: 4px; }
+.stat-delta-warn { color: var(--amber); font-size: 9px; margin-top: 4px; }
+
+/* ── PILLS ── */
+.pill { display: inline-flex; align-items: center; gap: 4px; font-size: 8.5px; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+.pill-pending { background: rgba(212,175,55,0.1); color: var(--gold); border: 1px solid rgba(212,175,55,0.2); }
+.pill-active { background: rgba(76,175,122,0.1); color: var(--green); border: 1px solid rgba(76,175,122,0.2); }
+.pill-denied { background: rgba(201,76,76,0.1); color: var(--red); border: 1px solid rgba(201,76,76,0.2); }
+.pill-retake { background: rgba(212,148,58,0.1); color: var(--amber); border: 1px solid rgba(212,148,58,0.2); }
+.pill-complete { background: rgba(76,175,122,0.08); color: var(--green); border: 1px solid rgba(76,175,122,0.15); }
+.pill-flagged { background: rgba(201,76,76,0.08); color: var(--red); border: 1px solid rgba(201,76,76,0.15); }
+.pill-offboarded { background: rgba(100,100,100,0.1); color: var(--gray-light); border: 1px solid rgba(100,100,100,0.2); }
+.pill-cohort { background: rgba(76,127,201,0.1); color: var(--blue); border: 1px solid rgba(76,127,201,0.2); }
+
+/* ── BUTTONS ── */
+.btn { font-family: 'Inter', sans-serif; font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; padding: 9px 20px; border-radius: 6px; cursor: pointer; border: none; transition: all 0.2s; font-weight: 500; }
+.btn-gold { background: var(--gold); color: var(--black); }
+.btn-gold:hover { background: var(--gold-light); }
+.btn-outline { background: transparent; border: 1px solid var(--border-hover); color: var(--cream); }
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+.btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--gray-light); padding: 6px 13px; font-size: 8.5px; }
+.btn-ghost:hover { border-color: var(--gold-dim); color: var(--gold); }
+.btn-danger { background: transparent; border: 1px solid rgba(201,76,76,0.3); color: var(--red); padding: 6px 13px; font-size: 8.5px; }
+.btn-danger:hover { background: rgba(201,76,76,0.08); }
+.btn-sm { padding: 6px 13px; font-size: 8.5px; }
+.btn-warn { background: transparent; border: 1px solid rgba(212,148,58,0.3); color: var(--amber); padding: 6px 13px; font-size: 8.5px; }
+
+/* ── FORMS ── */
+.form-group { margin-bottom: 18px; }
+.form-label { font-size: 8.5px; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; margin-bottom: 7px; display: block; }
+.form-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 11px 14px; color: var(--cream); font-family: 'Inter', sans-serif; font-size: 12.5px; outline: none; transition: border-color 0.2s; }
+.form-input:focus { border-color: var(--gold-dim); }
+.form-select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 11px 14px; color: var(--cream); font-family: 'Inter', sans-serif; font-size: 12.5px; outline: none; cursor: pointer; appearance: none; }
+.form-textarea { resize: vertical; min-height: 90px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+/* ── TABLE ── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th { font-size: 7.5px; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; text-align: left; padding: 0 14px 10px 0; border-bottom: 1px solid var(--border); }
+.data-table td { padding: 13px 14px 13px 0; font-size: 11.5px; color: var(--cream); border-bottom: 1px solid rgba(212,175,55,0.05); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr.clickable { cursor: pointer; }
+.data-table tr.clickable:hover td { color: var(--white); }
+
+/* ── TABS ── */
+.tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 22px; }
+.tab { font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); padding: 11px 18px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; }
+.tab:hover { color: var(--cream); }
+.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border); margin: 22px 0; }
+.gold-line { height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); margin: 24px 0; opacity: 0.35; }
+
+/* ── CHECKBOX ── */
+.checkbox-row { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 14px; }
+.checkbox-row input[type="checkbox"] { width: 15px; height: 15px; margin-top: 2px; accent-color: var(--gold); cursor: pointer; flex-shrink: 0; }
+.checkbox-label { font-size: 11px; color: var(--gray-light); line-height: 1.5; }
+
+/* ── TRACK PROGRESS ── */
+.track-steps { display: flex; align-items: center; }
+.track-step { display: flex; align-items: center; flex: 1; }
+.track-step:last-child { flex: 0; }
+.step-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; flex-shrink: 0; border: 1px solid var(--border); color: var(--gray); background: var(--surface2); }
+.step-dot.done { background: rgba(76,175,122,0.12); border-color: rgba(76,175,122,0.35); color: var(--green); }
+.step-dot.active { background: rgba(212,175,55,0.1); border-color: var(--gold-dim); color: var(--gold); }
+.step-dot.fail { background: rgba(201,76,76,0.1); border-color: rgba(201,76,76,0.35); color: var(--red); }
+.step-line { flex: 1; height: 1px; background: var(--border); margin: 0 3px; }
+.step-line.done { background: rgba(76,175,122,0.25); }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(6px); }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal { background: var(--surface); border: 1px solid var(--border-hover); border-radius: 16px; padding: 38px; width: 600px; max-width: 94vw; max-height: 88vh; overflow-y: auto; transform: translateY(18px); transition: transform 0.3s; position: relative; }
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-close { position: absolute; top: 18px; right: 22px; background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; line-height: 1; }
+.modal-close:hover { color: var(--cream); }
+.modal-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 400; color: var(--white); margin-bottom: 5px; }
+.modal-sub { font-size: 10.5px; color: var(--gray); margin-bottom: 26px; }
+
+/* ── QUIZ ── */
+.quiz-progress-bar { height: 2px; background: var(--surface2); border-radius: 2px; margin-bottom: 26px; overflow: hidden; }
+.quiz-progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold-dim), var(--gold)); border-radius: 2px; transition: width 0.4s ease; }
+.quiz-q-number { font-size: 8px; letter-spacing: 2px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 4px; }
+.quiz-q-label { font-size: 13px; color: var(--cream); margin-bottom: 14px; line-height: 1.55; font-weight: 400; }
+.quiz-options { display: flex; flex-direction: column; gap: 7px; }
+.quiz-option { display: flex; align-items: center; gap: 11px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 11px 15px; cursor: pointer; transition: all 0.18s; font-size: 11.5px; color: var(--gray-light); }
+.quiz-option:hover { border-color: var(--border-hover); color: var(--cream); }
+.quiz-option.selected { border-color: var(--gold-dim); background: rgba(212,175,55,0.05); color: var(--cream); }
+.quiz-option-dot { width: 13px; height: 13px; border-radius: 50%; border: 1px solid currentColor; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.quiz-option.selected .quiz-option-dot::after { content:''; width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
+
+/* ── SCORE ── */
+.score-display { text-align: center; padding: 28px 0; }
+.score-circle { width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center; flex-direction: column; border: 2px solid var(--gold-dim); background: rgba(212,175,55,0.04); }
+.score-number { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 400; color: var(--white); line-height: 1; }
+.score-pct { font-size: 10px; color: var(--gold); letter-spacing: 2px; }
+.score-grade { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 5px; margin-bottom: 6px; }
+.score-message { font-size: 11.5px; color: var(--gray-light); max-width: 340px; margin: 0 auto; line-height: 1.65; }
+
+/* ── PERFORMANCE STARS ── */
+.star-rating { display: flex; gap: 4px; }
+.star { font-size: 14px; cursor: pointer; color: var(--gray); transition: color 0.15s; }
+.star.filled { color: var(--gold); }
+.star:hover, .star:hover ~ .star { color: var(--gold-dim); }
+
+/* ── KANBAN ── */
+.kanban { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 22px; }
+.kanban-col { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 12px; }
+.kanban-col-label { font-size: 7.5px; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.kanban-card { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 11px; margin-bottom: 7px; cursor: pointer; transition: border-color 0.2s; }
+.kanban-card:hover { border-color: var(--border-hover); }
+.kanban-card-name { font-size: 11.5px; color: var(--cream); margin-bottom: 3px; }
+.kanban-card-meta { font-size: 8.5px; color: var(--gray); }
+
+/* ── SHIFT CALENDAR ── */
+.shift-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.shift-day-label { font-size: 7.5px; letter-spacing: 1.5px; color: var(--gray); text-transform: uppercase; text-align: center; padding-bottom: 7px; }
+.shift-cell { background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 7px 5px; text-align: center; min-height: 56px; cursor: pointer; transition: border-color 0.18s; }
+.shift-cell:hover { border-color: var(--border-hover); }
+.shift-cell.today { border-color: var(--gold-dim); }
+.shift-cell.today .shift-date { color: var(--gold); font-weight: 600; }
+.shift-date { font-size: 10px; color: var(--gray-light); margin-bottom: 3px; }
+.shift-chip { font-size: 7px; padding: 1px 5px; border-radius: 3px; display: block; margin-bottom: 2px; letter-spacing: 0.3px; }
+.shift-chip-a { background: rgba(212,175,55,0.14); color: var(--gold); }
+.shift-chip-b { background: rgba(76,175,122,0.12); color: var(--green); }
+.shift-chip-c { background: rgba(76,127,201,0.12); color: var(--blue); }
+.shift-chip-d { background: rgba(201,76,76,0.1); color: var(--red); }
+
+/* ── COHORT BADGE ── */
+.cohort-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 9px; border-radius: 3px; font-weight: 500; background: rgba(76,127,201,0.1); color: var(--blue); border: 1px solid rgba(76,127,201,0.2); }
+
+/* ── COMMS LOG ── */
+.log-entry { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(212,175,55,0.05); }
+.log-entry:last-child { border-bottom: none; }
+.log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.log-dot-sent { background: var(--green); }
+.log-dot-warn { background: var(--amber); }
+.log-dot-auto { background: var(--blue); }
+.log-dot-flag { background: var(--red); }
+.log-body { flex: 1; }
+.log-title { font-size: 12px; color: var(--cream); margin-bottom: 2px; }
+.log-detail { font-size: 10px; color: var(--gray-light); }
+.log-meta { font-size: 8.5px; color: var(--gray); margin-top: 3px; letter-spacing: 0.5px; }
+
+/* ── OFFBOARD CHECKLIST ── */
+.checklist-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(212,175,55,0.05); }
+.checklist-item:last-child { border-bottom: none; }
+.checklist-box { width: 18px; height: 18px; border-radius: 3px; border: 1px solid var(--border-hover); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all 0.2s; margin-top: 1px; }
+.checklist-box.checked { background: var(--green); border-color: var(--green); color: white; }
+.checklist-body { flex: 1; }
+.checklist-title { font-size: 12px; color: var(--cream); margin-bottom: 2px; }
+.checklist-note { font-size: 10px; color: var(--gray-light); }
+
+/* ── INCIDENT ── */
+.incident-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 10px; }
+.incident-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.incident-type { font-size: 8.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--red); }
+.incident-date { font-size: 9px; color: var(--gray); }
+.incident-title { font-size: 12.5px; color: var(--cream); margin-bottom: 4px; }
+.incident-body { font-size: 10.5px; color: var(--gray-light); line-height: 1.55; }
+
+/* ── GUEST INTAKE ── */
+.guest-card { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid rgba(212,175,55,0.05); }
+.guest-card:last-child { border-bottom: none; }
+.guest-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 14px; color: var(--gold); flex-shrink: 0; }
+.guest-info { flex: 1; }
+.guest-name { font-size: 12.5px; color: var(--cream); margin-bottom: 2px; }
+.guest-meta { font-size: 9px; color: var(--gray); letter-spacing: 0.3px; }
+
+/* ── INTERN PORTAL SPECIFIC ── */
+.intern-hero { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 32px; margin-bottom: 24px; position: relative; overflow: hidden; }
+.intern-hero::before { content:''; position:absolute; top:-30px; right:-30px; width:160px; height:160px; border-radius:50%; background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%); pointer-events:none; }
+.intern-hero-label { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-dim); margin-bottom: 6px; }
+.intern-hero-name { font-family: 'Playfair Display', serif; font-size: 30px; color: var(--white); margin-bottom: 4px; }
+.intern-hero-track { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-light); margin-bottom: 18px; }
+.intern-hero-stats { display: flex; gap: 28px; }
+.intern-stat { }
+.intern-stat-val { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--white); }
+.intern-stat-lbl { font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray); }
+
+/* ── PERFORMANCE RADAR ── */
+.perf-row { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 1px solid rgba(212,175,55,0.05); }
+.perf-row:last-child { border-bottom: none; }
+.perf-label { font-size: 10.5px; color: var(--gray-light); width: 160px; flex-shrink: 0; }
+.perf-bar-wrap { flex: 1; height: 4px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+.perf-bar { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.perf-bar-green { background: linear-gradient(90deg, var(--gold-dim), var(--green)); }
+.perf-bar-gold { background: linear-gradient(90deg, var(--gold-dim), var(--gold)); }
+.perf-bar-red { background: linear-gradient(90deg, var(--gold-dim), var(--red)); }
+.perf-score { font-size: 11px; color: var(--cream); width: 28px; text-align: right; flex-shrink: 0; }
+
+/* ── NDA BOX ── */
+.nda-text { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 22px; font-size: 10.5px; color: var(--gray-light); line-height: 1.85; max-height: 240px; overflow-y: auto; margin-bottom: 18px; }
+.nda-text h4 { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--cream); margin-bottom: 12px; }
+.nda-text strong { color: var(--cream); }
+
+/* ── LETTER BOX ── */
+.letter-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 26px 30px; font-size: 11px; color: var(--gray-light); line-height: 1.9; max-height: 300px; overflow-y: auto; }
+.letter-header { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 6px; color: var(--gold); margin-bottom: 3px; }
+.letter-tagline { font-size: 7.5px; letter-spacing: 3px; color: var(--gray); text-transform: uppercase; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+
+/* ── GUIDE ── */
+.guide-item { display: flex; gap: 13px; padding: 9px 0; border-bottom: 1px solid rgba(212,175,55,0.05); }
+.guide-item:last-child { border-bottom: none; }
+.guide-item-num { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--gold-dim); opacity: 0.45; width: 22px; flex-shrink: 0; text-align: right; }
+.guide-item-text { font-size: 11.5px; color: var(--gray-light); line-height: 1.6; }
+.guide-item-text strong { color: var(--cream); font-weight: 500; }
+.guide-section-title { font-size: 9px; letter-spacing: 2.5px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 10px; margin-top: 6px; }
+
+/* ── SWAP CARD ── */
+.swap-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-bottom: 9px; display: flex; align-items: center; gap: 14px; }
+.swap-info { flex: 1; font-size: 10.5px; color: var(--gray-light); }
+.swap-info strong { color: var(--cream); display: block; margin-bottom: 2px; font-size: 12px; }
+.swap-arrow { color: var(--gold); font-size: 15px; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 26px; right: 26px; background: var(--surface); border: 1px solid var(--border-hover); border-radius: 10px; padding: 14px 18px; z-index: 2000; transform: translateY(72px); opacity: 0; transition: all 0.38s cubic-bezier(0.16,1,0.3,1); max-width: 300px; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast-title { font-size: 11px; font-weight: 600; color: var(--cream); margin-bottom: 2px; }
+.toast-msg { font-size: 9.5px; color: var(--gray-light); }
+
+/* ── TIMELINE ── */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.timeline-item { display: flex; gap: 16px; padding-bottom: 20px; position: relative; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item:last-child .timeline-line { display: none; }
+.timeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.timeline-line { position: absolute; left: 4px; top: 14px; bottom: 0; width: 1px; background: var(--border); }
+.timeline-body { flex: 1; }
+.timeline-title { font-size: 12px; color: var(--cream); margin-bottom: 2px; }
+.timeline-meta { font-size: 9.5px; color: var(--gray); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.12); border-radius: 4px; }
+
+/* ── ESCALATION BANNER ── */
+.escalation-banner {
+  background: rgba(201,76,76,0.06);
+  border: 1px solid rgba(201,76,76,0.18);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.escalation-icon { font-size: 15px; flex-shrink: 0; }
+.escalation-text { flex: 1; font-size: 11px; color: var(--cream); }
+.escalation-text span { color: var(--gray-light); font-size: 10px; display: block; margin-top: 2px; }
+
+/* ── RATING DISPLAY ── */
+.rating-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--gold); }
+
+/* ── INTERN PORTAL SIDEBAR ── */
+#intern-portal .sidebar { background: var(--surface); }
+#intern-portal .brand-module { color: rgba(76,175,122,0.7); }
+
+</style>
+</head>
+<body>
+
+<!-- PORTAL SWITCHER -->
+<div class="portal-switcher">
+  <button class="portal-btn" onclick="window.location.href='https://ops.torchatl.com'">← Ops Suite</button>
+  <div class="portal-divider"></div>
+  <button class="portal-btn active" onclick="switchPortal('admin')">⊞ Admin Portal</button>
+  <div class="portal-divider"></div>
+  <button class="portal-btn" onclick="switchPortal('intern')">◈ Intern Portal</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ADMIN PORTAL
+═══════════════════════════════════════════════════ -->
+<div class="portal active" id="admin-portal">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">TORCH</div>
+      <div class="brand-sub">Atlanta</div>
+      <div class="brand-module">Admin Operations</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <div class="nav-item active" onclick="showPage('dashboard','admin')"><span class="nav-icon">◈</span> Dashboard</div>
+      <div class="nav-item" onclick="showPage('escalations','admin')"><span class="nav-icon">⚡</span> Escalations <span class="nav-badge-warn">5</span></div>
+      <div class="nav-item" onclick="showPage('pipeline','admin')"><span class="nav-icon">⟳</span> Pipeline <span class="nav-badge">4</span></div>
+      <div class="nav-item" onclick="showPage('cohorts','admin')"><span class="nav-icon">◫</span> Cohorts</div>
+
+      <div class="nav-section-label">Onboarding</div>
+      <div class="nav-item" onclick="showPage('approval','admin')"><span class="nav-icon">✉</span> Approval Letters</div>
+      <div class="nav-item" onclick="showPage('nda','admin')"><span class="nav-icon">⊟</span> NDA & Audit Trail</div>
+      <div class="nav-item" onclick="showPage('guide','admin')"><span class="nav-icon">⊞</span> Training Guide</div>
+      <div class="nav-item" onclick="showPage('quiz','admin')"><span class="nav-icon">◇</span> Readiness Test</div>
+
+      <div class="nav-section-label">Operations</div>
+      <div class="nav-item" onclick="showPage('interns','admin')"><span class="nav-icon">⊕</span> Active Interns</div>
+      <div class="nav-item" onclick="showPage('performance','admin')"><span class="nav-icon">▲</span> Performance</div>
+      <div class="nav-item" onclick="showPage('shifts','admin')"><span class="nav-icon">⊡</span> Shifts</div>
+      <div class="nav-item" onclick="showPage('swaps','admin')"><span class="nav-icon">⇄</span> Shift Swaps <span class="nav-badge" style="background:rgba(212,175,55,0.15);color:var(--gold)">2</span></div>
+      <div class="nav-item" onclick="showPage('guests','admin')"><span class="nav-icon">◉</span> Guest Intake</div>
+      <div class="nav-item" onclick="showPage('incidents','admin')"><span class="nav-icon">⚠</span> Incidents</div>
+
+      <div class="nav-section-label">Offboarding</div>
+      <div class="nav-item" onclick="showPage('offboard','admin')"><span class="nav-icon">⊗</span> Offboarding</div>
+      <div class="nav-item" onclick="showPage('commslog','admin')"><span class="nav-icon">≡</span> Comms Log</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="admin-role">Principal</div>
+      <div class="admin-name">Joi Coleman</div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <section class="page active" id="page-dashboard-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Command Center</div>
+        <div class="page-title">Intern Operations</div>
+        <div class="page-subtitle">Fully autonomous. Founder touchpoint: zero.</div>
+      </div>
+
+      <div class="escalation-banner">
+        <div class="escalation-icon">⚡</div>
+        <div class="escalation-text">
+          <strong>5 Active Escalations</strong> require system attention
+          <span>2 missed shifts · 1 overdue NDA · 1 retake deadline passed · 1 incident unresolved</span>
+        </div>
+        <button class="btn btn-danger" onclick="showPage('escalations','admin')">Review</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Active Interns</div>
+          <div class="stat-value">7</div>
+          <div class="stat-sub">3 cohorts running</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pipeline</div>
+          <div class="stat-value">4</div>
+          <div class="stat-delta-warn">▲ 2 flagged</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg Performance</div>
+          <div class="stat-value">82<span style="font-size:18px">%</span></div>
+          <div class="stat-delta-up">↑ vs last week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Open Incidents</div>
+          <div class="stat-value">1</div>
+          <div class="stat-delta-warn">⚠ Unresolved</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div class="card-title">System Rules — Scoring Logic</div>
+        </div>
+        <div class="guide-item"><div class="guide-item-num">A</div><div class="guide-item-text"><strong>90–100%</strong> — Immediately cleared. Welcome email auto-sends. Intern activated.</div></div>
+        <div class="guide-item"><div class="guide-item-num">B</div><div class="guide-item-text"><strong>75–89%</strong> — <span style="color:var(--red)">Retake required.</span> Good is the enemy of great. Retake notice sends. 48-hour window. System escalates at hour 49.</div></div>
+        <div class="guide-item"><div class="guide-item-num">C</div><div class="guide-item-text"><strong>60–74%</strong> — Cleared with growth designation. Welcome email sends with mentorship note attached.</div></div>
+        <div class="guide-item"><div class="guide-item-num">F</div><div class="guide-item-text"><strong>Below 60%</strong> — Denied. Denial letter auto-sends. Reapply window: 60 days.</div></div>
+      </div>
+    </section>
+
+    <!-- ESCALATIONS -->
+    <section class="page" id="page-escalations-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Automated Triggers</div>
+        <div class="page-title">Active Escalations</div>
+        <div class="page-subtitle">System-detected anomalies. These were identified and acted on without founder involvement.</div>
+      </div>
+
+      <div class="alert-card danger">
+        <div class="alert-icon">🔴</div>
+        <div class="alert-body">
+          <div class="alert-title">Devon Harris — 2 Consecutive Missed Shifts</div>
+          <div class="alert-msg">No shift swap request submitted. No absence notification. System sent automated warning at hour 2 of missed shift. Second absence triggered this escalation. Awaiting response.</div>
+          <div class="alert-time">Escalated: Mar 26, 2026 · 11:04 AM · Auto-generated</div>
+          <div class="alert-actions">
+            <button class="btn btn-danger" onclick="showToast('Probation Notice Sent','Devon Harris notified. One more absence triggers removal.')">Issue Probation Notice</button>
+            <button class="btn btn-ghost" onclick="showToast('Marked Resolved','Escalation closed.')">Mark Resolved</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-card warn">
+        <div class="alert-icon">🟡</div>
+        <div class="alert-body">
+          <div class="alert-title">Zoe Winters — NDA Overdue (72 hrs)</div>
+          <div class="alert-msg">NDA sent Mar 24. Still unsigned. System auto-sent reminders at 24hr and 48hr marks. Access to training guide remains locked. At 96hrs, onboarding is auto-suspended.</div>
+          <div class="alert-time">Escalated: Mar 27, 2026 · 9:15 AM · Auto-generated</div>
+          <div class="alert-actions">
+            <button class="btn btn-warn" onclick="showToast('Final Notice Sent','Zoe Winters has 24hrs before suspension.')">Send Final Notice</button>
+            <button class="btn btn-danger" onclick="showToast('Onboarding Suspended','Access revoked pending NDA signature.')">Suspend Onboarding</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-card warn">
+        <div class="alert-icon">🟡</div>
+        <div class="alert-body">
+          <div class="alert-title">Malik Reeves — Retake Deadline Passed</div>
+          <div class="alert-msg">B-score retake was due Mar 25. Not completed. System sent reminder at 36hrs and 47hrs. Retake window has now closed. Decision required: grant extension or deny.</div>
+          <div class="alert-time">Escalated: Mar 26, 2026 · 8:00 AM · Auto-generated</div>
+          <div class="alert-actions">
+            <button class="btn btn-ghost" onclick="showToast('Extension Granted','Malik Reeves given 48hr extension.')">Grant Extension</button>
+            <button class="btn btn-danger" onclick="showToast('Denied','Denial letter sent. Reapply in 60 days.')">Deny — Close File</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-card danger">
+        <div class="alert-icon">🔴</div>
+        <div class="alert-body">
+          <div class="alert-title">Incident #003 — Unresolved (4 Days)</div>
+          <div class="alert-msg">Studio Protocol Violation logged Mar 24. Intern has not acknowledged or responded. Incident auto-escalated after 72hrs with no resolution.</div>
+          <div class="alert-time">Escalated: Mar 27, 2026 · 8:00 AM · Auto-generated</div>
+          <div class="alert-actions">
+            <button class="btn btn-danger" onclick="showPage('incidents','admin')">View Incident</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-card info">
+        <div class="alert-icon">🔵</div>
+        <div class="alert-body">
+          <div class="alert-title">3 Interns — End of Term Within 30 Days</div>
+          <div class="alert-msg">Amara Osei, Jordan Pierce, and Kyla Mason all complete their internship within the next 30 days. Offboarding flows should be initiated. Exit surveys not yet sent.</div>
+          <div class="alert-time">System Notice: Mar 28, 2026 · Auto-generated</div>
+          <div class="alert-actions">
+            <button class="btn btn-gold" onclick="showPage('offboard','admin')">Begin Offboarding</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COHORTS -->
+    <section class="page" id="page-cohorts-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Cohort Management</div>
+        <div class="page-title">Intern Cohorts</div>
+        <div class="page-subtitle">Organize interns by program cycle. Each cohort tracks its own metrics.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div class="card-title">Spring 2026 — Founding Cohort</div>
+          <span class="pill pill-active">Active</span>
+        </div>
+        <div style="display:flex;gap:28px;margin-bottom:18px;">
+          <div><div class="stat-label">Start</div><div style="font-size:13px;color:var(--cream)">Feb 2, 2026</div></div>
+          <div><div class="stat-label">End</div><div style="font-size:13px;color:var(--cream)">Aug 2, 2026</div></div>
+          <div><div class="stat-label">Headcount</div><div style="font-size:13px;color:var(--cream)">5 interns</div></div>
+          <div><div class="stat-label">Avg Score</div><div style="font-size:13px;color:var(--cream)">82%</div></div>
+          <div><div class="stat-label">Tracks</div><div style="font-size:13px;color:var(--cream)">A&R · Eng · Studio Ops</div></div>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Track</th><th>Grade</th><th>Performance</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr class="clickable"><td>Amara Osei</td><td>A&R</td><td style="color:var(--green)">A</td><td><span class="rating-badge">★★★★☆</span></td><td><span class="pill pill-active">Active</span></td></tr>
+            <tr class="clickable"><td>Jordan Pierce</td><td>Engineering</td><td style="color:var(--green)">A</td><td><span class="rating-badge">★★★★★</span></td><td><span class="pill pill-active">Active</span></td></tr>
+            <tr class="clickable"><td>Kyla Mason</td><td>Studio Ops</td><td style="color:var(--gold)">C</td><td><span class="rating-badge">★★★☆☆</span></td><td><span class="pill pill-active">Active</span></td></tr>
+            <tr class="clickable"><td>Devon Harris</td><td>Studio Ops</td><td style="color:var(--amber)">B</td><td><span class="rating-badge">★★☆☆☆</span></td><td><span class="pill pill-flagged">Flagged</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row">
+          <div class="card-title">Fall 2026 — Upcoming Cohort</div>
+          <span class="pill pill-pending">Planning</span>
+        </div>
+        <div style="font-size:11px;color:var(--gray-light);margin-bottom:16px;">Cohort begins Sep 1, 2026. Applications open Jun 1, 2026.</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Cohort Name</label>
+            <input class="form-input" value="Fall 2026">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Headcount</label>
+            <input class="form-input" type="number" value="6">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Start Date</label>
+            <input class="form-input" type="date" value="2026-09-01">
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Date</label>
+            <input class="form-input" type="date" value="2027-02-28">
+          </div>
+        </div>
+        <button class="btn btn-gold" onclick="showToast('Cohort Created','Fall 2026 cohort initialized. Applications open Jun 1.')">Create Cohort</button>
+      </div>
+    </section>
+
+    <!-- PIPELINE -->
+    <section class="page" id="page-pipeline-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Onboarding Flow</div>
+        <div class="page-title">Applicant Pipeline</div>
+        <div class="page-subtitle">Every stage is automated. System escalates only on anomalies.</div>
+      </div>
+      <div class="kanban">
+        <div class="kanban-col"><div class="kanban-col-label">Applied</div>
+          <div class="kanban-card"><div class="kanban-card-name">Tiana Brooks</div><div class="kanban-card-meta">Management</div></div>
+        </div>
+        <div class="kanban-col"><div class="kanban-col-label">NDA Pending</div>
+          <div class="kanban-card" style="border-color:rgba(212,148,58,0.25)"><div class="kanban-card-name">Zoe Winters</div><div class="kanban-card-meta" style="color:var(--amber)">72hr overdue ⚠</div></div>
+          <div class="kanban-card"><div class="kanban-card-name">Chris Fontaine</div><div class="kanban-card-meta">Studio Ops</div></div>
+        </div>
+        <div class="kanban-col"><div class="kanban-col-label">Training Guide</div>
+          <div class="kanban-card"><div class="kanban-card-name">Malik Reeves</div><div class="kanban-card-meta">Production</div></div>
+        </div>
+        <div class="kanban-col"><div class="kanban-col-label">Test / Retake</div>
+          <div class="kanban-card" style="border-color:rgba(201,76,76,0.25)"><div class="kanban-card-name">Devon Harris</div><div class="kanban-card-meta" style="color:var(--red)">Retake expired ⚠</div></div>
+        </div>
+        <div class="kanban-col"><div class="kanban-col-label">Cleared</div>
+          <div class="kanban-card" style="border-color:rgba(76,175,122,0.25)"><div class="kanban-card-name">Amara Osei</div><div class="kanban-card-meta" style="color:var(--green)">A Score — Active</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">Add Applicant</div></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" placeholder="First Last"></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="intern@email.com"></div>
+        </div>
+        <div class="form-row-3">
+          <div class="form-group"><label class="form-label">Track</label>
+            <select class="form-select"><option>A&R</option><option>Studio Operations</option><option>Engineering</option><option>Production</option><option>Artist Management</option><option>Label Support</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Cohort</label>
+            <select class="form-select"><option>Spring 2026 — Founding</option><option>Fall 2026</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Decision</label>
+            <select class="form-select"><option>Send Approval</option><option>Send Denial</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Start Date</label><input class="form-input" type="date"></div>
+          <div class="form-group"><label class="form-label">End Date</label><input class="form-input" type="date"></div>
+        </div>
+        <button class="btn btn-gold" onclick="showToast('Onboarding Initiated','Approval letter queued. NDA sends on confirmation.')">Initiate Onboarding</button>
+      </div>
+    </section>
+
+    <!-- APPROVAL LETTERS -->
+    <section class="page" id="page-approval-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Automated Communication</div>
+        <div class="page-title">Approval & Denial Letters</div>
+        <div class="page-subtitle">Auto-generated and timestamped. All sends logged to Comms Log.</div>
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab(this,'letter-approve-admin')">Approval</div>
+        <div class="tab" onclick="switchTab(this,'letter-deny-admin')">Denial</div>
+        <div class="tab" onclick="switchTab(this,'letter-retake-admin')">Retake Notice</div>
+        <div class="tab" onclick="switchTab(this,'letter-offboard-admin')">Offboard Notice</div>
+      </div>
+      <div class="tab-content active" id="letter-approve-admin">
+        <div class="letter-box">
+          <div class="letter-header">TORCH</div>
+          <div class="letter-tagline">Atlanta — Private Creative Estate</div>
+Dear [Intern Name],
+
+After careful review, we are pleased to offer you a place in the TORCH ATL Internship Program.
+
+You have been selected for the <strong>[Track]</strong> track, beginning <strong>[Start Date]</strong> and concluding <strong>[End Date]</strong>. You are part of the <strong>[Cohort Name]</strong> cohort.
+
+<strong>Your Next Steps (system-automated):</strong>
+1. <strong>Sign your NDA</strong> — link arrives within 24hrs. Must be completed within 48hrs or onboarding suspends.
+2. <strong>Complete the Training Guide</strong> — unlocks immediately after NDA signature.
+3. <strong>Pass the Readiness Test</strong> — score C or above. A B score requires a retake within 48hrs.
+
+We look forward to the work.
+
+TORCH ATL Operations
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px;">
+          <button class="btn btn-gold" onclick="showToast('Approval Sent','Logged to Comms Log. Timestamp recorded.')">Send & Log</button>
+          <button class="btn btn-outline">Copy Template</button>
+        </div>
+      </div>
+      <div class="tab-content" id="letter-deny-admin">
+        <div class="letter-box">
+          <div class="letter-header">TORCH</div><div class="letter-tagline">Atlanta — Private Creative Estate</div>
+Dear [Intern Name],
+
+Thank you for your time and interest in TORCH ATL. After careful review, we will not be moving forward at this time.
+
+This is not a reflection of your potential — it is a matter of current fit and program standards. You are welcome to reapply in 60 days.
+
+We wish you well.
+
+TORCH ATL Operations
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px;">
+          <button class="btn btn-gold" onclick="showToast('Denial Sent','Logged to Comms Log.')">Send & Log</button>
+          <button class="btn btn-outline">Copy Template</button>
+        </div>
+      </div>
+      <div class="tab-content" id="letter-retake-admin">
+        <div class="letter-box">
+          <div class="letter-header">TORCH</div><div class="letter-tagline">Atlanta — Private Creative Estate</div>
+Dear [Intern Name],
+
+Your Readiness Test score was <strong>[Score]% — B</strong>. Good is the enemy of great. You have 48 hours to retake.
+
+Review the Training Guide. Focus on TORCH Standard, Studio Protocols, and Privacy Requirements.
+
+One retake permitted. Score C or above to be cleared. Failure to retake within 48hrs auto-suspends your onboarding.
+
+TORCH ATL Operations
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px;">
+          <button class="btn btn-gold" onclick="showToast('Retake Notice Sent','48hr timer initiated. System will auto-escalate.')">Send & Log</button>
+        </div>
+      </div>
+      <div class="tab-content" id="letter-offboard-admin">
+        <div class="letter-box">
+          <div class="letter-header">TORCH</div><div class="letter-tagline">Atlanta — Private Creative Estate</div>
+Dear [Intern Name],
+
+Your TORCH ATL internship concludes on <strong>[End Date]</strong>. This message initiates your offboarding process.
+
+<strong>Required before your final day:</strong>
+— Return all access credentials and any TORCH-issued materials
+— Complete your exit survey (link attached)
+— Schedule your exit debrief with your track supervisor
+— Confirm all work files are submitted and properly labeled
+
+Your NDA remains in effect indefinitely post-internship. Confidentiality obligations do not expire.
+
+A reference letter request process will be communicated separately.
+
+Thank you for your contribution to the estate.
+
+TORCH ATL Operations
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px;">
+          <button class="btn btn-gold" onclick="showToast('Offboard Notice Sent','Logged. Offboarding checklist initiated.')">Send & Log</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- NDA -->
+    <section class="page" id="page-nda-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Legal & Audit Trail</div>
+        <div class="page-title">NDA & Signature Log</div>
+        <div class="page-subtitle">Every signature is timestamped and logged. Unsigned NDAs escalate at 48hrs.</div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">Signature Audit Trail</div></div>
+        <table class="data-table">
+          <thead><tr><th>Intern</th><th>Sent</th><th>Signed</th><th>Timestamp</th><th>Witness IP</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Amara Osei</td><td>Feb 3, 2026</td><td>Feb 3, 2026</td><td>2:14 PM EST</td><td>192.168.x.x</td><td><span class="pill pill-complete">Verified</span></td></tr>
+            <tr><td>Jordan Pierce</td><td>Feb 10, 2026</td><td>Feb 10, 2026</td><td>11:32 AM EST</td><td>192.168.x.x</td><td><span class="pill pill-complete">Verified</span></td></tr>
+            <tr><td>Kyla Mason</td><td>Feb 20, 2026</td><td>Feb 21, 2026</td><td>9:04 AM EST</td><td>192.168.x.x</td><td><span class="pill pill-complete">Verified</span></td></tr>
+            <tr><td style="color:var(--amber)">Zoe Winters</td><td>Mar 24, 2026</td><td>—</td><td>—</td><td>—</td><td><span class="pill pill-pending">Overdue 72hr</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">NDA Document</div><span class="pill pill-pending">Digital Signature Required</span></div>
+        <div class="nda-text">
+          <h4>TORCH ATL — Non-Disclosure & Confidentiality Agreement</h4>
+          <strong>1. Confidential Information</strong> — All information disclosed during internship including artist identities, unreleased music, business strategy, member identities, booking information, financial details, facility address, and client lists is strictly confidential.<br><br>
+          <strong>2. Property & Facilities</strong> — No photographs of exterior, address, or identifying features may be taken, shared, or published.<br><br>
+          <strong>3. Guest & Member Privacy</strong> — Member and guest identities are confidential. Unauthorized disclosure or social media references prohibited.<br><br>
+          <strong>4. Digital Assets</strong> — Internal systems access is operational only. No unauthorized copying or forwarding.<br><br>
+          <strong>5. Term & Survival</strong> — Agreement survives the end of internship indefinitely. NDA does not expire.<br><br>
+          <strong>6. Consequences</strong> — Breach results in immediate termination, legal action, and permanent exclusion from all TORCH ATL programs.
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Legal Name</label><input class="form-input" placeholder="As appears on ID"></div>
+          <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Digital Signature</label><input class="form-input" placeholder="Type full legal name to confirm"></div>
+        <div class="checkbox-row"><input type="checkbox" id="ndac1"><label class="checkbox-label" for="ndac1">I have read and fully understand the TORCH ATL NDA and agree to be bound by its terms.</label></div>
+        <div class="checkbox-row"><input type="checkbox" id="ndac2"><label class="checkbox-label" for="ndac2">I understand violation may result in immediate program removal and legal action. I acknowledge the NDA survives my internship indefinitely.</label></div>
+        <button class="btn btn-gold" onclick="showToast('NDA Signed & Logged','Timestamp recorded. Confirmation sent to intern and ops inbox.')">Submit — Timestamp & Log</button>
+      </div>
+    </section>
+
+    <!-- GUIDE -->
+    <section class="page" id="page-guide-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Required Reading</div>
+        <div class="page-title">Training Guide</div>
+        <div class="page-subtitle">Unlocks after NDA signature. Test unlocks after guide is marked complete.</div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">The TORCH Standard</div><span class="pill pill-active">Required</span></div>
+        <div class="guide-section-title">I. Who We Are</div>
+        <div class="guide-item"><div class="guide-item-num">1</div><div class="guide-item-text"><strong>TORCH ATL is not a typical studio.</strong> It is a private luxury creative estate. Every person inside should feel the difference immediately.</div></div>
+        <div class="guide-item"><div class="guide-item-num">2</div><div class="guide-item-text"><strong>Discretion is the foundation.</strong> What happens at TORCH stays at TORCH. Artists trust us with vulnerable creative moments. That trust is non-negotiable.</div></div>
+        <div class="guide-item"><div class="guide-item-num">3</div><div class="guide-item-text"><strong>Presentation is performance.</strong> Immaculate at all times. No fingerprints under direct light. No clutter. The experience speaks before you do.</div></div>
+        <div class="gold-line"></div>
+        <div class="guide-section-title">II. Expectations</div>
+        <div class="guide-item"><div class="guide-item-num">4</div><div class="guide-item-text"><strong>You are early or you are late.</strong> On time is late. Be set up and ready before your shift begins.</div></div>
+        <div class="guide-item"><div class="guide-item-num">5</div><div class="guide-item-text"><strong>Shift swaps go through the system only.</strong> Informal arrangements between interns are not recognized and will be treated as a no-show.</div></div>
+        <div class="guide-item"><div class="guide-item-num">6</div><div class="guide-item-text"><strong>Swaps are track-locked.</strong> You may only swap with interns in your same track. Cross-track swaps will be automatically denied.</div></div>
+        <div class="guide-item"><div class="guide-item-num">7</div><div class="guide-item-text"><strong>Incidents must be reported same-day.</strong> If something goes wrong on your shift, log it through the incident system. Unreported incidents are a breach of protocol.</div></div>
+        <div class="guide-item"><div class="guide-item-num">8</div><div class="guide-item-text"><strong>You may not identify yourself as a TORCH employee publicly</strong> without explicit written permission.</div></div>
+        <div class="gold-line"></div>
+        <div class="guide-section-title">III. Studio & Facility</div>
+        <div class="guide-item"><div class="guide-item-num">9</div><div class="guide-item-text"><strong>Studios are reset between every session.</strong> Equipment wiped, cables coiled, surfaces clear. Non-negotiable.</div></div>
+        <div class="guide-item"><div class="guide-item-num">10</div><div class="guide-item-text"><strong>Guest access is managed strictly.</strong> Check the intake list. If a name is not on it, escalate — do not improvise.</div></div>
+        <div class="guide-item"><div class="guide-item-num">11</div><div class="guide-item-text"><strong>The address is confidential.</strong> Never share, post, or disclose in any format.</div></div>
+        <div class="guide-item"><div class="guide-item-num">12</div><div class="guide-item-text"><strong>Performance is reviewed weekly.</strong> Your supervisor submits a check-in rating each Friday. These ratings are factored into your end-of-term evaluation and reference eligibility.</div></div>
+        <div style="margin-top:18px;"><button class="btn btn-gold" onclick="showToast('Guide Complete','Readiness Test unlocked.')">Mark Complete — Unlock Test</button></div>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="page" id="page-quiz-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Readiness Assessment</div>
+        <div class="page-title">TORCH ATL Intern Test</div>
+        <div class="page-subtitle">10 questions. A or C clears. B retakes. Below 60% is a denial.</div>
+      </div>
+      <div class="card" id="quizCardAdmin">
+        <div class="card-header-row">
+          <div class="card-title" id="quizTitleAdmin">Question 1 of 10</div>
+          <span class="pill pill-pending" id="quizStatusAdmin">In Progress</span>
+        </div>
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizBarAdmin" style="width:10%"></div></div>
+        <div id="quizBodyAdmin"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:26px;align-items:center;">
+          <span id="quizQCountAdmin" style="font-size:9.5px;color:var(--gray);letter-spacing:1px;"></span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline" id="quizBackAdmin" onclick="quizBack('admin')" style="display:none">Back</button>
+            <button class="btn btn-gold" id="quizNextAdmin" onclick="quizNext('admin')">Next</button>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="quizResultAdmin" style="display:none;">
+        <div class="score-display">
+          <div class="score-circle" id="scoreCircleAdmin"><div class="score-number" id="scoreNumAdmin">—</div><div class="score-pct">%</div></div>
+          <div class="score-grade" id="scoreGradeAdmin"></div>
+          <div class="score-message" id="scoreMsgAdmin"></div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;gap:8px;justify-content:center;">
+          <button class="btn btn-gold" onclick="showToast('Result Processed','Action taken and logged to intern profile.')">Process Result</button>
+          <button class="btn btn-outline" onclick="resetQuiz('admin')">Reset Test</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERNS -->
+    <section class="page" id="page-interns-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Roster</div>
+        <div class="page-title">Active Interns</div>
+        <div class="page-subtitle">Click any row to view full profile, onboarding status, and performance history.</div>
+      </div>
+      <div class="card">
+        <div class="card-header-row">
+          <div class="card-title">Spring 2026 Cohort</div>
+          <div style="display:flex;gap:8px;">
+            <select class="form-select" style="width:auto;padding:6px 12px;font-size:10px;">
+              <option>Spring 2026 — Founding</option><option>All Cohorts</option>
+            </select>
+            <button class="btn btn-ghost">Export</button>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Track</th><th>Cohort</th><th>Test</th><th>Performance</th><th>End Date</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="openInternProfile()"><td><strong>Amara Osei</strong></td><td>A&R</td><td><span class="cohort-tag">Spr 26</span></td><td style="color:var(--green)">91% A</td><td><span class="rating-badge">★★★★☆</span></td><td>Aug 10</td><td><span class="pill pill-active">Active</span></td><td><button class="btn btn-ghost">Profile</button></td></tr>
+            <tr class="clickable"><td><strong>Jordan Pierce</strong></td><td>Engineering</td><td><span class="cohort-tag">Spr 26</span></td><td style="color:var(--green)">88% A</td><td><span class="rating-badge">★★★★★</span></td><td>Aug 17</td><td><span class="pill pill-active">Active</span></td><td><button class="btn btn-ghost">Profile</button></td></tr>
+            <tr class="clickable"><td><strong>Kyla Mason</strong></td><td>Studio Ops</td><td><span class="cohort-tag">Spr 26</span></td><td style="color:var(--gold)">64% C</td><td><span class="rating-badge">★★★☆☆</span></td><td>Sep 3</td><td><span class="pill pill-active">Active</span></td><td><button class="btn btn-ghost">Profile</button></td></tr>
+            <tr class="clickable"><td><strong style="color:var(--amber)">Devon Harris</strong></td><td>Studio Ops</td><td><span class="cohort-tag">Spr 26</span></td><td style="color:var(--amber)">74% B</td><td><span class="rating-badge">★★☆☆☆</span></td><td>—</td><td><span class="pill pill-flagged">Flagged</span></td><td><button class="btn btn-danger">Action</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PERFORMANCE -->
+    <section class="page" id="page-performance-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Supervisor Check-ins</div>
+        <div class="page-title">Performance Tracking</div>
+        <div class="page-subtitle">Weekly supervisor ratings. Auto-collected every Friday. No founder involvement required.</div>
+      </div>
+      <div class="form-row" style="margin-bottom:18px;">
+        <div class="form-group">
+          <label class="form-label">Select Intern</label>
+          <select class="form-select" id="perfInternSelect">
+            <option>Amara Osei — A&R</option><option>Jordan Pierce — Engineering</option><option>Kyla Mason — Studio Ops</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Week Ending</label>
+          <input class="form-input" type="date" value="2026-03-28">
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-header-row"><div class="card-title">Submit Weekly Rating</div><span style="font-size:9px;color:var(--gray)">Supervisor Use Only</span></div>
+        <div class="perf-row" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;border:none;padding:0;margin-bottom:14px;">
+          <div>
+            <div class="form-label" style="margin-bottom:8px;">Punctuality & Reliability</div>
+            <div class="star-rating" id="stars-punct">
+              <span class="star" onclick="setStars('punct',1)">★</span><span class="star" onclick="setStars('punct',2)">★</span><span class="star" onclick="setStars('punct',3)">★</span><span class="star" onclick="setStars('punct',4)">★</span><span class="star" onclick="setStars('punct',5)">★</span>
+            </div>
+          </div>
+          <div>
+            <div class="form-label" style="margin-bottom:8px;">TORCH Standard Adherence</div>
+            <div class="star-rating" id="stars-standard">
+              <span class="star" onclick="setStars('standard',1)">★</span><span class="star" onclick="setStars('standard',2)">★</span><span class="star" onclick="setStars('standard',3)">★</span><span class="star" onclick="setStars('standard',4)">★</span><span class="star" onclick="setStars('standard',5)">★</span>
+            </div>
+          </div>
+          <div>
+            <div class="form-label" style="margin-bottom:8px;">Initiative & Quality of Work</div>
+            <div class="star-rating" id="stars-initiative">
+              <span class="star" onclick="setStars('initiative',1)">★</span><span class="star" onclick="setStars('initiative',2)">★</span><span class="star" onclick="setStars('initiative',3)">★</span><span class="star" onclick="setStars('initiative',4)">★</span><span class="star" onclick="setStars('initiative',5)">★</span>
+            </div>
+          </div>
+          <div>
+            <div class="form-label" style="margin-bottom:8px;">Communication & Attitude</div>
+            <div class="star-rating" id="stars-comm">
+              <span class="star" onclick="setStars('comm',1)">★</span><span class="star" onclick="setStars('comm',2)">★</span><span class="star" onclick="setStars('comm',3)">★</span><span class="star" onclick="setStars('comm',4)">★</span><span class="star" onclick="setStars('comm',5)">★</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Supervisor Notes (Optional)</label><textarea class="form-input form-textarea" placeholder="Specific observations, red flags, fast-track recommendation..."></textarea></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-gold" onclick="showToast('Rating Submitted','Logged to intern profile. Trends updating.')">Submit Rating</button>
+          <button class="btn btn-warn" onclick="showToast('Fast-Track Flag Set','Management notified of high-potential intern.')">Flag for Fast-Track</button>
+          <button class="btn btn-danger" onclick="showToast('Concern Logged','Escalation created. Supervisor review triggered.')">Log Concern</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">Amara Osei — Performance History</div><span class="pill pill-active">On Track</span></div>
+        <div class="perf-row"><div class="perf-label">Punctuality & Reliability</div><div class="perf-bar-wrap"><div class="perf-bar perf-bar-green" style="width:88%"></div></div><div class="perf-score">88</div></div>
+        <div class="perf-row"><div class="perf-label">TORCH Standard Adherence</div><div class="perf-bar-wrap"><div class="perf-bar perf-bar-green" style="width:92%"></div></div><div class="perf-score">92</div></div>
+        <div class="perf-row"><div class="perf-label">Initiative & Quality</div><div class="perf-bar-wrap"><div class="perf-bar perf-bar-gold" style="width:80%"></div></div><div class="perf-score">80</div></div>
+        <div class="perf-row"><div class="perf-label">Communication</div><div class="perf-bar-wrap"><div class="perf-bar perf-bar-green" style="width:85%"></div></div><div class="perf-score">85</div></div>
+        <div class="divider"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div><div class="stat-label">Overall Average</div><div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--white)">86%</div></div>
+          <div><div class="stat-label">Trend</div><div style="color:var(--green);font-size:13px;">↑ Improving week-over-week</div></div>
+          <div><div class="stat-label">Reference Eligible</div><div style="color:var(--green);font-size:13px;">✓ Yes</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHIFTS -->
+    <section class="page" id="page-shifts-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Scheduling</div>
+        <div class="page-title">Shift Management</div>
+        <div class="page-subtitle">April 2026. Missed shifts auto-flag at the 2hr mark.</div>
+      </div>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-header-row">
+          <div class="card-title">April 2026</div>
+          <div style="display:flex;gap:6px;"><button class="btn btn-ghost">← Mar</button><button class="btn btn-ghost">May →</button></div>
+        </div>
+        <div class="shift-grid" style="margin-bottom:7px;">
+          <div class="shift-day-label">Sun</div><div class="shift-day-label">Mon</div><div class="shift-day-label">Tue</div><div class="shift-day-label">Wed</div><div class="shift-day-label">Thu</div><div class="shift-day-label">Fri</div><div class="shift-day-label">Sat</div>
+        </div>
+        <div class="shift-grid" id="shiftCal"></div>
+        <div style="display:flex;gap:14px;margin-top:10px;">
+          <span style="font-size:8.5px;color:var(--gray)"><span style="color:var(--gold)">■</span> A&R</span>
+          <span style="font-size:8.5px;color:var(--gray)"><span style="color:var(--green)">■</span> Engineering</span>
+          <span style="font-size:8.5px;color:var(--gray)"><span style="color:var(--blue)">■</span> Studio Ops</span>
+          <span style="font-size:8.5px;color:var(--gray)"><span style="color:var(--red)">■</span> Missed</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">Assign Shift</div></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Intern</label>
+            <select class="form-select"><option>Amara Osei — A&R</option><option>Jordan Pierce — Engineering</option><option>Kyla Mason — Studio Ops</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Start Time</label><input class="form-input" type="time" value="09:00"></div>
+          <div class="form-group"><label class="form-label">End Time</label><input class="form-input" type="time" value="17:00"></div>
+        </div>
+        <button class="btn btn-gold" onclick="showToast('Shift Assigned','Intern notified. Auto-flag set for 2hr no-show.')">Assign Shift</button>
+      </div>
+    </section>
+
+    <!-- SWAPS -->
+    <section class="page" id="page-swaps-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Track-Locked Swaps</div>
+        <div class="page-title">Shift Swap Requests</div>
+        <div class="page-subtitle">Swaps are only permitted within the same track. Cross-track requests are auto-denied.</div>
+      </div>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-header-row"><div class="card-title">Pending Requests</div><span class="pill pill-pending">2 Awaiting</span></div>
+        <div class="swap-card">
+          <div class="swap-info"><strong>Amara Osei ↔ Jordan Pierce</strong><span style="color:var(--red);font-size:9px;">⚠ Cross-track swap — A&R ↔ Engineering — AUTO-DENIED</span></div>
+          <div class="swap-arrow">⇄</div>
+          <span class="pill pill-denied">Auto-Denied</span>
+        </div>
+        <div class="swap-card">
+          <div class="swap-info"><strong>Kyla Mason ↔ Devon Harris</strong>Apr 14 (Mon) ↔ Apr 16 (Wed) · Same track: Studio Ops ✓</div>
+          <div class="swap-arrow">⇄</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-gold btn-sm" onclick="showToast('Swap Approved','Both interns notified. Logged.')">Approve</button>
+            <button class="btn btn-danger" onclick="showToast('Swap Denied','Logged.')">Deny</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GUEST INTAKE -->
+    <section class="page" id="page-guests-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Access Control</div>
+        <div class="page-title">Guest Pre-Approval Intake</div>
+        <div class="page-subtitle">Interns check this list at the door. Names not on this list do not enter.</div>
+      </div>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-header-row"><div class="card-title">Today's Approved Guest List — Mar 28, 2026</div><span class="pill pill-active">3 Approved</span></div>
+        <div class="guest-card">
+          <div class="guest-avatar">M</div>
+          <div class="guest-info"><div class="guest-name">Marcus W.</div><div class="guest-meta">Approved by: Joi Coleman · Entry window: 2:00 PM – 8:00 PM · Studio A</div></div>
+          <span class="pill pill-active">Cleared</span>
+        </div>
+        <div class="guest-card">
+          <div class="guest-avatar">S</div>
+          <div class="guest-info"><div class="guest-name">Sierra + 1</div><div class="guest-meta">Approved by: Joi Coleman · Entry window: 4:00 PM – 10:00 PM · Lounge</div></div>
+          <span class="pill pill-active">Cleared</span>
+        </div>
+        <div class="guest-card">
+          <div class="guest-avatar">?</div>
+          <div class="guest-info"><div class="guest-name" style="color:var(--gray)">Walk-in attempt — 1:44 PM</div><div class="guest-meta" style="color:var(--red)">Not on list. Intern escalated. Entry denied.</div></div>
+          <span class="pill pill-denied">Denied</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">Add Guest to List</div></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Guest Name (First + Last Initial)</label><input class="form-input" placeholder="e.g. Marcus W."></div>
+          <div class="form-group"><label class="form-label">Approved By</label><input class="form-input" value="Joi Coleman"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Entry Window</label><input class="form-input" placeholder="e.g. 2:00 PM – 8:00 PM"></div>
+          <div class="form-group"><label class="form-label">Area / Studio</label>
+            <select class="form-select"><option>Studio A</option><option>Studio B</option><option>Studio C</option><option>Torch Suite</option><option>Lounge</option><option>Full Estate</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date"></div>
+        <button class="btn btn-gold" onclick="showToast('Guest Added','On-duty intern notified. Entry window set.')">Add to List</button>
+      </div>
+    </section>
+
+    <!-- INCIDENTS -->
+    <section class="page" id="page-incidents-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Protocol Enforcement</div>
+        <div class="page-title">Incident Reports</div>
+        <div class="page-subtitle">All incidents logged here. Unresolved incidents auto-escalate at 72hrs.</div>
+      </div>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-header-row"><div class="card-title">Open Incidents</div><span class="pill pill-flagged">1 Unresolved</span></div>
+        <div class="incident-card" style="border-color:rgba(201,76,76,0.2)">
+          <div class="incident-header">
+            <div><div class="incident-type">Studio Protocol Violation</div><div class="incident-title">Equipment left uncleaned after session — Studio B</div></div>
+            <div style="text-align:right"><div class="incident-date">Mar 24, 2026</div><span class="pill pill-flagged">Unresolved — Day 4</span></div>
+          </div>
+          <div class="incident-body">Devon Harris completed studio reset but left the mic capsule unwiped and cables uncoiled. Session engineer documented on debrief. Intern was notified same-day. No acknowledgement received. System auto-escalated at 72hrs.</div>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button class="btn btn-warn" onclick="showToast('Formal Warning Issued','Logged to intern file. One warning on record.')">Issue Formal Warning</button>
+            <button class="btn btn-danger" onclick="showToast('Escalated to Removal Review','HR process initiated.')">Escalate to Removal</button>
+            <button class="btn btn-ghost" onclick="showToast('Resolved','Incident closed. Logged.')">Mark Resolved</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">Log New Incident</div></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Intern Involved</label>
+            <select class="form-select"><option>Amara Osei</option><option>Jordan Pierce</option><option>Kyla Mason</option><option>Devon Harris</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Incident Type</label>
+            <select class="form-select"><option>Studio Protocol Violation</option><option>Guest Policy Breach</option><option>Confidentiality Concern</option><option>Missed Shift — No Notice</option><option>Conduct Issue</option><option>Property Damage</option><option>Other</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Date & Time of Incident</label><input class="form-input" type="datetime-local"></div>
+        <div class="form-group"><label class="form-label">Description</label><textarea class="form-input form-textarea" placeholder="Describe what happened. Be specific. Include any witness names."></textarea></div>
+        <div class="form-group"><label class="form-label">Severity</label>
+          <select class="form-select"><option>Minor — Document Only</option><option>Moderate — Issue Warning</option><option>Severe — Escalate to Review</option><option>Critical — Immediate Removal</option></select>
+        </div>
+        <button class="btn btn-gold" onclick="showToast('Incident Logged','Auto-escalation timer set. Intern notified.')">Log Incident</button>
+      </div>
+    </section>
+
+    <!-- OFFBOARDING -->
+    <section class="page" id="page-offboard-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Exit Protocol</div>
+        <div class="page-title">Offboarding</div>
+        <div class="page-subtitle">Every exit is documented. Access revoked on final day. NDA reminder sent automatically.</div>
+      </div>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-header-row">
+          <div>
+            <div class="card-title">Amara Osei — Offboarding Checklist</div>
+            <div style="font-size:10px;color:var(--gray-light);margin-top:4px;">Final day: Aug 10, 2026 · A&R Track · Spring 2026 Cohort</div>
+          </div>
+          <span class="pill pill-pending">2 of 8 Complete</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checklist-box checked" onclick="toggleCheck(this)">✓</div>
+          <div class="checklist-body"><div class="checklist-title">Offboarding notice sent</div><div class="checklist-note">Auto-sent 30 days before end date. Logged to Comms Log.</div></div>
+        </div>
+        <div class="checklist-item">
+          <div class="checklist-box checked" onclick="toggleCheck(this)">✓</div>
+          <div class="checklist-body"><div class="checklist-title">Exit survey sent</div><div class="checklist-note">Digital form delivered. Response pending.</div></div>
+        </div>
+        <div class="checklist-item">
+          <div class="checklist-box" onclick="toggleCheck(this)"></div>
+          <div class="checklist-body"><div class="checklist-title">Exit debrief scheduled</div><div class="checklist-note">15-min call with track supervisor. Required before final day.</div></div>
+        </div>
+        <div class="checklist-item">
+          <div class="checklist-box" onclick="toggleCheck(this)"></div>
+          <div class="checklist-body"><div class="checklist-title">All work files submitted</div><div class="checklist-note">Intern must label and submit all project files before departure.</div></div>
+        </div>
+        <div class="checklist-item">
+          <div class="checklist-box" onclick="toggleCheck(this)"></div>
+          <div class="checklist-body"><div class="checklist-title">Access credentials returned</div><div class="checklist-note">Any physical credentials, key cards, or access devices collected.</div></div>
+        </div>
+        <div class="checklist-item">
+          <div class="checklist-box" onclick="toggleCheck(this)"></div>
+          <div class="checklist-body"><div class="checklist-title">System access revoked</div><div class="checklist-note">All portal access deactivated. Scheduled for end-of-day final date.</div></div>
+        </div>
+        <div class="checklist-item">
+          <div class="checklist-box" onclick="toggleCheck(this)"></div>
+          <div class="checklist-body"><div class="checklist-title">NDA post-term reminder sent</div><div class="checklist-note">Automated reminder that NDA survives internship indefinitely.</div></div>
+        </div>
+        <div class="checklist-item">
+          <div class="checklist-box" onclick="toggleCheck(this)"></div>
+          <div class="checklist-body"><div class="checklist-title">Reference eligibility confirmed</div><div class="checklist-note">Based on performance average (86%) — eligible. Reference process communicated.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMS LOG -->
+    <section class="page" id="page-commslog-admin">
+      <div class="page-header">
+        <div class="page-eyebrow">Audit Trail</div>
+        <div class="page-title">Communications Log</div>
+        <div class="page-subtitle">Every send is timestamped and attributed. System-generated and manual sends both logged.</div>
+      </div>
+      <div class="card">
+        <div class="card-header-row">
+          <div class="card-title">All Communications</div>
+          <select class="form-select" style="width:auto;padding:6px 12px;font-size:10px;"><option>All Interns</option><option>Amara Osei</option><option>Jordan Pierce</option><option>Devon Harris</option></select>
+        </div>
+        <div class="log-entry"><div class="log-dot log-dot-flag"></div><div class="log-body"><div class="log-title">Devon Harris — Missed Shift Escalation (2nd)</div><div class="log-detail">System auto-generated escalation after 2nd consecutive missed shift with no swap request.</div><div class="log-meta">Mar 26, 2026 · 11:04 AM · Auto · System</div></div></div>
+        <div class="log-entry"><div class="log-dot log-dot-warn"></div><div class="log-body"><div class="log-title">Zoe Winters — NDA Overdue Reminder #2</div><div class="log-detail">48hr automated reminder. NDA still unsigned. Next trigger: 96hr suspension.</div><div class="log-meta">Mar 26, 2026 · 9:00 AM · Auto · System</div></div></div>
+        <div class="log-entry"><div class="log-dot log-dot-auto"></div><div class="log-body"><div class="log-title">Amara Osei — Offboarding Notice</div><div class="log-detail">30-day end-of-term notice auto-sent. Exit survey link included.</div><div class="log-meta">Mar 25, 2026 · 8:00 AM · Auto · System</div></div></div>
+        <div class="log-entry"><div class="log-dot log-dot-sent"></div><div class="log-body"><div class="log-title">Devon Harris — Retake Notice</div><div class="log-detail">B-score retake notice sent manually after test result processed. 48hr window set.</div><div class="log-meta">Mar 20, 2026 · 3:22 PM · Manual · Admin</div></div></div>
+        <div class="log-entry"><div class="log-dot log-dot-sent"></div><div class="log-body"><div class="log-title">Kyla Mason — Approval Letter</div><div class="log-detail">Approval sent after interview approval. NDA link included.</div><div class="log-meta">Feb 18, 2026 · 10:15 AM · Manual · Admin</div></div></div>
+        <div class="log-entry"><div class="log-dot log-dot-sent"></div><div class="log-body"><div class="log-title">Amara Osei — NDA Signature Confirmation</div><div class="log-detail">Timestamp confirmation sent to intern + operations inbox. Signature verified.</div><div class="log-meta">Feb 3, 2026 · 2:14 PM · Auto · System</div></div></div>
+        <div class="log-entry"><div class="log-dot log-dot-sent"></div><div class="log-body"><div class="log-title">Amara Osei — Approval Letter</div><div class="log-detail">Initial approval letter sent post-interview decision.</div><div class="log-meta">Feb 2, 2026 · 11:00 AM · Manual · Admin</div></div></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     INTERN PORTAL
+═══════════════════════════════════════════════════ -->
+<div class="portal" id="intern-portal">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">TORCH</div>
+      <div class="brand-sub">Atlanta</div>
+      <div class="brand-module" style="color:rgba(76,175,122,0.65)">Intern Portal</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">My Program</div>
+      <div class="nav-item active" onclick="showPage('intern-home','intern')"><span class="nav-icon">◈</span> My Dashboard</div>
+      <div class="nav-item" onclick="showPage('intern-track','intern')"><span class="nav-icon">▲</span> My Track</div>
+      <div class="nav-item" onclick="showPage('intern-onboard','intern')"><span class="nav-icon">⟳</span> Onboarding Status</div>
+
+      <div class="nav-section-label">Scheduling</div>
+      <div class="nav-item" onclick="showPage('intern-shifts','intern')"><span class="nav-icon">⊡</span> My Shifts</div>
+      <div class="nav-item" onclick="showPage('intern-swap','intern')"><span class="nav-icon">⇄</span> Request Swap</div>
+
+      <div class="nav-section-label">Resources</div>
+      <div class="nav-item" onclick="showPage('intern-guide','intern')"><span class="nav-icon">⊞</span> Training Guide</div>
+      <div class="nav-item" onclick="showPage('intern-quiz','intern')"><span class="nav-icon">◇</span> Readiness Test</div>
+      <div class="nav-item" onclick="showPage('intern-incident','intern')"><span class="nav-icon">⚠</span> Report Incident</div>
+      <div class="nav-item" onclick="showPage('intern-guests','intern')"><span class="nav-icon">◉</span> Guest List</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="admin-role">A&R Track — Spring 2026</div>
+      <div class="admin-name">Amara Osei</div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- INTERN HOME -->
+    <section class="page active" id="page-intern-home-intern">
+      <div class="page-header">
+        <div class="page-eyebrow">Welcome Back</div>
+        <div class="page-title">Good morning, Amara.</div>
+        <div class="page-subtitle">Your next shift is Monday, March 31 · 9:00 AM – 5:00 PM</div>
+      </div>
+
+      <div class="intern-hero">
+        <div class="intern-hero-label">TORCH ATL — Spring 2026 Cohort</div>
+        <div class="intern-hero-name">Amara Osei</div>
+        <div class="intern-hero-track">A&R Track · T-0003</div>
+        <div class="intern-hero-stats">
+          <div class="intern-stat"><div class="intern-stat-val">91%</div><div class="intern-stat-lbl">Test Score</div></div>
+          <div class="intern-stat"><div class="intern-stat-val">86%</div><div class="intern-stat-lbl">Performance Avg</div></div>
+          <div class="intern-stat"><div class="intern-stat-val">143</div><div class="intern-stat-lbl">Days Remaining</div></div>
+          <div class="intern-stat"><div class="intern-stat-val" style="color:var(--green)">A</div><div class="intern-stat-lbl">Grade</div></div>
+        </div>
+      </div>
+
+      <div class="stats-row" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card"><div class="stat-label">Program Start</div><div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--white)">Feb 10, 2026</div></div>
+        <div class="stat-card"><div class="stat-label">Program End</div><div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--white)">Aug 10, 2026</div></div>
+        <div class="stat-card"><div class="stat-label">Reference Eligible</div><div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--green)">Yes</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">Upcoming Shifts</div><button class="btn btn-ghost" onclick="showPage('intern-shifts','intern')">View All</button></div>
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Day</th><th>Time</th><th>Area</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Mar 31</td><td>Monday</td><td>9:00 AM – 5:00 PM</td><td>A&R Suite</td><td><span class="pill pill-pending">Upcoming</span></td></tr>
+            <tr><td>Apr 2</td><td>Wednesday</td><td>12:00 PM – 8:00 PM</td><td>A&R Suite</td><td><span class="pill pill-pending">Upcoming</span></td></tr>
+            <tr><td>Apr 7</td><td>Monday</td><td>9:00 AM – 5:00 PM</td><td>A&R Suite</td><td><span class="pill pill-pending">Upcoming</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- INTERN TRACK -->
+    <section class="page" id="page-intern-track-intern">
+      <div class="page-header">
+        <div class="page-eyebrow">A&R Track</div>
+        <div class="page-title">My Program Track</div>
+        <div class="page-subtitle">Your responsibilities, performance, and program milestones.</div>
+      </div>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-header-row"><div class="card-title">Weekly Performance</div><span class="pill pill-active">On Track</span></div>
+        <div class="perf-row"><div class="perf-label">Punctuality</div><div class="perf-bar-wrap"><div class="perf-bar perf-bar-green" style="width:88%"></div></div><div class="perf-score">88</div></div>
+        <div class="perf-row"><div class="perf-label">TORCH Standard</div><div class="perf-bar-wrap"><div class="perf-bar perf-bar-green" style="width:92%"></div></div><div class="perf-score">92</div></div>
+        <div class="perf-row"><div class="perf-label">Initiative & Quality</div><div class="perf-bar-wrap"><div class="perf-bar perf-bar-gold" style="width:80%"></div></div><div class="perf-score">80</div></div>
+        <div class="perf-row"><div class="perf-label">Communication</div><div class="perf-bar-wrap"><div class="perf-bar perf-bar-green" style="width:85%"></div></div><div class="perf-score">85</div></div>
+        <div class="divider"></div>
+        <div style="font-size:11px;color:var(--gray-light)">Overall Average: <strong style="color:var(--white)">86%</strong> · Rated by supervisor weekly each Friday.</div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">A&R Track Responsibilities</div></div>
+        <div class="guide-item"><div class="guide-item-num">1</div><div class="guide-item-text"><strong>Research & Scouting</strong> — Artist discovery, streaming data research, playlist monitoring, and market listening sessions.</div></div>
+        <div class="guide-item"><div class="guide-item-num">2</div><div class="guide-item-text"><strong>Brief Writing</strong> — Drafting A&R briefs for projects, reference track curation, and project positioning notes.</div></div>
+        <div class="guide-item"><div class="guide-item-num">3</div><div class="guide-item-text"><strong>Session Support</strong> — No unsolicited opinions during active sessions unless invited. Your role is to observe, absorb, and support.</div></div>
+        <div class="guide-item"><div class="guide-item-num">4</div><div class="guide-item-text"><strong>Confidentiality</strong> — Every project, artist name, and conversation in this building is confidential. This is your highest responsibility.</div></div>
+      </div>
+    </section>
+
+    <!-- INTERN ONBOARDING STATUS -->
+    <section class="page" id="page-intern-onboard-intern">
+      <div class="page-header">
+        <div class="page-eyebrow">Progress</div>
+        <div class="page-title">Onboarding Status</div>
+        <div class="page-subtitle">Your onboarding is complete. All steps verified.</div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">Onboarding Checklist</div><span class="pill pill-complete">Complete</span></div>
+        <div class="track-steps" style="margin-bottom:10px;">
+          <div class="track-step"><div class="step-dot done">✓</div><div class="step-line done"></div></div>
+          <div class="track-step"><div class="step-dot done">✓</div><div class="step-line done"></div></div>
+          <div class="track-step"><div class="step-dot done">✓</div><div class="step-line done"></div></div>
+          <div class="track-step"><div class="step-dot done">✓</div><div class="step-line done"></div></div>
+          <div class="track-step"><div class="step-dot done">✓</div></div>
+        </div>
+        <div style="display:flex;gap:0;margin-bottom:20px;">
+          <span style="flex:1;font-size:7.5px;color:var(--green);letter-spacing:1px;text-transform:uppercase;">Approved</span>
+          <span style="flex:1;font-size:7.5px;color:var(--green);letter-spacing:1px;text-transform:uppercase;">NDA Signed</span>
+          <span style="flex:1;font-size:7.5px;color:var(--green);letter-spacing:1px;text-transform:uppercase;">Guide Read</span>
+          <span style="flex:1;font-size:7.5px;color:var(--green);letter-spacing:1px;text-transform:uppercase;">Test Passed</span>
+          <span style="flex:1;font-size:7.5px;color:var(--green);letter-spacing:1px;text-transform:uppercase;">Active</span>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item"><div class="timeline-dot" style="background:var(--green)"></div><div class="timeline-line"></div><div class="timeline-body"><div class="timeline-title">Approval letter received</div><div class="timeline-meta">Feb 2, 2026 · 11:00 AM</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot" style="background:var(--green)"></div><div class="timeline-line"></div><div class="timeline-body"><div class="timeline-title">NDA signed & timestamped</div><div class="timeline-meta">Feb 3, 2026 · 2:14 PM</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot" style="background:var(--green)"></div><div class="timeline-line"></div><div class="timeline-body"><div class="timeline-title">Training guide completed</div><div class="timeline-meta">Feb 4, 2026 · 10:30 AM</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot" style="background:var(--green)"></div><div class="timeline-line"></div><div class="timeline-body"><div class="timeline-title">Readiness Test — 91% (A) — Cleared</div><div class="timeline-meta">Feb 5, 2026 · 3:45 PM</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot" style="background:var(--green)"></div><div class="timeline-line"></div><div class="timeline-body"><div class="timeline-title">Internship activated — First shift assigned</div><div class="timeline-meta">Feb 10, 2026 · 9:00 AM</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERN SHIFTS -->
+    <section class="page" id="page-intern-shifts-intern">
+      <div class="page-header">
+        <div class="page-eyebrow">My Schedule</div>
+        <div class="page-title">My Shifts</div>
+        <div class="page-subtitle">April 2026. Your assigned shifts are highlighted. Contact supervisor for changes — formal swap request only.</div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">April 2026</div></div>
+        <div class="shift-grid" style="margin-bottom:7px;">
+          <div class="shift-day-label">Sun</div><div class="shift-day-label">Mon</div><div class="shift-day-label">Tue</div><div class="shift-day-label">Wed</div><div class="shift-day-label">Thu</div><div class="shift-day-label">Fri</div><div class="shift-day-label">Sat</div>
+        </div>
+        <div class="shift-grid" id="internShiftCal"></div>
+        <div style="margin-top:12px;font-size:10.5px;color:var(--gray-light);">You are scheduled for <strong style="color:var(--cream)">8 shifts</strong> this month — <strong style="color:var(--cream)">64 hours</strong> total.</div>
+      </div>
+    </section>
+
+    <!-- INTERN SWAP -->
+    <section class="page" id="page-intern-swap-intern">
+      <div class="page-header">
+        <div class="page-eyebrow">Track-Locked</div>
+        <div class="page-title">Request a Shift Swap</div>
+        <div class="page-subtitle">You may only swap with interns in the A&R track. Cross-track swaps are automatically denied.</div>
+      </div>
+      <div class="card">
+        <div style="background:var(--surface2);border:1px solid rgba(212,148,58,0.2);border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:11px;color:var(--amber);">
+          ⚠ Swap requests must be submitted here. Informal arrangements between interns are not recognized and will be treated as a no-show for both parties.
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Your Shift Date</label><input class="form-input" type="date"></div>
+          <div class="form-group"><label class="form-label">Swap With (A&R Track Only)</label>
+            <select class="form-select"><option>— Select A&R Intern —</option><option>Intern B — A&R</option><option>Intern C — A&R</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Their Shift Date (Requested)</label><input class="form-input" type="date"></div>
+        <div class="form-group"><label class="form-label">Reason (Optional)</label><input class="form-input" placeholder="Brief reason"></div>
+        <button class="btn btn-gold" onclick="showToast('Swap Requested','Pending system approval. Do not arrange informally.')">Submit Swap Request</button>
+      </div>
+    </section>
+
+    <!-- INTERN GUIDE (read-only) -->
+    <section class="page" id="page-intern-guide-intern">
+      <div class="page-header">
+        <div class="page-eyebrow">Required Reading</div>
+        <div class="page-title">Training Guide</div>
+        <div class="page-subtitle">Read this before your test unlocks. You will be tested on this material.</div>
+      </div>
+      <div class="card">
+        <div class="guide-section-title">I. Who We Are</div>
+        <div class="guide-item"><div class="guide-item-num">1</div><div class="guide-item-text"><strong>TORCH ATL is not a typical studio.</strong> It is a private luxury creative estate. Every person who walks through should feel the difference immediately.</div></div>
+        <div class="guide-item"><div class="guide-item-num">2</div><div class="guide-item-text"><strong>Discretion is the foundation.</strong> What happens at TORCH stays at TORCH. Period.</div></div>
+        <div class="guide-item"><div class="guide-item-num">3</div><div class="guide-item-text"><strong>Presentation is performance.</strong> No fingerprints under direct light. No clutter. The space speaks before you do.</div></div>
+        <div class="gold-line"></div>
+        <div class="guide-section-title">II. Your Expectations</div>
+        <div class="guide-item"><div class="guide-item-num">4</div><div class="guide-item-text"><strong>On time is late.</strong> Be ready before your shift begins.</div></div>
+        <div class="guide-item"><div class="guide-item-num">5</div><div class="guide-item-text"><strong>Swaps go through the system.</strong> Track-locked. No informal arrangements.</div></div>
+        <div class="guide-item"><div class="guide-item-num">6</div><div class="guide-item-text"><strong>Incidents must be reported same-day</strong> through the incident system in your portal.</div></div>
+        <div class="guide-item"><div class="guide-item-num">7</div><div class="guide-item-text"><strong>The address is confidential.</strong> Never share in any format.</div></div>
+        <div class="guide-item"><div class="guide-item-num">8</div><div class="guide-item-text"><strong>Performance is reviewed weekly</strong> by your supervisor every Friday.</div></div>
+        <div style="margin-top:18px;"><button class="btn btn-gold" onclick="showToast('Guide Marked Complete','Readiness Test is now unlocked.')">Mark Complete — Unlock Test</button></div>
+      </div>
+    </section>
+
+    <!-- INTERN QUIZ -->
+    <section class="page" id="page-intern-quiz-intern">
+      <div class="page-header">
+        <div class="page-eyebrow">Readiness Assessment</div>
+        <div class="page-title">Intern Test</div>
+        <div class="page-subtitle">10 questions. A or C passes. B requires a retake within 48hrs. Below 60% is a denial.</div>
+      </div>
+      <div class="card" id="quizCardIntern">
+        <div class="card-header-row">
+          <div class="card-title" id="quizTitleIntern">Question 1 of 10</div>
+          <span class="pill pill-pending" id="quizStatusIntern">In Progress</span>
+        </div>
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizBarIntern" style="width:10%"></div></div>
+        <div id="quizBodyIntern"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:24px;align-items:center;">
+          <span id="quizQCountIntern" style="font-size:9px;color:var(--gray);letter-spacing:1px;"></span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline" id="quizBackIntern" onclick="quizBack('intern')" style="display:none">Back</button>
+            <button class="btn btn-gold" id="quizNextIntern" onclick="quizNext('intern')">Next</button>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="quizResultIntern" style="display:none;">
+        <div class="score-display">
+          <div class="score-circle" id="scoreCircleIntern"><div class="score-number" id="scoreNumIntern">—</div><div class="score-pct">%</div></div>
+          <div class="score-grade" id="scoreGradeIntern"></div>
+          <div class="score-message" id="scoreMsgIntern"></div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;gap:8px;justify-content:center;">
+          <button class="btn btn-gold" onclick="showToast('Result Submitted','Your score has been logged to your profile.')">Submit Result</button>
+          <button class="btn btn-outline" onclick="resetQuiz('intern')">Retake</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERN INCIDENT REPORT -->
+    <section class="page" id="page-intern-incident-intern">
+      <div class="page-header">
+        <div class="page-eyebrow">Protocol</div>
+        <div class="page-title">Report an Incident</div>
+        <div class="page-subtitle">Required: all incidents must be logged same-day. Failure to report is itself a protocol violation.</div>
+      </div>
+      <div class="card">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Incident Type</label>
+            <select class="form-select"><option>Studio Protocol Issue</option><option>Guest — Not on List</option><option>Confidentiality Concern</option><option>Equipment Issue</option><option>Conduct Concern</option><option>Other</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Date & Time</label><input class="form-input" type="datetime-local"></div>
+        </div>
+        <div class="form-group"><label class="form-label">What Happened</label><textarea class="form-input form-textarea" placeholder="Be specific. What did you observe, when, and who was involved (if anyone)?"></textarea></div>
+        <div class="form-group"><label class="form-label">Immediate Action Taken</label><textarea class="form-input" style="height:70px;" placeholder="What did you do in response?"></textarea></div>
+        <button class="btn btn-gold" onclick="showToast('Incident Logged','Submitted to admin. Timestamp recorded.')">Submit Report</button>
+      </div>
+    </section>
+
+    <!-- INTERN GUEST LIST (read-only) -->
+    <section class="page" id="page-intern-guests-intern">
+      <div class="page-header">
+        <div class="page-eyebrow">Access Control</div>
+        <div class="page-title">Today's Guest List</div>
+        <div class="page-subtitle">Mar 28, 2026. If a name is not on this list, do not grant entry. Escalate immediately.</div>
+      </div>
+      <div class="card">
+        <div class="card-header-row"><div class="card-title">Approved Guests — Today</div><span class="pill pill-active">3 Cleared</span></div>
+        <div class="guest-card">
+          <div class="guest-avatar">M</div>
+          <div class="guest-info"><div class="guest-name">Marcus W.</div><div class="guest-meta">Entry window: 2:00 PM – 8:00 PM · Studio A only</div></div>
+          <span class="pill pill-active">Cleared</span>
+        </div>
+        <div class="guest-card">
+          <div class="guest-avatar">S</div>
+          <div class="guest-info"><div class="guest-name">Sierra + 1 guest</div><div class="guest-meta">Entry window: 4:00 PM – 10:00 PM · Lounge only</div></div>
+          <span class="pill pill-active">Cleared</span>
+        </div>
+        <div style="margin-top:18px;background:rgba(201,76,76,0.06);border:1px solid rgba(201,76,76,0.15);border-radius:8px;padding:14px 18px;">
+          <div style="font-size:10.5px;color:var(--red);font-weight:500;margin-bottom:4px;">⚠ Not on the list?</div>
+          <div style="font-size:10.5px;color:var(--gray-light);">Do not let them in. Do not call anyone else for permission. Politely inform them you are not authorized to admit unscheduled guests and direct them to contact management directly. Log the attempt using the incident report system.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- INTERN MODAL -->
+<div class="modal-overlay" id="internModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('internModal')">×</button>
+    <div style="font-size:8px;letter-spacing:3px;color:var(--gold-dim);text-transform:uppercase;margin-bottom:7px;">Intern Profile</div>
+    <div class="modal-title">Amara Osei</div>
+    <div class="modal-sub">A&R Track · Spring 2026 · T-0003</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:20px;">
+      <div><div class="stat-label">Score</div><div style="font-size:18px;font-family:'Playfair Display',serif;color:var(--green)">91%</div></div>
+      <div><div class="stat-label">Grade</div><div style="font-size:18px;font-family:'Playfair Display',serif;color:var(--green)">A</div></div>
+      <div><div class="stat-label">Performance</div><div style="font-size:18px;font-family:'Playfair Display',serif;">86%</div></div>
+      <div><div class="stat-label">Status</div><div><span class="pill pill-active">Active</span></div></div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost" onclick="closeModal('internModal')">Close</button>
+      <button class="btn btn-ghost" onclick="showToast('Message Sent','Delivered to intern.')">Message</button>
+      <button class="btn btn-warn" onclick="showToast('Flag Set','Logged for review.')">Flag</button>
+      <button class="btn btn-danger" onclick="showToast('Access Revoked','Intern removed.')">Revoke</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><div class="toast-title" id="toastTitle"></div><div class="toast-msg" id="toastMsg"></div></div>
+
+<script>
+// ── PORTAL SWITCH ──
+function switchPortal(id) {
+  document.querySelectorAll('.portal').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.portal-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id + '-portal').classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ── PAGE NAV ──
+function showPage(id, portal) {
+  const prefix = portal === 'admin' ? 'page-' + id + '-admin' : 'page-' + id + '-intern';
+  const container = document.getElementById(portal + '-portal');
+  container.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  container.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById(prefix);
+  if (pg) pg.classList.add('active');
+  if (event && event.currentTarget) event.currentTarget.classList.add('active');
+}
+
+// ── TABS ──
+function switchTab(el, id) {
+  const parent = el.closest('.page') || el.parentElement.parentElement;
+  el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  const tc = document.getElementById(id);
+  if (tc) tc.classList.add('active');
+}
+
+// ── TOAST ──
+function showToast(title, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ── MODAL ──
+function openInternProfile() { document.getElementById('internModal').classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ── STARS ──
+function setStars(category, n) {
+  const stars = document.querySelectorAll('#stars-' + category + ' .star');
+  stars.forEach((s, i) => s.classList.toggle('filled', i < n));
+}
+
+// ── CHECKLIST ──
+function toggleCheck(el) {
+  const checked = el.classList.toggle('checked');
+  el.textContent = checked ? '✓' : '';
+}
+
+// ── QUIZ ENGINE ──
+const questions = [
+  { q: "What is the minimum passing score to be cleared for your first shift?", opts: ["70% or higher","Any score — everyone gets a chance","A score of C (60%+) or A (90%+)","Only an A score is accepted"], correct: 2 },
+  { q: "An artist arrives unannounced while you're on shift. You:", opts: ["Welcome them in and notify someone after","Check the intake list. If not listed, escalate immediately. Do not improvise.","Let them in if they seem professional","Text a senior intern for permission"], correct: 1 },
+  { q: "A friend asks where TORCH ATL is located. You:", opts: ["Tell them — it's not a big deal","Say it's in Atlanta but nothing else","Do not disclose the address under any circumstance","Share the neighborhood only"], correct: 2 },
+  { q: "You arrive exactly at your shift start time. By TORCH standards this means:", opts: ["You are punctual","You are early","You are late","It depends on the shift"], correct: 2 },
+  { q: "An intern earns a B score on the Readiness Test. What happens?", opts: ["Cleared with a growth designation","Fails — reapply in 60 days","Must retake within 48 hours. One retake permitted.","Can begin provisionally"], correct: 2 },
+  { q: "After a recording session, your responsibility as Studio Ops is:", opts: ["Leave the room for the next crew","Reset: wipe equipment, coil cables, clear all surfaces","Leave as-is unless the engineer asks","Report the state of the room to management"], correct: 1 },
+  { q: "You want to post on social media that you intern at TORCH ATL. You:", opts: ["Post — portfolio value","Ask your supervisor","Get explicit written permission from management before posting anything","Wait until internship ends"], correct: 2 },
+  { q: "A fellow intern texts asking you to informally cover their shift. You:", opts: ["Agree — helps the team","Decline. Tell them to submit a shift swap request through the system.","Only if it's one time","Ask management verbally"], correct: 1 },
+  { q: "You want to swap your shift with an intern from a different track. The system will:", opts: ["Allow it with supervisor approval","Auto-deny it — swaps are track-locked","Require an exception form","Allow it since you're both interns"], correct: 1 },
+  { q: "The TORCH Standard for cleanliness means:", opts: ["Generally tidy","No fingerprints visible under direct light. Hotel-grade at all times.","Clean at the start of each week","Guests manage their own area"], correct: 1 },
+];
+
+const quizState = { admin: { current: 0, answers: Array(10).fill(null) }, intern: { current: 0, answers: Array(10).fill(null) } };
+
+function renderQuestion(portal) {
+  const s = quizState[portal];
+  const q = questions[s.current];
+  const body = document.getElementById('quizBody' + (portal === 'admin' ? 'Admin' : 'Intern'));
+  const cap = portal === 'admin' ? 'Admin' : 'Intern';
+  body.innerHTML = `
+    <div><div class="quiz-q-number">Question ${s.current+1} of 10</div>
+    <div class="quiz-q-label">${q.q}</div>
+    <div class="quiz-options">${q.opts.map((o,i) => `
+      <div class="quiz-option ${s.answers[s.current]===i?'selected':''}" onclick="selectAnswer('${portal}',${i})">
+        <div class="quiz-option-dot"></div>${o}
+      </div>`).join('')}
+    </div></div>`;
+  document.getElementById('quizTitle'+cap).textContent = `Question ${s.current+1} of 10`;
+  document.getElementById('quizBar'+cap).style.width = `${((s.current+1)/10)*100}%`;
+  document.getElementById('quizBack'+cap).style.display = s.current > 0 ? 'block' : 'none';
+  document.getElementById('quizNext'+cap).textContent = s.current === 9 ? 'Submit Test' : 'Next';
+  document.getElementById('quizQCount'+cap).textContent = `${s.answers.filter(a=>a!==null).length} of 10 answered`;
+}
+
+function selectAnswer(portal, i) {
+  quizState[portal].answers[quizState[portal].current] = i;
+  renderQuestion(portal);
+}
+
+function quizNext(portal) {
+  const s = quizState[portal];
+  if (s.answers[s.current] === null) { showToast('Select an Answer','Please choose before continuing.'); return; }
+  if (s.current < 9) { s.current++; renderQuestion(portal); }
+  else { showResults(portal); }
+}
+
+function quizBack(portal) {
+  if (quizState[portal].current > 0) { quizState[portal].current--; renderQuestion(portal); }
+}
+
+function showResults(portal) {
+  const s = quizState[portal];
+  const score = s.answers.reduce((acc, a, i) => acc + (a === questions[i].correct ? 1 : 0), 0);
+  const pct = Math.round((score / 10) * 100);
+  let grade, msg, color;
+  const cap = portal === 'admin' ? 'Admin' : 'Intern';
+  if (pct >= 90) { grade = 'A — CLEARED'; color = 'var(--green)'; msg = 'Outstanding. Your score reflects mastery of the TORCH Standard. You are cleared to begin.'; }
+  else if (pct >= 75) { grade = 'B — RETAKE REQUIRED'; color = 'var(--amber)'; msg = 'Good is the enemy of great. Review the guide and retake within 48 hours. One retake permitted.'; }
+  else if (pct >= 60) { grade = 'C — CLEARED'; color = 'var(--gold)'; msg = 'Approved. C students have room to grow — and that is exactly what this program is for. Show up ready to learn.'; }
+  else { grade = 'F — NOT CLEARED'; color = 'var(--red)'; msg = 'You did not score high enough to be cleared at this time. You may reapply in 60 days.'; }
+  document.getElementById('quizCard'+cap).style.display = 'none';
+  document.getElementById('quizResult'+cap).style.display = 'block';
+  document.getElementById('scoreNum'+cap).textContent = pct;
+  document.getElementById('scoreGrade'+cap).textContent = grade;
+  document.getElementById('scoreGrade'+cap).style.color = color;
+  document.getElementById('scoreMsg'+cap).textContent = msg;
+  document.getElementById('scoreCircle'+cap).style.borderColor = color;
+}
+
+function resetQuiz(portal) {
+  quizState[portal] = { current: 0, answers: Array(10).fill(null) };
+  const cap = portal === 'admin' ? 'Admin' : 'Intern';
+  document.getElementById('quizCard'+cap).style.display = 'block';
+  document.getElementById('quizResult'+cap).style.display = 'none';
+  renderQuestion(portal);
+}
+
+renderQuestion('admin');
+renderQuestion('intern');
+
+// ── SHIFT CALENDARS ──
+function buildCal(id, myShifts) {
+  const cal = document.getElementById(id);
+  if (!cal) return;
+  const startDay = 2; // Apr 2026 = Wed
+  const shifts = {
+    2: [{type:'a',label:'A&R'}],3:[{type:'b',label:'Eng'}],
+    7:[{type:'a',label:'A&R'}],9:[{type:'a',label:'A&R'},{type:'c',label:'S.Ops'}],
+    14:[{type:'a',label:'A&R'}],16:[{type:'c',label:'S.Ops'}],
+    21:[{type:'a',label:'A&R'},{type:'b',label:'Eng'}],
+    23:[{type:'c',label:'S.Ops'}],24:[{type:'d',label:'Missed'}],28:[{type:'a',label:'A&R'}],
+    30:[{type:'b',label:'Eng'}]
+  };
+  const myDays = myShifts || [2,7,14,21,28];
+  for (let i=0;i<startDay;i++){const b=document.createElement('div');b.style.minHeight='56px';cal.appendChild(b);}
+  for (let d=1;d<=30;d++){
+    const cell=document.createElement('div');
+    cell.className='shift-cell'+(d===28?' today':'');
+    const isMyShift = myDays.includes(d);
+    if(isMyShift) cell.style.borderColor='var(--gold-dim)';
+    let html=`<div class="shift-date">${d}</div>`;
+    if(shifts[d]) shifts[d].forEach(s=>{html+=`<span class="shift-chip shift-chip-${s.type}">${s.label}</span>`;});
+    cell.innerHTML=html;
+    cal.appendChild(cell);
+  }
+}
+
+buildCal('shiftCal', null);
+buildCal('internShiftCal', [2,7,9,14,21,23,28,30]);
+
+// ════════════════════════════════════════════════
+// API CLIENT — connects UI to real database
+// ════════════════════════════════════════════════
+
+const INTERN_API = 'https://bookings.torchatl.com';
+const INTERN_KEY = 'c6589d8b44d6b1ee79168a9ff092959322f0011b3c094d00';
+
+async function apiCall(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json', 'x-api-key': INTERN_KEY, ...options.headers };
+  const res = await fetch(`${INTERN_API}${path}`, { ...options, headers });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+// ── State ──
+let allInterns = [];
+let allCohorts = [];
+let allShifts = [];
+let allSwaps = [];
+let allIncidents = [];
+let allComms = [];
+let allPerformance = [];
+
+// ── Load all data ──
+async function loadAllData() {
+  try {
+    [allInterns, allCohorts, allSwaps, allIncidents, allComms] = await Promise.all([
+      apiCall('/api/interns'),
+      apiCall('/api/cohorts'),
+      apiCall('/api/swap-requests'),
+      apiCall('/api/incidents'),
+      apiCall('/api/comms-log'),
+    ]);
+    renderDashboardStats();
+    renderPipeline();
+    renderInternsTable();
+    renderSwapsTable();
+    renderIncidentsTable();
+    renderCommsLog();
+    renderEscalations();
+    console.log('[InternOps] Data loaded:', allInterns.length, 'interns,', allCohorts.length, 'cohorts');
+  } catch (err) {
+    console.error('[InternOps] Failed to load data:', err);
+  }
+}
+
+// ── Dashboard Stats ──
+function renderDashboardStats() {
+  const active = allInterns.filter(i => i.status === 'active').length;
+  const pipeline = allInterns.filter(i => ['applied','nda_pending','training','testing','retake'].includes(i.pipeline_stage)).length;
+  const avgPerf = allInterns.filter(i => i.performance_avg).reduce((s,i) => s + i.performance_avg, 0) / (allInterns.filter(i => i.performance_avg).length || 1);
+  const openIncidents = allIncidents.filter(i => i.status === 'open').length;
+
+  const statsEl = document.querySelector('#page-dashboard-admin .stats-row');
+  if (statsEl) {
+    statsEl.innerHTML = `
+      <div class="stat-card"><div class="stat-label">Active Interns</div><div class="stat-value">${active}</div><div class="stat-sub">${allCohorts.filter(c=>c.status==='active').length} cohorts</div></div>
+      <div class="stat-card"><div class="stat-label">Pipeline</div><div class="stat-value">${pipeline}</div><div class="stat-delta-warn">${allInterns.filter(i=>i.status==='flagged').length} flagged</div></div>
+      <div class="stat-card"><div class="stat-label">Avg Performance</div><div class="stat-value">${Math.round(avgPerf) || '—'}<span style="font-size:18px">${avgPerf ? '%' : ''}</span></div></div>
+      <div class="stat-card"><div class="stat-label">Open Incidents</div><div class="stat-value">${openIncidents}</div>${openIncidents ? '<div class="stat-delta-warn">⚠ Unresolved</div>' : ''}</div>
+    `;
+  }
+}
+
+// ── Pipeline Kanban ──
+function renderPipeline() {
+  const kanban = document.querySelector('#page-pipeline-admin .kanban');
+  if (!kanban) return;
+
+  const stages = {
+    applied: 'Applied',
+    nda_pending: 'NDA Pending',
+    training: 'Training Guide',
+    testing: 'Test / Retake',
+    cleared: 'Cleared',
+  };
+
+  kanban.innerHTML = Object.entries(stages).map(([key, label]) => {
+    const interns = allInterns.filter(i => i.pipeline_stage === key || (key === 'testing' && (i.pipeline_stage === 'testing' || i.pipeline_stage === 'retake')));
+    return `<div class="kanban-col"><div class="kanban-col-label">${label}</div>${
+      interns.map(i => `<div class="kanban-card" onclick="viewInternDetail('${i.id}')"><div class="kanban-card-name">${i.full_name}</div><div class="kanban-card-meta">${i.track}${i.pipeline_stage === 'retake' ? ' ⚠ Retake' : ''}</div></div>`).join('')
+    }${interns.length === 0 ? '<div style="font-size:9px;color:var(--gray);padding:8px;">Empty</div>' : ''}</div>`;
+  }).join('');
+}
+
+// ── Interns Table ──
+function renderInternsTable() {
+  const tbody = document.querySelector('#page-interns-admin .data-table tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = allInterns.filter(i => i.role === 'intern').map(i => {
+    const cohort = allCohorts.find(c => c.id === i.cohort_id);
+    const statusPill = {
+      active: 'pill-active', flagged: 'pill-flagged', onboarding: 'pill-pending',
+      denied: 'pill-denied', offboarding: 'pill-pending', offboarded: 'pill-offboarded'
+    };
+    const stars = i.performance_avg ? '★'.repeat(Math.round(i.performance_avg / 20)) + '☆'.repeat(5 - Math.round(i.performance_avg / 20)) : '—';
+    return `<tr class="clickable" onclick="viewInternDetail('${i.id}')">
+      <td><strong>${i.full_name}</strong></td>
+      <td>${i.track}</td>
+      <td>${cohort ? `<span class="cohort-tag">${cohort.name.split('—')[0].trim()}</span>` : '—'}</td>
+      <td style="color:${i.test_grade === 'A' ? 'var(--green)' : i.test_grade === 'B' ? 'var(--amber)' : i.test_grade === 'C' ? 'var(--gold)' : i.test_grade === 'F' ? 'var(--red)' : 'var(--gray)'}">${i.test_score ? i.test_score + '% ' + i.test_grade : '—'}</td>
+      <td><span class="rating-badge">${stars}</span></td>
+      <td>${i.end_date || '—'}</td>
+      <td><span class="pill ${statusPill[i.status] || 'pill-pending'}">${i.status}</span></td>
+      <td><button class="btn btn-ghost">Profile</button></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--gray);padding:24px;">No interns yet. Add applicants from the Pipeline.</td></tr>';
+}
+
+// ── Intern Detail Modal ──
+function viewInternDetail(id) {
+  const i = allInterns.find(x => x.id === id);
+  if (!i) return;
+
+  const modal = document.getElementById('internModal');
+  modal.querySelector('.modal-title').textContent = i.full_name;
+  modal.querySelector('.modal-sub').textContent = `${i.track} Track · ${i.status}`;
+
+  const statsGrid = modal.querySelector('[style*="grid-template-columns"]');
+  if (statsGrid) {
+    statsGrid.innerHTML = `
+      <div><div class="stat-label">Score</div><div style="font-size:18px;font-family:'Playfair Display',serif;color:${i.test_grade === 'A' ? 'var(--green)' : 'var(--cream)'}">${i.test_score || '—'}%</div></div>
+      <div><div class="stat-label">Grade</div><div style="font-size:18px;font-family:'Playfair Display',serif;">${i.test_grade || '—'}</div></div>
+      <div><div class="stat-label">Performance</div><div style="font-size:18px;font-family:'Playfair Display',serif;">${i.performance_avg || '—'}%</div></div>
+      <div><div class="stat-label">Status</div><div><span class="pill pill-${i.status === 'active' ? 'active' : i.status === 'flagged' ? 'flagged' : 'pending'}">${i.status}</span></div></div>
+    `;
+  }
+
+  modal.classList.add('open');
+}
+
+// ── Swap Requests ──
+function renderSwapsTable() {
+  const container = document.querySelector('#page-swaps-admin .card');
+  if (!container) return;
+
+  const pending = allSwaps.filter(s => s.status === 'pending');
+  const decided = allSwaps.filter(s => s.status !== 'pending');
+
+  let html = `<div class="card-header-row"><div class="card-title">Pending Requests</div><span class="pill pill-pending">${pending.length} Awaiting</span></div>`;
+
+  pending.forEach(s => {
+    html += `<div class="swap-card">
+      <div class="swap-info"><strong>${s.requester?.full_name || '?'} ↔ ${s.target?.full_name || '?'}</strong>${s.reason || ''}</div>
+      <div class="swap-arrow">⇄</div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-gold btn-sm" onclick="decideSwap('${s.id}','approved')">Approve</button>
+        <button class="btn btn-danger" onclick="decideSwap('${s.id}','denied')">Deny</button>
+      </div>
+    </div>`;
+  });
+
+  if (!pending.length) html += '<div style="font-size:11px;color:var(--gray);padding:12px 0;">No pending swap requests.</div>';
+
+  container.innerHTML = html;
+}
+
+async function decideSwap(id, status) {
+  try {
+    await apiCall(`/api/swap-requests/${id}/decide`, { method: 'PUT', body: JSON.stringify({ status }) });
+    showToast(`Swap ${status}`, 'Logged.');
+    loadAllData();
+  } catch (err) { showToast('Error', err.message); }
+}
+
+// ── Incidents ──
+function renderIncidentsTable() {
+  const container = document.querySelector('#page-incidents-admin .card .card-header-row')?.parentElement;
+  if (!container) return;
+
+  const open = allIncidents.filter(i => i.status === 'open');
+  if (!open.length) return;
+
+  let html = `<div class="card-header-row"><div class="card-title">Open Incidents</div><span class="pill pill-flagged">${open.length} Unresolved</span></div>`;
+  open.forEach(inc => {
+    html += `<div class="incident-card" style="border-color:rgba(201,76,76,0.2)">
+      <div class="incident-header">
+        <div><div class="incident-type">${inc.incident_type}</div><div class="incident-title">${inc.title}</div></div>
+        <div style="text-align:right"><div class="incident-date">${new Date(inc.incident_date).toLocaleDateString()}</div><span class="pill pill-flagged">${inc.status}</span></div>
+      </div>
+      <div class="incident-body">${inc.description}</div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn btn-warn" onclick="resolveIncident('${inc.id}','warning_issued')">Issue Warning</button>
+        <button class="btn btn-ghost" onclick="resolveIncident('${inc.id}','resolved')">Mark Resolved</button>
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+async function resolveIncident(id, status) {
+  try {
+    await apiCall(`/api/incidents/${id}`, { method: 'PATCH', body: JSON.stringify({ status, resolved_at: new Date().toISOString(), resolved_by: 'admin' }) });
+    showToast('Incident Updated', `Status: ${status}`);
+    loadAllData();
+  } catch (err) { showToast('Error', err.message); }
+}
+
+// ── Comms Log ──
+function renderCommsLog() {
+  const container = document.querySelector('#page-commslog-admin .card');
+  if (!container) return;
+
+  const dotClass = { approval: 'log-dot-sent', denial: 'log-dot-flag', retake_notice: 'log-dot-warn', nda_confirmation: 'log-dot-sent', offboard_notice: 'log-dot-auto', escalation: 'log-dot-flag', application: 'log-dot-auto', custom: 'log-dot-auto' };
+
+  let html = `<div class="card-header-row"><div class="card-title">All Communications</div></div>`;
+  allComms.forEach(c => {
+    html += `<div class="log-entry">
+      <div class="log-dot ${dotClass[c.comm_type] || 'log-dot-auto'}"></div>
+      <div class="log-body">
+        <div class="log-title">${c.subject}</div>
+        <div class="log-detail">${c.detail || ''}</div>
+        <div class="log-meta">${new Date(c.created_at).toLocaleString()} · ${c.sender} · ${c.channel}</div>
+      </div>
+    </div>`;
+  });
+
+  if (!allComms.length) html += '<div style="font-size:11px;color:var(--gray);padding:12px 0;">No communications logged yet.</div>';
+  container.innerHTML = html;
+}
+
+// ── Escalations ──
+function renderEscalations() {
+  const container = document.querySelector('#page-escalations-admin');
+  if (!container) return;
+
+  const escalations = [];
+
+  // Overdue NDAs (>48hrs)
+  allInterns.filter(i => i.pipeline_stage === 'nda_pending' && i.approval_sent_at).forEach(i => {
+    const hrs = (Date.now() - new Date(i.approval_sent_at)) / (1000*60*60);
+    if (hrs > 48) escalations.push({ type: 'warn', icon: '🟡', title: `${i.full_name} — NDA Overdue (${Math.round(hrs)}hrs)`, msg: 'NDA sent but not signed. Auto-reminders sent.', time: i.approval_sent_at, id: i.id });
+  });
+
+  // Retake deadlines passed
+  allInterns.filter(i => i.pipeline_stage === 'retake' && i.retake_deadline && new Date(i.retake_deadline) < new Date()).forEach(i => {
+    escalations.push({ type: 'warn', icon: '🟡', title: `${i.full_name} — Retake Deadline Passed`, msg: 'B-score retake window has closed.', time: i.retake_deadline, id: i.id });
+  });
+
+  // Open incidents > 72hrs
+  allIncidents.filter(i => i.status === 'open').forEach(inc => {
+    const hrs = (Date.now() - new Date(inc.created_at)) / (1000*60*60);
+    if (hrs > 72) escalations.push({ type: 'danger', icon: '🔴', title: `Incident — Unresolved (${Math.round(hrs/24)} days)`, msg: inc.title, time: inc.created_at });
+  });
+
+  // Approaching end dates (30 days)
+  const in30 = new Date(Date.now() + 30*24*60*60*1000);
+  const ending = allInterns.filter(i => i.status === 'active' && i.end_date && new Date(i.end_date) <= in30);
+  if (ending.length) {
+    escalations.push({ type: 'info', icon: '🔵', title: `${ending.length} Intern(s) — End of Term Within 30 Days`, msg: ending.map(i => i.full_name).join(', '), time: new Date().toISOString() });
+  }
+
+  // Render
+  const header = container.querySelector('.page-header');
+  let html = header.outerHTML;
+
+  if (!escalations.length) {
+    html += '<div class="card" style="text-align:center;padding:40px;color:var(--gray);">No active escalations. System is clear.</div>';
+  } else {
+    escalations.forEach(e => {
+      html += `<div class="alert-card ${e.type}">
+        <div class="alert-icon">${e.icon}</div>
+        <div class="alert-body">
+          <div class="alert-title">${e.title}</div>
+          <div class="alert-msg">${e.msg}</div>
+          <div class="alert-time">${new Date(e.time).toLocaleString()} · Auto-generated</div>
+        </div>
+      </div>`;
+    });
+  }
+
+  container.innerHTML = html;
+}
+
+// ── Pipeline Form Handler ──
+const pipelineForm = document.querySelector('#page-pipeline-admin .btn-gold');
+if (pipelineForm) {
+  pipelineForm.onclick = async function() {
+    const name = document.querySelector('#page-pipeline-admin input[placeholder="First Last"]')?.value;
+    const email = document.querySelector('#page-pipeline-admin input[type="email"]')?.value;
+    const track = document.querySelector('#page-pipeline-admin .form-select')?.value;
+    const decision = document.querySelectorAll('#page-pipeline-admin .form-select')[2]?.value;
+    const startDate = document.querySelector('#page-pipeline-admin input[type="date"]')?.value;
+    const endDate = document.querySelectorAll('#page-pipeline-admin input[type="date"]')[1]?.value;
+
+    if (!name || !email || !track) { showToast('Missing Fields', 'Name, email, and track required.'); return; }
+
+    try {
+      // Create the intern account with a temp password
+      const tempPass = 'Torch' + Math.random().toString(36).slice(2, 8);
+      const result = await apiCall('/api/intern/create', {
+        method: 'POST',
+        body: JSON.stringify({
+          full_name: name, email, track,
+          password: tempPass,
+          start_date: startDate || null,
+          end_date: endDate || null,
+          decision: decision === 'Send Denial' ? 'denied' : undefined,
+        }),
+      });
+
+      if (decision === 'Send Denial') {
+        await apiCall(`/api/intern/${result.intern.id}/deny`, { method: 'PUT', body: JSON.stringify({}) });
+        showToast('Denied', `${name} denied. Logged.`);
+      } else {
+        const cohort = allCohorts.find(c => c.status === 'active');
+        await apiCall(`/api/intern/${result.intern.id}/approve`, {
+          method: 'PUT',
+          body: JSON.stringify({ start_date: startDate, end_date: endDate, cohort_id: cohort?.id }),
+        });
+        showToast('Onboarding Initiated', `${name} approved. NDA pending. Temp password: ${tempPass}`);
+      }
+
+      loadAllData();
+    } catch (err) {
+      showToast('Error', err.message);
+    }
+  };
+}
+
+// ── Performance Form Handler ──
+const perfSubmit = document.querySelector('#page-performance-admin .btn-gold');
+if (perfSubmit) {
+  perfSubmit.onclick = async function() {
+    const internSelect = document.getElementById('perfInternSelect');
+    const weekInput = document.querySelector('#page-performance-admin input[type="date"]');
+    if (!internSelect || !weekInput) return;
+
+    const internName = internSelect.value.split(' — ')[0];
+    const intern = allInterns.find(i => i.full_name === internName);
+    if (!intern) { showToast('Error', 'Select an intern'); return; }
+
+    const getStarCount = (id) => document.querySelectorAll(`#stars-${id} .star.filled`).length || 0;
+
+    try {
+      await apiCall('/api/performance', {
+        method: 'POST',
+        body: JSON.stringify({
+          intern_id: intern.id,
+          week_ending: weekInput.value,
+          punctuality: getStarCount('punct'),
+          torch_standard: getStarCount('standard'),
+          initiative: getStarCount('initiative'),
+          communication: getStarCount('comm'),
+          notes: document.querySelector('#page-performance-admin textarea')?.value || '',
+        }),
+      });
+      showToast('Rating Submitted', 'Logged to intern profile.');
+      loadAllData();
+    } catch (err) { showToast('Error', err.message); }
+  };
+}
+
+// ── Shift Assignment Handler ──
+const shiftSubmit = document.querySelector('#page-shifts-admin .btn-gold');
+if (shiftSubmit) {
+  shiftSubmit.onclick = async function() {
+    const internSelect = document.querySelector('#page-shifts-admin .form-select');
+    const dateInput = document.querySelector('#page-shifts-admin input[type="date"]');
+    const startTime = document.querySelectorAll('#page-shifts-admin input[type="time"]')[0];
+    const endTime = document.querySelectorAll('#page-shifts-admin input[type="time"]')[1];
+
+    const internName = internSelect?.value.split(' — ')[0];
+    const intern = allInterns.find(i => i.full_name === internName);
+    if (!intern || !dateInput?.value) { showToast('Error', 'Select intern and date'); return; }
+
+    try {
+      await apiCall('/api/shifts', {
+        method: 'POST',
+        body: JSON.stringify({
+          intern_id: intern.id,
+          shift_date: dateInput.value,
+          start_time: startTime?.value || '09:00',
+          end_time: endTime?.value || '17:00',
+          area: intern.track + ' Suite',
+        }),
+      });
+      showToast('Shift Assigned', `${intern.full_name} — ${dateInput.value}`);
+    } catch (err) { showToast('Error', err.message); }
+  };
+}
+
+// ── Incident Form Handler ──
+const incidentSubmit = document.querySelector('#page-incidents-admin .card:last-child .btn-gold');
+if (incidentSubmit) {
+  incidentSubmit.onclick = async function() {
+    const selects = document.querySelectorAll('#page-incidents-admin .card:last-child .form-select');
+    const internName = selects[0]?.value;
+    const incidentType = selects[1]?.value;
+    const severity = selects[2]?.value?.split(' — ')[0]?.toLowerCase();
+    const dateInput = document.querySelector('#page-incidents-admin .card:last-child input[type="datetime-local"]');
+    const desc = document.querySelector('#page-incidents-admin .card:last-child textarea');
+
+    const intern = allInterns.find(i => i.full_name === internName);
+    if (!intern || !desc?.value) { showToast('Error', 'Fill all required fields'); return; }
+
+    try {
+      await apiCall('/api/incidents', {
+        method: 'POST',
+        body: JSON.stringify({
+          intern_id: intern.id,
+          incident_type: incidentType,
+          severity: severity || 'minor',
+          title: incidentType + ' — ' + intern.full_name,
+          description: desc.value,
+          incident_date: dateInput?.value ? new Date(dateInput.value).toISOString() : new Date().toISOString(),
+        }),
+      });
+      showToast('Incident Logged', 'Auto-escalation timer set.');
+      loadAllData();
+    } catch (err) { showToast('Error', err.message); }
+  };
+}
+
+// ── Guest List Handler ──
+const guestSubmit = document.querySelector('#page-guests-admin .card:last-child .btn-gold');
+if (guestSubmit) {
+  guestSubmit.onclick = async function() {
+    const inputs = document.querySelectorAll('#page-guests-admin .card:last-child .form-input');
+    const guestName = inputs[0]?.value;
+    const approvedBy = inputs[1]?.value || 'Joi Coleman';
+    const entryWindow = inputs[2]?.value;
+    const dateInput = document.querySelector('#page-guests-admin .card:last-child input[type="date"]');
+    const area = document.querySelector('#page-guests-admin .card:last-child .form-select')?.value;
+
+    if (!guestName) { showToast('Error', 'Guest name required'); return; }
+
+    try {
+      await apiCall('/api/guest-list', {
+        method: 'POST',
+        body: JSON.stringify({
+          guest_name: guestName,
+          approved_by: approvedBy,
+          entry_date: dateInput?.value || new Date().toISOString().split('T')[0],
+          entry_window: entryWindow,
+          area: area,
+        }),
+      });
+      showToast('Guest Added', `${guestName} added to today's list.`);
+    } catch (err) { showToast('Error', err.message); }
+  };
+}
+
+// ── Update intern select dropdowns with real data ──
+function updateInternSelects() {
+  const activeInterns = allInterns.filter(i => i.role === 'intern' && i.status === 'active');
+  document.querySelectorAll('#perfInternSelect, #page-shifts-admin .form-select, #page-incidents-admin .form-select:first-of-type').forEach(sel => {
+    if (!sel || sel.dataset.populated) return;
+    sel.innerHTML = activeInterns.map(i => `<option>${i.full_name} — ${i.track}</option>`).join('');
+    sel.dataset.populated = 'true';
+  });
+}
+
+// ── Load on page ready ──
+loadAllData().then(() => updateInternSelects());
+</script>
+</body>
+</html>
