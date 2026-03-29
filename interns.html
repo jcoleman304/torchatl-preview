@@ -900,7 +900,14 @@ TORCH ATL Operations
           <div class="form-group"><label class="form-label">Legal Name</label><input class="form-input" placeholder="As appears on ID"></div>
           <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date"></div>
         </div>
-        <div class="form-group"><label class="form-label">Digital Signature</label><input class="form-input" placeholder="Type full legal name to confirm"></div>
+        <div class="form-group">
+          <label class="form-label">Digital Signature — Sign Below</label>
+          <div style="position:relative;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+            <canvas id="sig-canvas" width="560" height="160" style="width:100%;height:160px;cursor:crosshair;display:block;"></canvas>
+            <button onclick="clearSignature()" style="position:absolute;top:8px;right:8px;background:rgba(212,175,55,0.1);border:1px solid var(--border);border-radius:4px;color:var(--gray-light);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;cursor:pointer;">Clear</button>
+          </div>
+          <div style="font-size:9px;color:var(--gray);margin-top:6px;">Sign using your mouse or finger. Your signature will be timestamped and logged.</div>
+        </div>
         <div class="checkbox-row"><input type="checkbox" id="ndac1"><label class="checkbox-label" for="ndac1">I have read and fully understand the TORCH ATL NDA and agree to be bound by its terms.</label></div>
         <div class="checkbox-row"><input type="checkbox" id="ndac2"><label class="checkbox-label" for="ndac2">I understand violation may result in immediate program removal and legal action. I acknowledge the NDA survives my internship indefinitely.</label></div>
         <button class="btn btn-gold" onclick="showToast('NDA Signed & Logged','Timestamp recorded. Confirmation sent to intern and ops inbox.')">Submit — Timestamp & Log</button>
@@ -2223,6 +2230,69 @@ function updateInternSelects() {
 
 // ── Load on page ready ──
 loadAllData().then(() => updateInternSelects());
+
+// ── Signature Pad ──
+(function() {
+  const canvas = document.getElementById('sig-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+  let lastX = 0, lastY = 0;
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const touch = e.touches ? e.touches[0] : e;
+    return { x: (touch.clientX - rect.left) * scaleX, y: (touch.clientY - rect.top) * scaleY };
+  }
+
+  function startDraw(e) {
+    e.preventDefault();
+    drawing = true;
+    const pos = getPos(e);
+    lastX = pos.x; lastY = pos.y;
+  }
+
+  function draw(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const pos = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.strokeStyle = '#D4AF37';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+    lastX = pos.x; lastY = pos.y;
+  }
+
+  function stopDraw() { drawing = false; }
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDraw);
+  canvas.addEventListener('mouseleave', stopDraw);
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', draw, { passive: false });
+  canvas.addEventListener('touchend', stopDraw);
+
+  window.clearSignature = function() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  window.getSignatureData = function() {
+    return canvas.toDataURL('image/png');
+  };
+
+  window.isSignatureEmpty = function() {
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    for (let i = 3; i < data.length; i += 4) { if (data[i] > 0) return false; }
+    return true;
+  };
+})();
 </script>
 </body>
 </html>
