@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TORCH ATL — Engineer Portal</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230A0A0A' width='100' height='100' rx='12'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%23D4AF37' font-family='Georgia'>T</text></svg>">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Bebas+Neue&display=swap');
+:root{--black:#0A0A0A;--surface:#141414;--surface2:#1A1A1A;--gold:#D4AF37;--gold-light:#E5C76B;--gold-dim:#B8962E;--cream:#F5F2EB;--gray:#555;--gray-light:#888;--white:#FAFAF8;--green:#4CAF7A;--red:#C94C4C;--amber:#D4943A;--border:rgba(212,175,55,0.10);--border-hover:rgba(212,175,55,0.28)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);min-height:100vh;font-family:'Inter',sans-serif;color:var(--cream);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 0%,rgba(212,175,55,0.05) 0%,transparent 45%),radial-gradient(ellipse at 85% 100%,rgba(212,175,55,0.03) 0%,transparent 40%);pointer-events:none;z-index:0}
+
+/* Login */
+.login-view{display:flex;align-items:center;justify-content:center;min-height:100vh;position:relative;z-index:1}
+.login-container{width:100%;max-width:420px;padding:0 24px}
+.login-brand{text-align:center;margin-bottom:48px}
+.brand-logo{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:10px;color:var(--gold);line-height:1}
+.brand-sub{font-size:8px;letter-spacing:4px;color:var(--gray);text-transform:uppercase;margin-top:4px}
+.brand-divider{width:40px;height:1px;background:var(--gold-dim);margin:20px auto 0;opacity:0.4}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;position:relative;overflow:hidden}
+.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 5%,var(--gold-dim) 25%,var(--gold) 50%,var(--gold-dim) 75%,transparent 95%);opacity:0.5}
+.login-badge{display:inline-block;font-size:7px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:4px;margin-bottom:24px;background:rgba(212,175,55,0.08);color:var(--gold);border:1px solid rgba(212,175,55,0.2)}
+
+/* App shell */
+.app{display:none;min-height:100vh;position:relative;z-index:1}
+.app.active{display:flex}
+.sidebar{width:240px;min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100}
+.sidebar-brand{padding:28px 24px 20px;border-bottom:1px solid var(--border)}
+.sidebar-brand .brand-logo{font-size:22px;letter-spacing:7px}
+.sidebar-brand .brand-sub{margin-top:3px}
+.sidebar-brand .brand-module{font-size:8.5px;letter-spacing:2px;color:var(--gold-dim);text-transform:uppercase;margin-top:7px;font-weight:500}
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}
+.nav-section{font-size:7px;letter-spacing:2.5px;color:var(--gray);text-transform:uppercase;padding:0 24px;margin-bottom:4px;margin-top:18px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:10px 24px;font-size:11.5px;letter-spacing:0.3px;color:var(--gray-light);cursor:pointer;transition:all 0.18s;border-left:2px solid transparent}
+.nav-item:hover{color:var(--cream);background:rgba(212,175,55,0.07)}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(212,175,55,0.05)}
+.nav-icon{width:13px;text-align:center;font-size:12px;flex-shrink:0}
+.sidebar-footer{padding:18px 24px;border-top:1px solid var(--border)}
+.sidebar-footer .role{font-size:8px;letter-spacing:2px;color:var(--gold-dim);text-transform:uppercase;margin-bottom:3px}
+.sidebar-footer .name{font-family:'Playfair Display',serif;font-size:14px;color:var(--cream)}
+.main{margin-left:240px;flex:1;padding:44px 48px}
+
+/* Pages */
+.page{display:none}
+.page.active{display:block}
+.page-header{margin-bottom:36px}
+.page-eyebrow{font-size:8.5px;letter-spacing:3px;color:var(--gold-dim);text-transform:uppercase;margin-bottom:7px}
+.page-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:400;color:var(--white);letter-spacing:0.5px;line-height:1.1}
+.page-sub{font-size:11.5px;color:var(--gray-light);margin-top:7px}
+
+/* Card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:26px 30px;margin-bottom:18px}
+.card-title{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+
+/* Form */
+.form-group{margin-bottom:18px}
+.form-label{font-size:8px;letter-spacing:2.5px;color:var(--gray);text-transform:uppercase;margin-bottom:7px;display:block}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:11px 14px;color:var(--cream);font-family:'Inter',sans-serif;font-size:12.5px;outline:none;transition:border-color 0.2s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold-dim)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--gray)}
+.form-select{appearance:none;cursor:pointer}
+.form-textarea{resize:vertical;min-height:90px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+
+/* Buttons */
+.btn{font-family:'Inter',sans-serif;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;padding:9px 20px;border-radius:6px;cursor:pointer;border:none;transition:all 0.2s;font-weight:500}
+.btn-gold{background:var(--gold);color:var(--black)}
+.btn-gold:hover{background:var(--gold-light)}
+.btn-outline{background:transparent;border:1px solid var(--border-hover);color:var(--cream)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--gray-light);padding:6px 13px;font-size:8.5px}
+.btn-danger{background:transparent;border:1px solid rgba(201,76,76,0.3);color:var(--red);padding:6px 13px;font-size:8.5px}
+.btn-full{width:100%}
+
+/* Table */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-size:7.5px;letter-spacing:2px;color:var(--gray);text-transform:uppercase;text-align:left;padding:0 14px 10px 0;border-bottom:1px solid var(--border)}
+.data-table td{padding:13px 14px 13px 0;font-size:11.5px;color:var(--cream);border-bottom:1px solid rgba(212,175,55,0.05);vertical-align:middle}
+
+/* Pills */
+.pill{display:inline-flex;align-items:center;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;font-weight:500}
+.pill-active{background:rgba(76,175,122,0.1);color:var(--green);border:1px solid rgba(76,175,122,0.2)}
+.pill-pending{background:rgba(212,175,55,0.1);color:var(--gold);border:1px solid rgba(212,175,55,0.2)}
+.pill-issue{background:rgba(201,76,76,0.1);color:var(--red);border:1px solid rgba(201,76,76,0.2)}
+.pill-complete{background:rgba(76,175,122,0.08);color:var(--green);border:1px solid rgba(76,175,122,0.15)}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 22px}
+.stat-label{font-size:8px;letter-spacing:2.5px;color:var(--gray);text-transform:uppercase;margin-bottom:9px}
+.stat-value{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:var(--white);line-height:1}
+.stat-sub{font-size:9px;color:var(--gray);margin-top:4px}
+
+/* Equipment checklist */
+.equip-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(212,175,55,0.05)}
+.equip-item:last-child{border-bottom:none}
+.equip-name{flex:1;font-size:12px;color:var(--cream)}
+.equip-rating{display:flex;gap:3px}
+.equip-dot{width:10px;height:10px;border-radius:50%;border:1px solid var(--border);cursor:pointer;transition:all 0.15s}
+.equip-dot.filled{background:var(--gold);border-color:var(--gold)}
+.equip-dot.issue{background:var(--red);border-color:var(--red)}
+
+/* Toast */
+.toast{position:fixed;bottom:26px;right:26px;background:var(--surface);border:1px solid var(--border-hover);border-radius:10px;padding:14px 18px;z-index:2000;transform:translateY(72px);opacity:0;transition:all 0.38s;max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-title{font-size:11px;font-weight:600;color:var(--cream);margin-bottom:2px}
+.toast-msg{font-size:9.5px;color:var(--gray-light)}
+
+.form-error{font-size:11px;color:var(--red);text-align:center;margin-top:14px;min-height:18px}
+
+@media(max-width:768px){.sidebar{width:200px}.main{margin-left:200px;padding:24px}.form-row,.form-row-3{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div class="login-view" id="login-view">
+  <div class="login-container">
+    <div class="login-brand">
+      <div class="brand-logo">TORCH</div>
+      <div class="brand-sub">Atlanta — Engineer Portal</div>
+      <div class="brand-divider"></div>
+    </div>
+    <div class="login-card">
+      <div style="text-align:center"><span class="login-badge">Engineer Access</span></div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="login-email" placeholder="you@torchatl.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="login-password" placeholder="Enter your password" required>
+        </div>
+        <button class="btn btn-gold btn-full" type="submit" id="login-btn">Sign In</button>
+        <div class="form-error" id="login-error"></div>
+      </form>
+    </div>
+    <div style="text-align:center;margin-top:28px">
+      <p style="font-size:10px;color:var(--gray);">Torch ATL Engineer Portal<br><a href="tel:+14048009507" style="color:var(--gold-dim);text-decoration:none;">Need help? (404) 800-9507</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div class="app" id="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">TORCH</div>
+      <div class="brand-sub">Atlanta</div>
+      <div class="brand-module">Engineer Portal</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Dashboard</div>
+      <div class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">◈</span> Overview</div>
+      <div class="nav-item" onclick="showPage('sessions')"><span class="nav-icon">🎛️</span> My Sessions</div>
+
+      <div class="nav-section">Reports</div>
+      <div class="nav-item" onclick="showPage('new-report')"><span class="nav-icon">📝</span> Submit Report</div>
+      <div class="nav-item" onclick="showPage('my-reports')"><span class="nav-icon">📋</span> My Reports</div>
+
+      <div class="nav-section">Equipment</div>
+      <div class="nav-item" onclick="showPage('equip-log')"><span class="nav-icon">🔍</span> Check In / Out</div>
+      <div class="nav-item" onclick="showPage('equip-issues')"><span class="nav-icon">⚠</span> Report Issue</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="role">Engineer</div>
+      <div class="name" id="eng-name">Engineer</div>
+      <button class="btn btn-ghost" style="margin-top:10px;width:100%;text-align:center" onclick="logout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <section class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div class="page-eyebrow">Welcome Back</div>
+        <div class="page-title" id="eng-greeting">My Dashboard</div>
+        <div class="page-sub">Your sessions, reports, and equipment logs.</div>
+      </div>
+      <div class="stats-row" id="eng-stats">
+        <div class="stat-card"><div class="stat-label">Upcoming Sessions</div><div class="stat-value" id="stat-upcoming">—</div></div>
+        <div class="stat-card"><div class="stat-label">Reports Submitted</div><div class="stat-value" id="stat-reports">—</div></div>
+        <div class="stat-card"><div class="stat-label">Equipment Logs</div><div class="stat-value" id="stat-logs">—</div></div>
+        <div class="stat-card"><div class="stat-label">Open Issues</div><div class="stat-value" id="stat-issues">—</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Upcoming Sessions</div>
+        <table class="data-table"><thead><tr><th>Date</th><th>Time</th><th>Client</th><th>Room</th><th>Status</th></tr></thead>
+        <tbody id="upcoming-tbody"><tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">Loading...</td></tr></tbody></table>
+      </div>
+    </section>
+
+    <!-- MY SESSIONS -->
+    <section class="page" id="page-sessions">
+      <div class="page-header">
+        <div class="page-eyebrow">Schedule</div>
+        <div class="page-title">My Sessions</div>
+        <div class="page-sub">All sessions assigned to you.</div>
+      </div>
+      <div class="card">
+        <table class="data-table"><thead><tr><th>Date</th><th>Time</th><th>Client</th><th>Artist</th><th>Room</th><th>Hours</th><th>Status</th></tr></thead>
+        <tbody id="sessions-tbody"><tr><td colspan="7" style="color:var(--gray);text-align:center;padding:24px;">Loading...</td></tr></tbody></table>
+      </div>
+    </section>
+
+    <!-- NEW REPORT -->
+    <section class="page" id="page-new-report">
+      <div class="page-header">
+        <div class="page-eyebrow">Session Debrief</div>
+        <div class="page-title">Submit Session Report</div>
+        <div class="page-sub">Required after every session. Be thorough.</div>
+      </div>
+      <div class="card">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Session Date</label><input class="form-input" type="date" id="rpt-date"></div>
+          <div class="form-group"><label class="form-label">Room</label>
+            <select class="form-select" id="rpt-room"><option value="b_room">B Room</option><option value="c_room">C Room</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Client Name</label><input class="form-input" id="rpt-client" placeholder="Client name"></div>
+          <div class="form-group"><label class="form-label">Artist Name</label><input class="form-input" id="rpt-artist" placeholder="Artist name"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Project Name</label><input class="form-input" id="rpt-project" placeholder="Album, single, etc."></div>
+          <div class="form-group"><label class="form-label">Work Type</label>
+            <select class="form-select" id="rpt-type"><option>Recording</option><option>Mixing</option><option>Mastering</option><option>Production</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Hours Worked</label><input class="form-input" type="number" id="rpt-hours" min="1" max="16" value="4"></div>
+        <div class="form-group"><label class="form-label">Tracks Worked On</label><input class="form-input" id="rpt-tracks" placeholder="Track 1, Track 2, Track 3 (comma separated)"></div>
+        <div class="form-group"><label class="form-label">Session Notes</label><textarea class="form-textarea" id="rpt-notes" placeholder="What was accomplished? Any creative direction, client feedback, or important context."></textarea></div>
+        <div class="form-group"><label class="form-label">Technical Notes</label><textarea class="form-textarea" id="rpt-tech" placeholder="Signal chain, plugin settings, issues encountered, etc." style="min-height:70px"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Follow-Up Needed?</label>
+            <select class="form-select" id="rpt-followup"><option value="false">No</option><option value="true">Yes</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Follow-Up Notes</label><input class="form-input" id="rpt-followup-notes" placeholder="What needs to happen next"></div>
+        </div>
+        <button class="btn btn-gold" onclick="submitReport()">Submit Report</button>
+      </div>
+    </section>
+
+    <!-- MY REPORTS -->
+    <section class="page" id="page-my-reports">
+      <div class="page-header">
+        <div class="page-eyebrow">History</div>
+        <div class="page-title">My Reports</div>
+      </div>
+      <div class="card">
+        <table class="data-table"><thead><tr><th>Date</th><th>Client</th><th>Project</th><th>Type</th><th>Hours</th><th>Status</th></tr></thead>
+        <tbody id="reports-tbody"><tr><td colspan="6" style="color:var(--gray);text-align:center;padding:24px;">Loading...</td></tr></tbody></table>
+      </div>
+    </section>
+
+    <!-- EQUIPMENT CHECK IN/OUT -->
+    <section class="page" id="page-equip-log">
+      <div class="page-header">
+        <div class="page-eyebrow">Equipment</div>
+        <div class="page-title">Check In / Check Out</div>
+        <div class="page-sub">Log equipment condition before and after every session.</div>
+      </div>
+      <div class="card">
+        <div class="form-row-3">
+          <div class="form-group"><label class="form-label">Room</label>
+            <select class="form-select" id="eq-room" onchange="loadEquipmentList()"><option value="b_room">B Room</option><option value="c_room">C Room</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Log Type</label>
+            <select class="form-select" id="eq-type"><option value="check_in">Check In (Before Session)</option><option value="check_out">Check Out (After Session)</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" id="eq-date"></div>
+        </div>
+
+        <div class="card-title" style="margin-top:12px">Equipment Checklist</div>
+        <div id="eq-checklist">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="form-group" style="margin-top:18px"><label class="form-label">Overall Condition</label>
+          <select class="form-select" id="eq-overall"><option value="good">Good — Everything in order</option><option value="fair">Fair — Minor wear noted</option><option value="issue_found">Issue Found — See notes</option><option value="damaged">Damaged — Requires attention</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="eq-notes" placeholder="Any observations, issues, or notes about equipment condition" style="min-height:70px"></textarea></div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="eq-damage" style="accent-color:var(--red)">
+            <span class="form-label" style="margin:0;color:var(--red)">Report Damage or Missing Equipment</span>
+          </label>
+        </div>
+        <div id="eq-damage-section" style="display:none">
+          <div class="form-group"><label class="form-label">Damage Description</label><textarea class="form-textarea" id="eq-damage-desc" placeholder="What is damaged or missing? Be specific." style="min-height:70px"></textarea></div>
+        </div>
+        <button class="btn btn-gold" onclick="submitEquipLog()">Submit Equipment Log</button>
+      </div>
+    </section>
+
+    <!-- REPORT ISSUE -->
+    <section class="page" id="page-equip-issues">
+      <div class="page-header">
+        <div class="page-eyebrow">Equipment</div>
+        <div class="page-title">Report an Issue</div>
+        <div class="page-sub">Log equipment damage, malfunctions, missing items, or theft concerns.</div>
+      </div>
+      <div class="card">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Room</label>
+            <select class="form-select" id="iss-room"><option value="b_room">B Room</option><option value="c_room">C Room</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Item Name</label><input class="form-input" id="iss-item" placeholder="e.g. Neumann U87"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Issue Type</label>
+            <select class="form-select" id="iss-type"><option value="damage">Damage</option><option value="malfunction">Malfunction</option><option value="missing">Missing</option><option value="wear">Wear & Tear</option><option value="theft_concern">Theft Concern</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Severity</label>
+            <select class="form-select" id="iss-severity"><option value="minor">Minor</option><option value="moderate">Moderate</option><option value="major">Major</option><option value="critical">Critical</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="iss-desc" placeholder="What happened? When did you notice? Is the equipment still usable?"></textarea></div>
+        <button class="btn btn-gold" onclick="submitIssue()">Submit Issue</button>
+      </div>
+      <div class="card" style="margin-top:18px">
+        <div class="card-title">My Reported Issues</div>
+        <table class="data-table"><thead><tr><th>Date</th><th>Item</th><th>Type</th><th>Severity</th><th>Status</th></tr></thead>
+        <tbody id="issues-tbody"><tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">Loading...</td></tr></tbody></table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><div class="toast-title" id="toast-title"></div><div class="toast-msg" id="toast-msg"></div></div>
+
+<script>
+const API = 'https://bookings.torchatl.com';
+const KEY = 'c6589d8b44d6b1ee79168a9ff092959322f0011b3c094d00';
+let engineer = null;
+
+// Equipment lists per room
+const ROOM_EQUIPMENT = {
+  b_room: ['Neumann U87','Neumann TLM 103','Neve 1073 Preamp/EQ','Tube-Tech CL1B Compressor','Universal Audio Apollo x6','Universal Audio Apollo Twin','Headphones','Mic Stand','Pop Filter','XLR Cables'],
+  c_room: ['Neumann TLM 103','Universal Audio Apollo 8','Headphones','Mic Stand','Pop Filter','XLR Cables'],
+};
+
+// ── Auth ──
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-error');
+  err.textContent = '';
+  btn.disabled = true; btn.textContent = 'Signing in...';
+
+  try {
+    const res = await fetch(`${API}/api/engineer/login`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email: document.getElementById('login-email').value.trim(), password: document.getElementById('login-password').value }),
+    });
+    const data = await res.json();
+    if (!res.ok) { err.textContent = data.error; btn.disabled = false; btn.textContent = 'Sign In'; return; }
+    engineer = data.user;
+    localStorage.setItem('torch_engineer', JSON.stringify(engineer));
+    showApp();
+  } catch (e) { err.textContent = 'Unable to connect.'; btn.disabled = false; btn.textContent = 'Sign In'; }
+}
+
+function showApp() {
+  document.getElementById('login-view').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  document.getElementById('eng-name').textContent = engineer.full_name;
+  document.getElementById('eng-greeting').textContent = `Good ${new Date().getHours() < 12 ? 'morning' : 'afternoon'}, ${engineer.full_name.split(' ')[0]}.`;
+  document.getElementById('eq-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('rpt-date').value = new Date().toISOString().split('T')[0];
+  loadEquipmentList();
+  loadDashboard();
+}
+
+function logout() { localStorage.removeItem('torch_engineer'); location.reload(); }
+
+// Auto-login
+const stored = localStorage.getItem('torch_engineer');
+if (stored) { engineer = JSON.parse(stored); showApp(); }
+
+// ── Navigation ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id)?.classList.add('active');
+  if (event?.currentTarget) event.currentTarget.classList.add('active');
+  if (id === 'sessions') loadSessions();
+  if (id === 'my-reports') loadReports();
+  if (id === 'equip-issues') loadIssues();
+}
+
+// ── Dashboard ──
+async function loadDashboard() {
+  try {
+    const [sessions, reports, logs, issues] = await Promise.all([
+      fetch(`${API}/api/engineer/${engineer.id}/sessions`).then(r=>r.json()),
+      fetch(`${API}/api/engineer/${engineer.id}/reports`).then(r=>r.json()),
+      fetch(`${API}/api/engineer/${engineer.id}/equipment-logs`).then(r=>r.json()),
+      fetch(`${API}/api/equipment-issues?status=open`).then(r=>r.json()),
+    ]);
+
+    const upcoming = sessions.filter(s => s.status === 'assigned' && s.session_date >= new Date().toISOString().split('T')[0]);
+    document.getElementById('stat-upcoming').textContent = upcoming.length;
+    document.getElementById('stat-reports').textContent = reports.length;
+    document.getElementById('stat-logs').textContent = logs.length;
+    document.getElementById('stat-issues').textContent = issues.filter(i => i.engineer_id === engineer.id).length;
+
+    document.getElementById('upcoming-tbody').innerHTML = upcoming.length ? upcoming.slice(0,5).map(s => `
+      <tr><td>${s.session_date}</td><td>${s.start_time || '—'} – ${s.end_time || '—'}</td><td>${s.client_name || '—'}</td><td>${s.room || '—'}</td><td><span class="pill pill-pending">${s.status}</span></td></tr>
+    `).join('') : '<tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">No upcoming sessions.</td></tr>';
+  } catch (e) { console.error('Dashboard load failed:', e); }
+}
+
+// ── Sessions ──
+async function loadSessions() {
+  const data = await fetch(`${API}/api/engineer/${engineer.id}/sessions`).then(r=>r.json());
+  const pills = { assigned:'pill-pending', in_progress:'pill-pending', completed:'pill-complete', cancelled:'pill-issue' };
+  document.getElementById('sessions-tbody').innerHTML = data.length ? data.map(s => `
+    <tr><td>${s.session_date}</td><td>${s.start_time||'—'} – ${s.end_time||'—'}</td><td>${s.client_name||'—'}</td><td>${s.artist_name||'—'}</td><td>${s.room||'—'}</td><td>${s.hours||'—'}</td><td><span class="pill ${pills[s.status]||'pill-pending'}">${s.status}</span></td></tr>
+  `).join('') : '<tr><td colspan="7" style="color:var(--gray);text-align:center;padding:24px;">No sessions yet.</td></tr>';
+}
+
+// ── Reports ──
+async function loadReports() {
+  const data = await fetch(`${API}/api/engineer/${engineer.id}/reports`).then(r=>r.json());
+  document.getElementById('reports-tbody').innerHTML = data.length ? data.map(r => `
+    <tr><td>${r.session_date}</td><td>${r.client_name||'—'}</td><td>${r.project_name||'—'}</td><td>${r.work_type||'—'}</td><td>${r.hours_worked||'—'}</td><td><span class="pill ${r.status==='reviewed'?'pill-complete':'pill-pending'}">${r.status}</span></td></tr>
+  `).join('') : '<tr><td colspan="6" style="color:var(--gray);text-align:center;padding:24px;">No reports yet.</td></tr>';
+}
+
+async function submitReport() {
+  const tracks = document.getElementById('rpt-tracks').value.split(',').map(t=>t.trim()).filter(Boolean);
+  try {
+    await fetch(`${API}/api/session-reports`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        engineer_id: engineer.id,
+        session_date: document.getElementById('rpt-date').value,
+        room: document.getElementById('rpt-room').value,
+        client_name: document.getElementById('rpt-client').value,
+        artist_name: document.getElementById('rpt-artist').value,
+        project_name: document.getElementById('rpt-project').value,
+        work_type: document.getElementById('rpt-type').value.toLowerCase(),
+        hours_worked: parseFloat(document.getElementById('rpt-hours').value) || 0,
+        tracks_worked: tracks,
+        session_notes: document.getElementById('rpt-notes').value,
+        technical_notes: document.getElementById('rpt-tech').value,
+        follow_up_needed: document.getElementById('rpt-followup').value === 'true',
+        follow_up_notes: document.getElementById('rpt-followup-notes').value,
+      }),
+    });
+    showToast('Report Submitted', 'Logged to your profile.');
+    loadDashboard();
+  } catch (e) { showToast('Error', e.message); }
+}
+
+// ── Equipment ──
+let equipRatings = {};
+
+function loadEquipmentList() {
+  const room = document.getElementById('eq-room').value;
+  const items = ROOM_EQUIPMENT[room] || [];
+  equipRatings = {};
+  document.getElementById('eq-checklist').innerHTML = items.map(name => {
+    equipRatings[name] = 5;
+    return `<div class="equip-item"><div class="equip-name">${name}</div><div class="equip-rating">${[1,2,3,4,5].map(n => `<div class="equip-dot ${n<=5?'filled':''}" onclick="setEquipRating('${name}',${n})"></div>`).join('')}</div></div>`;
+  }).join('');
+}
+
+function setEquipRating(name, n) {
+  equipRatings[name] = n;
+  const items = document.querySelectorAll('.equip-item');
+  items.forEach(item => {
+    if (item.querySelector('.equip-name').textContent === name) {
+      const dots = item.querySelectorAll('.equip-dot');
+      dots.forEach((d,i) => { d.className = 'equip-dot' + (i < n ? (n <= 2 ? ' issue' : ' filled') : ''); });
+    }
+  });
+}
+
+document.getElementById('eq-damage').addEventListener('change', e => {
+  document.getElementById('eq-damage-section').style.display = e.target.checked ? 'block' : 'none';
+});
+
+async function submitEquipLog() {
+  const items = Object.entries(equipRatings).map(([name, condition]) => ({ name, condition, notes: '' }));
+  try {
+    await fetch(`${API}/api/equipment-logs`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        engineer_id: engineer.id,
+        room: document.getElementById('eq-room').value,
+        log_type: document.getElementById('eq-type').value,
+        log_date: document.getElementById('eq-date').value,
+        items,
+        overall_condition: document.getElementById('eq-overall').value,
+        damage_reported: document.getElementById('eq-damage').checked,
+        damage_description: document.getElementById('eq-damage-desc')?.value || null,
+        notes: document.getElementById('eq-notes').value,
+      }),
+    });
+    showToast('Equipment Log Submitted', 'Condition recorded.');
+    loadDashboard();
+  } catch (e) { showToast('Error', e.message); }
+}
+
+// ── Issues ──
+async function loadIssues() {
+  const data = await fetch(`${API}/api/equipment-issues`).then(r=>r.json());
+  const mine = data.filter(i => i.engineer_id === engineer.id);
+  const pills = { open:'pill-issue', investigating:'pill-pending', resolved:'pill-complete', replaced:'pill-complete' };
+  document.getElementById('issues-tbody').innerHTML = mine.length ? mine.map(i => `
+    <tr><td>${i.reported_date}</td><td>${i.item_name}</td><td>${i.issue_type}</td><td>${i.severity}</td><td><span class="pill ${pills[i.status]||'pill-pending'}">${i.status}</span></td></tr>
+  `).join('') : '<tr><td colspan="5" style="color:var(--gray);text-align:center;padding:24px;">No issues reported.</td></tr>';
+}
+
+async function submitIssue() {
+  try {
+    await fetch(`${API}/api/equipment-issues`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        engineer_id: engineer.id,
+        room: document.getElementById('iss-room').value,
+        item_name: document.getElementById('iss-item').value,
+        issue_type: document.getElementById('iss-type').value,
+        severity: document.getElementById('iss-severity').value,
+        description: document.getElementById('iss-desc').value,
+      }),
+    });
+    showToast('Issue Reported', 'Admin notified.');
+    loadIssues();
+  } catch (e) { showToast('Error', e.message); }
+}
+
+// ── Toast ──
+function showToast(title, msg) {
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast').classList.add('show');
+  setTimeout(() => document.getElementById('toast').classList.remove('show'), 3200);
+}
+</script>
+</body>
+</html>
