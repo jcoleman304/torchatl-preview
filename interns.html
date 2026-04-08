@@ -1778,9 +1778,14 @@ buildCal('internShiftCal', [2,7,9,14,21,23,28,30]);
 // ════════════════════════════════════════════════
 
 const INTERN_API = 'https://bookings.torchatl.com';
-const INTERN_KEY = 'c6589d8b44d6b1ee79168a9ff092959322f0011b3c094d00';
+// SECURITY: Admin API key removed. Key must be provided at login or loaded from server config.
+// TODO: Implement scoped read-only intern API key via backend /api/intern/auth endpoint
+let INTERN_KEY = null;
+
+function setInternApiKey(key) { INTERN_KEY = key; }
 
 async function apiCall(path, options = {}) {
+  if (!INTERN_KEY) throw new Error('API key not configured. Please log in.');
   const headers = { 'Content-Type': 'application/json', 'x-api-key': INTERN_KEY, ...options.headers };
   const res = await fetch(`${INTERN_API}${path}`, { ...options, headers });
   const data = await res.json();
