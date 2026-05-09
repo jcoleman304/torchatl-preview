@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book a Session | TORCH ATL</title>
-    <meta name="description" content="Book your session at TORCH ATL — Atlanta's premier creative estate. Studio sessions, full estate buyouts, writing camps, and private events.">
+    <meta name="description" content="Book your session at TORCH ATL — Atlanta's premier creative estate. Studio sessions, full estate buyouts, and private events.">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230A0A0A' width='100' height='100' rx='12'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%23D4AF37' font-family='Georgia'>T</text></svg>">
@@ -634,7 +634,7 @@
         <div class="container">
             <span class="section-label">Book a Session</span>
             <h1 class="section-title">Reserve the Estate</h1>
-            <p class="section-subtitle">Studio sessions, full estate buyouts, writing camps, and private events. Select your session and we'll handle the rest.</p>
+            <p class="section-subtitle">Studio sessions, full estate buyouts, and private events. Select your session and we'll handle the rest.</p>
         </div>
     </section>
 
@@ -673,7 +673,6 @@
                                 <option value="half_day">Half-Day Session (7 hours) — from $550</option>
                                 <option value="full_day">Full-Day Session (12 hours) — from $850</option>
                                 <option value="estate_daily">Full Estate Overnight — from $1,500/day</option>
-                                <option value="writing_camp">Writing Camp / Lockout — from $1,350/day (4+ days)</option>
                                 <option value="private_event">Private Event — starting at $1,200</option>
                             </select>
                         </div>
@@ -932,11 +931,11 @@
     }
 
     // Session types that need duration field
-    const DURATION_TYPES = ['estate_daily', 'writing_camp'];
+    const DURATION_TYPES = ['estate_daily'];
     // Session types that need room selection
     const ROOM_TYPES = ['half_day', 'full_day'];
     // Session types where time fields don't apply
-    const NO_TIME_TYPES = ['estate_daily', 'writing_camp'];
+    const NO_TIME_TYPES = ['estate_daily'];
 
     // ---- Navigation ----
     const navToggle = document.getElementById('nav-toggle');
@@ -1035,12 +1034,7 @@
         // Duration visibility
         if (DURATION_TYPES.includes(type)) {
             durationField.classList.add('visible');
-            if (type === 'writing_camp') {
-                durationInput.min = 3;
-                if (parseInt(durationInput.value) < 3) durationInput.value = 3;
-            } else {
-                durationInput.min = 1;
-            }
+            durationInput.min = 1;
             updateDurationHint();
         } else {
             durationField.classList.remove('visible');
@@ -1059,7 +1053,7 @@
     function updateDurationHint() {
         const type = sessionSelect.value;
         const days = parseInt(durationInput.value) || 1;
-        if (type === 'estate_daily' || type === 'writing_camp') {
+        if (type === 'estate_daily') {
             const total = calculateEstateDays(days) / 100;
             let detail = '';
             if (days >= 28) detail = ` ($1,200/day — monthly rate)`;
@@ -1197,7 +1191,7 @@
         let base = 0;
         if (type === 'half_day' || type === 'full_day') {
             base = RATES[type][room];
-        } else if (type === 'estate_daily' || type === 'writing_camp') {
+        } else if (type === 'estate_daily') {
             base = calculateEstateDays(days);
         } else if (type === 'private_event') {
             base = RATES.private_event;
