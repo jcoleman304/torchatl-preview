@@ -915,8 +915,8 @@
     const RATES = {
         half_day:  { b_room: 65000, c_room: 55000, both: 110000 },
         full_day:  { b_room: 100000, c_room: 85000, both: 135000 },
-        estate_base: 150000,    // $1,500/day (days 1-3)
-        estate_camp: 135000,    // $1,350/day (day 4+)
+        estate_base: 150000,    // $1,500/day (days 1-7)
+        estate_camp: 135000,    // $1,350/day (day 8+)
         estate_monthly: 120000, // $1,200/day (28+ days)
         private_event: 120000,
     };
@@ -927,8 +927,8 @@
     // Calculate tiered estate pricing
     function calculateEstateDays(days) {
         if (days >= 28) return RATES.estate_monthly * days;
-        if (days <= 3) return RATES.estate_base * days;
-        return (RATES.estate_base * 3) + (RATES.estate_camp * (days - 3));
+        if (days <= 7) return RATES.estate_base * days;
+        return (RATES.estate_base * 7) + (RATES.estate_camp * (days - 7));
     }
 
     // Session types that need duration field
@@ -1063,7 +1063,7 @@
             const total = calculateEstateDays(days) / 100;
             let detail = '';
             if (days >= 28) detail = ` ($1,200/day — monthly rate)`;
-            else if (days > 3) detail = ` (days 1–3 at $1,500, day 4+ at $1,350)`;
+            else if (days > 7) detail = ` (days 1–7 at $1,500, day 8+ at $1,350)`;
             else detail = ` ($1,500/day)`;
             durationHint.textContent = `${days} day${days > 1 ? 's' : ''} = $${total.toLocaleString()}${detail}`;
         }
