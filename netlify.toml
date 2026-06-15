@@ -6,6 +6,18 @@
   to = "/portal/index.html"
   status = 200
 
+[[redirects]]
+  from = "/book.html"
+  to = "/#inquire"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/book"
+  to = "/#inquire"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]

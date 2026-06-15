@@ -11,23 +11,24 @@
     <meta property="og:title" content="TORCH ATL | Atlanta's Premier Creative Estate & Recording Retreat">
     <meta property="og:description" content="Atlanta's premier creative estate. Where artists lock in, labels camp out, and great records get made.">
     <meta property="og:url" content="https://torchatl.com">
+    <meta property="og:image" content="images/hero-suite-screen.jpg">
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230A0A0A' width='100' height='100' rx='12'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%23D4AF37' font-family='Georgia'>T</text></svg>">
 
-    <!-- Preconnect -->
+    <!-- Preconnect / Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=8">
 
-    <!-- Theme Color -->
     <meta name="theme-color" content="#0A0A0A">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
-<body>
+<body class="loading">
     <script>if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; window.scrollTo(0,0);</script>
+
     <!-- Preloader -->
     <div class="preloader" id="preloader">
         <div class="preloader-content">
@@ -38,502 +39,380 @@
             <div class="preloader-bar"></div>
         </div>
     </div>
-    <!-- Navigation -->
+
+    <!-- Navigation (Shinola-style: hamburger left, centered logo, book right) -->
     <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="#" class="nav-logo">
+        <div class="nav-inner">
+            <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span>
+            </button>
+            <a href="#hero" class="nav-logo" aria-label="TORCH ATL home">
                 <span class="logo-torch">TORCH</span>
                 <span class="logo-atl">ATL</span>
             </a>
-            <ul class="nav-menu" id="nav-menu">
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#estate" class="nav-link">The Estate</a></li>
-                <li><a href="#suites" class="nav-link">Guest Suites</a></li>
-                <li><a href="#membership" class="nav-link">Packages</a></li>
-                <li><a href="#partners" class="nav-link">Partners</a></li>
-                <li><a href="/book.html" class="nav-link nav-cta">Book Now</a></li>
-                <li><a href="javascript:void(0)" class="nav-link nav-login" onclick="showLoginModal(event)">Member Login</a></li>
-            </ul>
-            <button class="nav-toggle" id="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <a href="#inquire" class="nav-book">Book</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Fullscreen Menu Overlay -->
+    <div class="menu-overlay" id="menu-overlay">
+        <button class="menu-close" id="menu-close" aria-label="Close menu">&times;</button>
+        <div class="menu-grid">
+            <nav class="menu-links">
+                <a href="#about" class="menu-link"><span class="menu-index">01</span> About</a>
+                <a href="#estate" class="menu-link"><span class="menu-index">02</span> The Estate</a>
+                <a href="#book" class="menu-link"><span class="menu-index">03</span> Book the Estate</a>
+                <a href="#gallery" class="menu-link"><span class="menu-index">04</span> Gallery</a>
+                <a href="#inquire" class="menu-link"><span class="menu-index">05</span> Request to Reserve</a>
+            </nav>
+            <div class="menu-aside">
+                <p class="menu-aside-label">Visit</p>
+                <p class="menu-aside-text">Atlanta, Georgia</p>
+                <p class="menu-aside-label">Inquiries</p>
+                <a href="mailto:bookings@torchatl.com" class="menu-aside-text link">bookings@torchatl.com</a>
+                <a href="tel:+14048009507" class="menu-aside-text link">(404) 800-9507</a>
+                <div class="menu-social">
+                    <a href="https://instagram.com/torchatlhq" target="_blank" rel="noopener">Instagram</a>
+                    <a href="https://youtube.com/@torchatl" target="_blank" rel="noopener">YouTube</a>
+                </div>
+            </div>
+        </div>
+        <a href="javascript:void(0)" class="menu-member" onclick="showLoginModal(event)">Member Login →</a>
+    </div>
+
+    <!-- Hero -->
     <section class="hero" id="hero">
-        <div class="hero-bg"></div>
+        <div class="hero-media">
+            <div class="hero-slide is-active" style="background-image:url('images/band-outdoor.jpg');background-position:center 48%"></div>
+            <div class="hero-slide" style="background-image:url('images/hero-suite.jpg')"></div>
+            <div class="hero-slide" style="background-image:url('images/hero-lounge.jpg')"></div>
+            <div class="hero-slide" style="background-image:url('images/hero-studio.jpg')"></div>
+            <div class="hero-slide" style="background-image:url('images/hero-reception.jpg')"></div>
+        </div>
+        <div class="hero-scrim"></div>
         <div class="hero-content">
             <h1 class="hero-title">
                 <span class="title-torch">TORCH</span>
                 <span class="title-atl">ATL</span>
             </h1>
-            <p class="hero-tagline"><span class="tagline-word">Where</span> <span class="tagline-word">Artists</span> <span class="tagline-word tagline-highlight">Feel</span> <span class="tagline-word tagline-highlight">At</span> <span class="tagline-word tagline-highlight">Home.</span></p>
-            <span class="hero-sub">Atlanta's premier creative estate.</span>
-            <a href="/book.html" class="btn btn-primary">Book the Estate</a>
+            <p class="hero-tagline">A Private Creative Estate</p>
+            <a href="#inquire" class="btn btn-gold">Book the Estate</a>
         </div>
-        <div class="hero-scroll">
-            <span>Scroll</span>
-            <div class="scroll-line"></div>
+        <div class="hero-scroll"><i></i></div>
+    </section>
+
+    <!-- About — editorial split -->
+    <section class="split split--reverse reveal" id="about">
+        <div class="split-media">
+            <div class="media-fade">
+                <img class="is-active" src="images/g-15-204-studio-equipment-neumann-u87.jpg" alt="Neumann U87 studio microphone" loading="lazy">
+                <img src="images/hero-studio.jpg" alt="TORCH ATL studio control room" loading="lazy">
+                <img src="images/g-22-116-studio-mood.jpg" alt="TORCH ATL studio mood" loading="lazy">
+                <img src="images/about-suite.jpg" alt="TORCH ATL Presidential Suite with TORCH welcome screen" loading="lazy">
+                <img src="images/hero-lounge.jpg" alt="TORCH ATL welcome lounge" loading="lazy">
+            </div>
+            <button class="media-nav media-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+            <button class="media-nav media-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+        </div>
+        <div class="split-body">
+            <span class="eyebrow">About</span>
+            <h2 class="display">Where Artists<br>Feel At Home</h2>
+            <p>You pull through the gate and the city disappears. The phone goes quiet. The only deadline is the one you set for yourself. By the second hour you've forgotten what building you're in — and that's the point.</p>
+            <p>Torch ATL is a private estate in Atlanta for creatives who demand more than four walls and a console. No commercial building. No strangers. No shared hallways. Just the grounds, the rooms, and whatever you came here to make.</p>
+            <p>For artists, writers and producers, it's a place to disappear into the work — fully staffed, fully private, built around the session, not around the clock. For labels and publishers running camps, it's a turnkey creative setup without the logistics, the leaks, or the compromises.</p>
+            <p class="split-emphasis">You don't book a room. You get the whole estate.</p>
+            <a href="#estate" class="link-arrow">Explore the estate →</a>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section class="section about" id="about">
+    <!-- The Estate (tabbed: Guest Suites / Studios / Specs) -->
+    <section class="section estate-section" id="estate">
         <div class="container">
-            <div class="section-header">
-                <span class="section-label">About</span>
-                <h2 class="section-title">Where Records Get Made</h2>
+            <div class="section-head center reveal">
+                <span class="eyebrow">The Estate</span>
+                <h2 class="display">One Estate. Every Room.</h2>
+                <p class="section-lead">Both studios, three king suites, lounges, a chef's kitchen, and the grounds — all behind one gate. Explore it room by room.</p>
             </div>
-            <div class="about-grid">
-                <div class="about-content">
-                    <p>You pull through the gate and the city disappears. The phone goes quiet. The only deadline is the one you set for yourself. By the second hour you've forgotten what building you're in — and that's the point.</p>
-                    <p>Torch ATL is a private estate in Atlanta for creatives who demand more than four walls and a console. No commercial building. No strangers. No shared hallways. Just the grounds, the rooms, and whatever you came here to make.</p>
-                    <p>For artists, writers and producers, it's a place to disappear into the work — fully staffed, fully private, built around the session, not around the clock. For labels and publishers running camps, it's a turnkey creative setup without the logistics, the leaks, or the compromises.</p>
-                    <p>You don't book a room. You get the whole estate.</p>
-                </div>
-                <div class="about-features">
-                    <div class="feature">
-                        <div class="feature-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                            </svg>
+            <div class="estate-stats reveal">
+                <div class="estat"><span class="estat-num">5,021</span><span class="estat-label">Sq Ft</span></div>
+                <div class="estat"><span class="estat-num">3</span><span class="estat-label">King Suites</span></div>
+                <div class="estat"><span class="estat-num">2</span><span class="estat-label">Studios</span></div>
+            </div>
+            <div class="tabs reveal">
+                <button class="tab active" data-tab="suites">Guest Suites</button>
+                <button class="tab" data-tab="studios">Studios</button>
+                <button class="tab" data-tab="specs">Specs &amp; Amenities</button>
+            </div>
+
+            <div class="tab-panel active" id="panel-suites">
+                <div class="split">
+                    <div class="split-media">
+                        <div class="media-fade">
+                            <img class="is-active" src="images/suites-bed.jpg" alt="TORCH ATL king suite with gold headboard" loading="lazy">
+                            <img src="images/d-robe.jpg" alt="Embroidered TORCH ATL robe" loading="lazy">
+                            <img src="images/g-23-220-suite-detail.jpg" alt="King suite detail" loading="lazy">
+                            <img src="images/g-32-150-work-presidental-suite-sitting-area-desk.jpg" alt="Suite sitting area desk" loading="lazy">
+                            <img src="images/d-nightstand.jpg" alt="In-suite styling with branded card" loading="lazy">
+                            <img src="images/d-bath.jpg" alt="Rainshower with gold-capped toiletries" loading="lazy">
+                            <img src="images/suite-jacuzzi.jpg" alt="Presidential suite bath with jacuzzi tub" loading="lazy">
                         </div>
-                        <h3>Private Estate</h3>
-                        <p>A residential property, not a commercial building. Gated entry, private grounds, and complete discretion.</p>
+                        <button class="media-nav media-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                        <button class="media-nav media-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
                     </div>
-                    <div class="feature">
-                        <div class="feature-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                            </svg>
-                        </div>
-                        <h3 class="feature-title">Camp Destination</h3>
-                        <p>Both studios running simultaneously. Writers and producers on the property. One invoice, one experience.</p>
-                    </div>
-                    <div class="feature">
-                        <div class="feature-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="8" r="7"/>
-                                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
-                            </svg>
-                        </div>
-                        <h3>Built for the Work</h3>
-                        <p>Recording rooms, guest suites, a full kitchen, and the kind of environment that stays out of your way.</p>
-                    </div>
-                    <div class="feature">
-                        <div class="feature-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
-                        </div>
-                        <h3>Secured Estate</h3>
-                        <p>On-site security is included with every booking — not an add-on. Your team, your sessions, and your unreleased work are protected from the moment you arrive.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Estate Section -->
-    <section class="estate" id="estate">
-        <div class="estate-bg">
-
-            <img src="images/executive-lounge.png" alt="TORCH ATL Executive Lounge" class="estate-bg-img" data-label="Executive Lounge">
-            <img src="images/chef-kitchen.jpg" alt="TORCH ATL Chef Kitchen" class="estate-bg-img" data-label="Chef Kitchen">
-            <img src="images/creative-lounge.png" alt="TORCH ATL Creative Lounge" class="estate-bg-img" data-label="Creative Lounge">
-            <img src="images/conference-room.jpg" alt="TORCH ATL Conference Room" class="estate-bg-img" data-label="Conference Room">
-            <img src="images/b-room.jpg" alt="TORCH ATL B Room Studio" class="estate-bg-img" data-label="B Room">
-            <img src="images/c-room.jpg" alt="TORCH ATL C Room Studio" class="estate-bg-img" data-label="C Room">
-
-        </div>
-        <div class="estate-overlay"></div>
-        <div class="container estate-container">
-            <div class="estate-content">
-                <span class="section-label">The Estate</span>
-                <h2 class="section-title">Where Magic<br>Happens</h2>
-                <p class="estate-room-label"></p>
-            </div>
-            <div class="estate-nav">
-                <button class="estate-nav-btn estate-prev" aria-label="Previous">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-                <span class="estate-counter"></span>
-                <button class="estate-nav-btn estate-next" aria-label="Next">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </button>
-            </div>
-            <div class="estate-features">
-                <div class="estate-feature">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                        <line x1="8" y1="21" x2="16" y2="21"></line>
-                        <line x1="12" y1="17" x2="12" y2="21"></line>
-                    </svg>
-                    <span>Control Room</span>
-                </div>
-                <div class="estate-feature">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                        <line x1="12" y1="19" x2="12" y2="23"></line>
-                        <line x1="8" y1="23" x2="16" y2="23"></line>
-                    </svg>
-                    <span>Vocal Booth</span>
-                </div>
-                <div class="estate-feature">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
-                        <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
-                    </svg>
-                    <span>Live Room</span>
-                </div>
-                <div class="estate-feature">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 9v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9"></path>
-                        <path d="M9 22V12h6v10M2 10.6L12 2l10 8.6"></path>
-                    </svg>
-                    <span>Creative Lounge</span>
-                </div>
-                <div class="estate-feature">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-                        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-                        <line x1="6" y1="1" x2="6" y2="4"></line>
-                        <line x1="10" y1="1" x2="10" y2="4"></line>
-                        <line x1="14" y1="1" x2="14" y2="4"></line>
-                    </svg>
-                    <span>Full Kitchen</span>
-                </div>
-                <div class="estate-feature">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="3" y1="9" x2="21" y2="9"></line>
-                        <line x1="9" y1="21" x2="9" y2="9"></line>
-                    </svg>
-                    <span>Gated Parking</span>
-                </div>
-            </div>
-            <div style="margin-top: 4rem; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 8px; padding: 2.5rem; text-align: center; background: rgba(212, 175, 55, 0.05);">
-                <span style="display: inline-block; font-size: 0.7rem; letter-spacing: 0.15em; color: #D4AF37; text-transform: uppercase; margin-bottom: 1rem;">Coming Soon</span>
-                <h3 style="font-size: 1.8rem; color: #F5F0E8; margin-bottom: 1rem;">The A Room</h3>
-                <p style="color: #8B7355; max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.7;">A fully built-out, world-class A room that raises the ceiling on what's possible at the estate. Coming soon.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Guest Suites Section -->
-    <section class="suites" id="suites">
-        <div class="suites-bg">
-            <img src="images/suite-bedroom.png" alt="TORCH ATL California King Suite" class="suites-bg-img">
-            <img src="images/suite-sitting-area.png" alt="TORCH ATL Suite Sitting Area" class="suites-bg-img">
-            <img src="images/suite-2.png" alt="TORCH ATL Guest Suite" class="suites-bg-img">
-        </div>
-        <div class="suites-overlay"></div>
-        <div class="container suites-container">
-            <div class="suites-content">
-                <span class="section-label">Guest Suites</span>
-                <h2 class="section-title">Rest Without<br>Leaving</h2>
-                <p class="suites-lead">All three king suites are included with full estate bookings and camp packages. Your team stays on property — no commute, no interruption, no lost momentum.</p>
-            </div>
-            <div class="suites-features">
-                <div class="suite-feature">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 4v16"/>
-                        <path d="M2 8h18a2 2 0 0 1 2 2v10"/>
-                        <path d="M2 17h20"/>
-                        <path d="M6 8v9"/>
-                    </svg>
-                    <span>Premium Bedding</span>
-                </div>
-                <div class="suite-feature">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 3v1m0 16v1m-8-9H3m18 0h-1m-2.636-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707.707"/>
-                        <circle cx="12" cy="12" r="4"/>
-                    </svg>
-                    <span>Climate Control</span>
-                </div>
-                <div class="suite-feature">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                    </svg>
-                    <span>Secure Storage</span>
-                </div>
-                <div class="suite-feature">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                    <span>24-Hour Access</span>
-                </div>
-                <div class="suite-feature">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
-                        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
-                        <line x1="6" y1="1" x2="6" y2="4"/>
-                        <line x1="10" y1="1" x2="10" y2="4"/>
-                        <line x1="14" y1="1" x2="14" y2="4"/>
-                    </svg>
-                    <span>In-Room Refreshments</span>
-                </div>
-                <div class="suite-feature">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                        <line x1="8" y1="21" x2="16" y2="21"></line>
-                        <line x1="12" y1="17" x2="12" y2="21"></line>
-                    </svg>
-                    <span>55"+ Smart TVs</span>
-                </div>
-                <div class="suite-feature">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-                    </svg>
-                    <span>Private Bathrooms</span>
-                </div>
-                <div class="suite-feature">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        <path d="M9 12l2 2 4-4"></path>
-                    </svg>
-                    <span>Secured Grounds</span>
-                </div>
-            </div>
-            <div class="suites-note">
-                <p>Included with all full estate bookings and camp packages.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Membership Section -->
-    <section class="section membership" id="membership">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">Estate Packages</span>
-                <h2 class="section-title">Book the Estate</h2>
-            </div>
-            <div class="membership-content">
-                <div class="membership-intro">
-                    <p>Full estate buyouts. No hourly. No walk-ins. Every booking gets the full property — both studios, all three suites, kitchen, lounges, deck, and conference room.</p>
-                    <p>Minimum booking is a half-day estate buyout.</p>
-                </div>
-                <div class="membership-tiers">
-                    <div class="tier">
-                        <div class="tier-header">
-                            <h3>Day</h3>
-                            <span class="tier-badge">Session</span>
-                        </div>
-                        <p class="tier-desc">Full estate access for a single day. One studio, common areas, and kitchen included.</p>
-                        <ul class="tier-features">
-                            <li>Full estate access</li>
-                            <li>1 studio active</li>
-                            <li>Chef's kitchen included</li>
-                            <li>All common areas & deck</li>
-                            <li>On-site security included</li>
+                    <div class="split-body">
+                        <span class="eyebrow">Guest Suites</span>
+                        <h2 class="display">Rest Without<br>Leaving</h2>
+                        <p>All three king suites are included with full estate bookings and camp packages. Your team stays on property — no commute, no interruption, no lost momentum.</p>
+                        <ul class="check-list">
+                            <li>Premium bedding &amp; climate control</li>
+                            <li>Private bathrooms &amp; secure storage</li>
+                            <li>55"+ smart TVs &amp; in-room refreshments</li>
+                            <li>24-hour access on secured grounds</li>
                         </ul>
-                        <p class="tier-rate">Rates available upon inquiry.</p>
-                    </div>
-                    <div class="tier featured">
-                        <div class="tier-header">
-                            <h3>Full Estate</h3>
-                            <span class="tier-badge">Buyout</span>
-                        </div>
-                        <p class="tier-desc">Both studios running simultaneously. All three king suites. Full run of the property.</p>
-                        <ul class="tier-features">
-                            <li>Both studios active</li>
-                            <li>All 3 king suites included</li>
-                            <li>Chef's kitchen & lounges</li>
-                            <li>Conference room access</li>
-                            <li>On-site security included</li>
-                        </ul>
-                        <p class="tier-rate">Rates available upon inquiry.</p>
-                    </div>
-                    <div class="tier fade-in">
-                        <div class="tier-header">
-                            <h3>Private</h3>
-                            <span class="tier-badge">Event</span>
-                        </div>
-                        <p class="tier-desc">Listening parties, A&R showcases, brand activations, and private industry events. Fully gated, invite-only, and completely private.</p>
-                        <ul class="tier-features">
-                            <li>Full estate access</li>
-                            <li>Both lounges & deck</li>
-                            <li>Chef's kitchen & catering available</li>
-                            <li>Conference room access</li>
-                            <li>On-site security included</li>
-                        </ul>
-                        <p class="tier-rate">Rates available upon inquiry.</p>
+                        <p>Branded robes, gold-capped toiletries, and five-star baths — the kind of boutique-hotel details that tell you someone thought of everything.</p>
+                        <a href="#inquire" class="btn btn-gold" style="margin-top:8px;align-self:flex-start">Book the Estate</a>
                     </div>
                 </div>
-                <div class="membership-note">
-                    <p>Add-ons available: in-house chef, engineer on-call, photoshoot wall access, event catering, airport transfers.</p>
+            </div>
+
+            <div class="tab-panel" id="panel-studios">
+                <div class="section-head center" style="margin-bottom:36px">
+                    <span class="eyebrow">The Studios</span>
+                    <h2 class="display">Two Rooms. One Standard.</h2>
+                </div>
+                <div class="carousel" data-autoplay="5000">
+                    <div class="carousel-track">
+                        <div class="carousel-slide"><img src="images/b-room.jpg" alt="B Room lounge" loading="lazy"><span class="carousel-cap">B Room</span></div>
+                        <div class="carousel-slide"><img src="images/g-15-204-studio-equipment-neumann-u87.jpg" alt="Neumann U87 microphone" loading="lazy"><span class="carousel-cap">Neumann U87</span></div>
+                        <div class="carousel-slide"><img src="images/g-28-237-studio-vocal-neumann-tlm-103.jpg" alt="Neumann TLM 103 microphone" loading="lazy"><span class="carousel-cap">TLM 103</span></div>
+                        <div class="carousel-slide"><img src="images/g-22-116-studio-mood.jpg" alt="C Room studio" loading="lazy"><span class="carousel-cap">C Room</span></div>
+                        <div class="carousel-slide"><img src="images/g-writers-room.jpg" alt="Writers room" loading="lazy"><span class="carousel-cap">Writers Room</span></div>
+                        <div class="carousel-slide"><img src="images/g-35-187-studio-equipment-detail.jpg" alt="Outboard equipment detail" loading="lazy"><span class="carousel-cap">The Rack</span></div>
+                        <div class="carousel-slide"><img src="images/g-46-207-studio-mic-alt.jpg" alt="Tracking microphone" loading="lazy"><span class="carousel-cap">Tracking</span></div>
+                    </div>
+                    <button class="carousel-btn carousel-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                    <button class="carousel-btn carousel-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                    <div class="carousel-dots"></div>
+                </div>
+                <div class="gear">
+                    <p class="gear-credential">Neumann U87s into a Neve front end, a Tube-Tech CL1B, UAD Apollo conversion, and Pro Tools — pro-grade, end to end.</p>
+                    <p class="gear-rider">Full gear rider available on request.</p>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="panel-specs">
+                <div class="amenity-cols">
+                    <div class="amenity-col"><h4>The Estate</h4><ul><li>Gated &amp; fully private</li><li>Tinted privacy windows — see out, no one sees in</li><li>Greenery nature oasis</li><li>6 bathrooms — one in every studio &amp; suite</li><li>Warm hand towels available</li><li>On-site security</li></ul></div>
+                    <div class="amenity-col"><h4>Spaces</h4><ul><li>Two recording studios</li><li>Creative Lounge</li><li>Executive Lounge</li><li>Conference Room</li><li>Podcast-ready booth</li><li>Photoshoot Wall</li></ul></div>
+                    <div class="amenity-col"><h4>Kitchen &amp; Outdoor</h4><ul><li>Chef's kitchen</li><li>Coffee &amp; tea station</li><li>Air fryer, dishwasher &amp; full fridge</li><li>Outdoor deck — lounge &amp; dining</li><li>Grill</li></ul></div>
+                    <div class="amenity-col"><h4>Presidential Suite</h4><ul><li>California King bed</li><li>Rain shower &amp; jacuzzi tub</li><li>Sitting area &amp; study desk</li><li>Snack bar &amp; balcony (smoking permitted)</li><li>Blackout curtains</li></ul></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="stats-section">
+    <!-- Book the Estate (ways to book + reserve) -->
+    <section class="section packages-section" id="book">
         <div class="container">
-            <div class="stats-grid">
-                <div class="stat">
-                    <span class="stat-number" data-target="5000">0</span>
-                    <span class="stat-label">Sq Ft Estate</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number" data-target="3">0</span>
-                    <span class="stat-label">King Suites On-Site</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number" data-target="2">0</span>
-                    <span class="stat-label">Studios On-Property</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number" data-target="1">0</span>
-                    <span class="stat-label">Gated & Private</span>
-                </div>
+            <div class="section-head center reveal">
+                <span class="eyebrow">Book the Estate</span>
+                <h2 class="display">However You Create</h2>
+                <p class="section-lead">One estate, built for the full range of the work — pick the version that fits and we'll tailor the reservation around it.</p>
             </div>
+            <div class="usecase-grid reveal">
+                <a href="#inquire" class="usecase" data-inquiry="camp"><img src="images/hero-studio.jpg" alt="Recording and writing camp" loading="lazy"><div class="usecase-body"><h3>Recording / Writing Camp</h3><p>Both studios, all three suites, and a chef on call — bring the whole roster and lock in for days.</p><span>Camps →</span></div></a>
+                <a href="#inquire" class="usecase" data-inquiry="event"><img src="images/hero-lounge.jpg" alt="Listening party or event" loading="lazy"><div class="usecase-body"><h3>Listening Party / Event</h3><p>A fully gated, invite-only setting for premieres, showcases, and brand activations.</p><span>Events →</span></div></a>
+                <a href="#inquire" class="usecase" data-inquiry="photo-video"><img src="images/photoshoot-wall.jpg" alt="Photoshoot wall backdrop" loading="lazy" style="object-position:center top"><div class="usecase-body"><h3>Photo &amp; Video</h3><p>Editorial interiors and grounds — a turnkey set for shoots.</p><span>Production →</span></div></a>
+                <a href="#inquire" class="usecase" data-inquiry="podcast"><img src="images/g-28-237-studio-vocal-neumann-tlm-103.jpg" alt="Podcast recording" loading="lazy"><div class="usecase-body"><h3>Podcast</h3><p>Record anywhere on the estate — lounge, suite, studio, or deck — on Shure broadcast mics, in a quiet, private setting.</p><span>Audio →</span></div></a>
+            </div>
+            <div class="tiers reveal" style="margin-top:64px">
+                <div class="tier"><div class="tier-top"><h3>Day</h3><span class="tier-badge">Session</span></div><p class="tier-desc">Full estate access for a single day. One studio, common areas, and kitchen included.</p><ul class="tier-list"><li>Full estate access</li><li>1 studio active</li><li>Chef's kitchen included</li><li>All common areas &amp; deck</li><li>On-site security included</li></ul></div>
+                <div class="tier featured"><div class="tier-top"><h3>Full Estate</h3><span class="tier-badge">Buyout</span></div><p class="tier-desc">Both studios running simultaneously. All three king suites. Full run of the property.</p><ul class="tier-list"><li>Both studios active</li><li>All 3 king suites included</li><li>Chef's kitchen &amp; lounges</li><li>Conference room access</li><li>On-site security included</li></ul></div>
+                <div class="tier"><div class="tier-top"><h3>Camp</h3><span class="tier-badge">3–7 Days</span></div><p class="tier-desc">A multi-day estate buyout for label and writer camps — the roster lives, works, and records on property.</p><ul class="tier-list"><li>Full estate, multi-day</li><li>Suites for the roster</li><li>Both studios running</li><li>Chef &amp; catering available</li><li>One invoice, one experience</li></ul></div>
+                <div class="tier"><div class="tier-top"><h3>Private</h3><span class="tier-badge">Event</span></div><p class="tier-desc">Listening parties, A&amp;R showcases, brand activations, and private industry events. Fully gated, invite-only.</p><ul class="tier-list"><li>Full estate access</li><li>Both lounges &amp; deck</li><li>Catering available</li><li>Conference room access</li><li>On-site security included</li></ul></div>
+            </div>
+            <div class="reserve-cta"><a href="#inquire" class="btn btn-gold">Request to Reserve</a></div>
+            <p class="packages-note">Add-ons available: in-house chef, engineer on-call, photoshoot with professional photographer, event catering.</p>
         </div>
     </section>
 
-    <!-- Quote Section -->
-    <section class="quote-section">
+    <!-- Partners — split -->
+    <section class="split split--reverse reveal" id="partners">
+        <div class="split-media">
+            <div class="media-fade">
+                <img class="is-active" src="images/partners.jpg" alt="TORCH ATL suite lifestyle workspace" loading="lazy">
+                <img src="images/g-31-33-work-entry-front-desk.jpg" alt="Front desk" loading="lazy">
+                <img src="images/g-63-v2-work-execs-anchor.jpg" alt="Executive workspace" loading="lazy">
+            </div>
+        </div>
+        <div class="split-body">
+            <span class="eyebrow">Development Partners</span>
+            <h2 class="display">A Creative Home<br>Base in Atlanta</h2>
+            <p>Torch Development Partnerships are extended creative residency agreements for labels and management companies investing in active artist development.</p>
+            <p>Stop coordinating separate studio time, hotel rooms, and logistics every time your roster comes through Atlanta. Torch gives your artists a home base — both studios, the suites, the full estate — on a priority access agreement built around your schedule.</p>
+            <a href="#inquire" class="btn btn-gold">Inquire About a Partnership</a>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="section gallery-section" id="gallery">
         <div class="container">
-            <blockquote class="quote">
-                <p>"The space you create in determines the work you create. TORCH is built for those who refuse to compromise."</p>
-                <cite>— Joi Coleman, Founder</cite>
-            </blockquote>
-        </div>
-    </section>
-
-    <!-- Partners Section -->
-    <section class="section about" id="partners">
-        <div class="container">
-            <div class="section-header fade-in">
-                <span class="section-label">Development Partners</span>
-                <h2 class="section-title">A Creative Home<br>Base in Atlanta</h2>
+            <div class="section-head center reveal">
+                <span class="eyebrow">Gallery</span>
+                <h2 class="display">The Estate in Full</h2>
+                <p class="section-lead">Suites, studios, lounges, and the brand details that make Torch feel like a boutique hotel, not a studio.</p>
             </div>
-            <div class="about-grid">
-                <div class="about-content fade-in">
-                    <p>Torch Development Partnerships are extended creative residency agreements for labels and management companies investing in active artist development.</p>
-                    <p>Stop coordinating separate studio time, hotel rooms, and logistics every time your roster comes through Atlanta. Torch gives your artists a home base — both studios, the suites, the full estate — on a priority access agreement built around your schedule.</p>
-                    <p>When your artists are in active development, environment matters. Torch is built to be that environment, consistently.</p>
+            <div class="carousel reveal" data-autoplay="4500">
+                <div class="carousel-track">
+                    <div class="carousel-slide"><img src="images/hero-suite.jpg" alt="California King suite" loading="lazy"><span class="carousel-cap">Presidential Suite</span></div>
+                    <div class="carousel-slide"><img src="images/g-presidental-suite-alt-view.jpg" alt="Suite sitting area" loading="lazy"><span class="carousel-cap">Suite Sitting Area</span></div>
+                    <div class="carousel-slide"><img src="images/g-37-232-suite-toiletries-detail.jpg" alt="Bath details" loading="lazy"><span class="carousel-cap">Bath Details</span></div>
+                    <div class="carousel-slide"><img src="images/m-culture.jpg" alt="Creative lounge" loading="lazy"><span class="carousel-cap">Creative Lounge</span></div>
+                    <div class="carousel-slide"><img src="images/g-1-loungejpg.jpg" alt="Executive lounge" loading="lazy"><span class="carousel-cap">Executive Lounge</span></div>
+                    <div class="carousel-slide"><img src="images/g-22-116-studio-mood.jpg" alt="Recording studio" loading="lazy"><span class="carousel-cap">The Studio</span></div>
+                    <div class="carousel-slide"><img src="images/m-kitchen.jpg" alt="Chef kitchen" loading="lazy"><span class="carousel-cap">Chef's Kitchen</span></div>
+                    <div class="carousel-slide"><img src="images/g-33-80-amenities-coffee-station.jpg" alt="Coffee bar" loading="lazy"><span class="carousel-cap">Coffee Bar</span></div>
+                    <div class="carousel-slide"><img src="images/g-10-198-amenities-outdoor.jpg" alt="Outdoor deck" loading="lazy"><span class="carousel-cap">Outdoor Deck</span></div>
+                    <div class="carousel-slide"><img src="images/g-26-317-amenities-balcony.jpg" alt="Balcony" loading="lazy"><span class="carousel-cap">Balcony</span></div>
+                    <div class="carousel-slide"><img src="images/g-48-23-gallery-fill-conference.jpg" alt="Conference room" loading="lazy"><span class="carousel-cap">Conference Room</span></div>
+                    <div class="carousel-slide"><img src="images/g-31-33-work-entry-front-desk.jpg" alt="Front desk" loading="lazy"><span class="carousel-cap">Front Desk</span></div>
+                    <div class="carousel-slide"><img src="images/g-20-261-about-brand-statement.jpg" alt="Brand wall" loading="lazy"><span class="carousel-cap">Brand Wall</span></div>
                 </div>
-                <div class="about-features fade-in">
-                    <div class="feature">
-                        <div class="feature-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                        </div>
-                        <h3>Priority Access</h3>
-                        <p>Dedicated studio time and priority scheduling built around your artist development calendar.</p>
-                    </div>
-                    <div class="feature">
-                        <div class="feature-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                        </div>
-                        <h3>One Invoice</h3>
-                        <p>Consolidate your Atlanta studio costs — studios, suites, and estate access under a single partnership agreement.</p>
-                    </div>
-                    <div class="feature">
-                        <div class="feature-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
-                        </div>
-                        <h3>Private by Design</h3>
-                        <p>Not a public program. Development Partnerships are offered directly to labels and management companies by inquiry only.</p>
-                    </div>
-                </div>
-            </div>
-            <div style="margin-top: 3rem; text-align: center;">
-                <a href="#inquire" class="btn btn-primary">Inquire About a Partnership</a>
+                <button class="carousel-btn carousel-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                <button class="carousel-btn carousel-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                <div class="carousel-dots"></div>
             </div>
         </div>
     </section>
 
-    <!-- Inquire Section -->
-    <section class="section inquire" id="inquire">
+    <!-- Inquire -->
+    <section class="section inquire-section" id="inquire">
         <div class="container">
             <div class="inquire-grid">
-                <div class="inquire-content">
-                    <span class="section-label">Book the Estate</span>
-                    <h2 class="section-title">Inquire About the Estate</h2>
-                    <p>All bookings are by inquiry only. We review every request personally to ensure the right fit for the estate.</p>
-                    <p>Whether you're booking a day session, a multi-day camp, or exploring a development partnership — we'd love to hear from you.</p>
+                <div class="inquire-content reveal">
+                    <span class="eyebrow">Reserve the Estate</span>
+                    <h2 class="display">Request to<br>Reserve</h2>
+                    <p>No payment to request. Tell us your dates and what you're creating — we review every request personally to ensure the right fit for the estate.</p>
+                    <p>Once your request is accepted, you'll receive a tailored quote. Confirm it and we send deposit details, a secure pay link, and the estate agreement via DocuSign to lock your dates.</p>
                     <div class="inquire-info">
                         <div class="info-item">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                             <span>Atlanta, Georgia</span>
                         </div>
                         <div class="info-item">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                <polyline points="22,6 12,13 2,6"></polyline>
-                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                             <a href="mailto:bookings@torchatl.com">bookings@torchatl.com</a>
                         </div>
                         <div class="info-item">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                             <a href="tel:+14048009507">(404) 800-9507</a>
                         </div>
                     </div>
+                    <p style="margin-top:28px;font-size:0.85rem;letter-spacing:0.02em;"><a href="gear.html" target="_blank" rel="noopener" style="color:var(--gold)">View the full studio gear rider →</a></p>
                 </div>
-                <div class="inquire-form-container">
-                    <form class="inquire-form" id="inquire-form" action="https://formsubmit.co/bookings@torchatl.com" method="POST">
-                        <input type="hidden" name="_subject" value="New Estate Inquiry — TORCH ATL">
-                        <input type="hidden" name="_captcha" value="false">
-                        <input type="hidden" name="_template" value="table">
-                        <input type="hidden" name="_next" value="https://torchatl.com/thanks.html">
-                        <input type="text" name="_honey" style="display:none">
-                        <div class="form-group">
-                            <label>Full Name</label>
-                            <input type="text" name="name" required placeholder="Your name">
+                <div class="inquire-form-container reveal">
+                    <div class="rr-steps">
+                        <div class="rr-stepitem active" data-step="1"><span class="rr-stepnum">01</span><span class="rr-steplabel">Reservation</span></div>
+                        <div class="rr-stepitem" data-step="2"><span class="rr-stepnum">02</span><span class="rr-steplabel">Your Details</span></div>
+                        <div class="rr-stepitem" data-step="3"><span class="rr-stepnum">03</span><span class="rr-steplabel">Review</span></div>
+                    </div>
+                    <form class="inquire-form" id="reserve-form">
+                        <!-- Step 1 -->
+                        <div class="rr-step active" data-step="1">
+                            <div class="form-group">
+                                <label>What are you here to do?</label>
+                                <select name="purpose" id="rr-purpose" required>
+                                    <option value="">Select…</option>
+                                    <option value="Record / Write">Record / Write</option>
+                                    <option value="Host an Event">Host an Event</option>
+                                    <option value="Shoot (Photo / Video)">Shoot (Photo / Video)</option>
+                                    <option value="Other">Other (podcast, mixed use)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="rr-duration-group">
+                                <label>How long?</label>
+                                <select name="duration" id="rr-duration" required>
+                                    <option value="">Select…</option>
+                                    <option value="Single Day">Single Day</option>
+                                    <option value="Multi-Day (2–7 days)">Multi-Day (2–7 days)</option>
+                                    <option value="Extended / Residency">Extended / Residency</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="rr-event-hours" style="display:none">
+                                <label>Event Hours</label>
+                                <input type="text" name="event_hours" placeholder="e.g. 7:00 PM – 12:00 AM">
+                            </div>
+                            <div class="form-group" id="rr-room-group" style="display:none">
+                                <label>Studio Room</label>
+                                <select name="room">
+                                    <option value="">No preference</option>
+                                    <option value="B Room">B Room</option>
+                                    <option value="C Room">C Room</option>
+                                    <option value="Both Rooms">Both Rooms</option>
+                                </select>
+                            </div>
+                            <div class="rr-row">
+                                <div class="form-group"><label>Preferred Start Date</label><input type="date" name="start_date" required></div>
+                                <div class="form-group"><label>End Date</label><input type="date" name="end_date"></div>
+                            </div>
+                            <div class="rr-row">
+                                <div class="form-group"><label>Number of Days</label><input type="number" name="days" min="1" max="60" value="1"></div>
+                                <div class="form-group"><label>Number of Guests</label><input type="number" name="guests" min="1" max="60" value="1"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Add-ons</label>
+                                <label class="rr-addon"><input type="checkbox" name="addon_engineer"><span>In-House Engineer</span></label>
+                                <label class="rr-addon"><input type="checkbox" name="addon_chef"><span>In-House Chef</span></label>
+                                <label class="rr-addon"><input type="checkbox" name="addon_catering"><span>Event Catering</span></label>
+                                <label class="rr-addon"><input type="checkbox" name="addon_photographer"><span>Photoshoot with professional photographer</span></label>
+                            </div>
+                            <div class="rr-actions"><span></span><button type="button" class="btn btn-gold" data-next="2">Continue</button></div>
                         </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" name="email" required placeholder="your@email.com">
+                        <!-- Step 2 -->
+                        <div class="rr-step" data-step="2">
+                            <div class="rr-row">
+                                <div class="form-group"><label>Full Name *</label><input type="text" name="name" placeholder="Your name"></div>
+                                <div class="form-group"><label>Phone *</label><input type="tel" name="phone" placeholder="(555) 555-5555"></div>
+                            </div>
+                            <div class="form-group"><label>Email *</label><input type="email" name="email" placeholder="you@example.com"></div>
+                            <div class="rr-row">
+                                <div class="form-group"><label>Artist / Project Name</label><input type="text" name="artist" placeholder="Artist or project"></div>
+                                <div class="form-group"><label>Company</label><input type="text" name="company" placeholder="Company or label"></div>
+                            </div>
+                            <label class="rr-toggle"><input type="checkbox" id="rr-label-toggle" name="is_label_booking"><span>This is a label / management booking</span></label>
+                            <div class="rr-conditional" id="rr-label-fields">
+                                <div class="form-group"><label>Label Name</label><input type="text" name="label_name" placeholder="Label or company"></div>
+                                <div class="rr-row">
+                                    <div class="form-group"><label>A&amp;R Contact</label><input type="text" name="ar_contact" placeholder="A&amp;R name"></div>
+                                    <div class="form-group"><label>A&amp;R Email</label><input type="email" name="ar_email" placeholder="ar@label.com"></div>
+                                </div>
+                                <div class="form-group"><label>PO Number (if available)</label><input type="text" name="po_number" placeholder="Purchase order number"></div>
+                            </div>
+                            <div class="form-group"><label>Tell us about the project</label><textarea name="message" rows="3" placeholder="What you're creating, special requests, equipment needs…"></textarea></div>
+                            <div class="rr-actions"><button type="button" class="rr-back" data-back="1">Back</button><button type="button" class="btn btn-gold" data-next="3">Review Request</button></div>
                         </div>
-                        <div class="form-group">
-                            <label>Phone</label>
-                            <input type="tel" name="phone" placeholder="(555) 555-5555">
+                        <!-- Step 3 -->
+                        <div class="rr-step" data-step="3">
+                            <div class="rr-summary" id="rr-summary"></div>
+                            <div class="rr-process">
+                                <h4>What Happens Next</h4>
+                                <ol>
+                                    <li>We review and accept your request.</li>
+                                    <li>You receive a tailored quote for your reservation.</li>
+                                    <li>Confirm the quote — we send deposit details and a secure pay link.</li>
+                                    <li>Sign the estate agreement via DocuSign and your dates are locked.</li>
+                                </ol>
+                            </div>
+                            <div class="rr-actions"><button type="button" class="rr-back" data-back="2">Back</button><button type="submit" class="btn btn-gold" id="rr-submit">Submit Reservation Request</button></div>
                         </div>
-                        <div class="form-group">
-                            <label>Inquiry Type</label>
-                            <select name="role" required>
-                                <option value="">Select inquiry type</option>
-                                <option value="day-session">Day Session</option>
-                                <option value="full-estate">Full Estate Buyout</option>
-                                <option value="camp">Camp Package (3-7 days)</option>
-                                <option value="executive">Executive Retreat</option>
-                                <option value="weekend">Weekend Warrior (Fri-Sun)</option>
-                                <option value="event">Private Event / Listening Party</option>
-                                <option value="partnership">Development Partnership</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Tell us about the project</label>
-                            <textarea name="message" rows="4" placeholder="Dates, group size, and what you're working on..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>How did you hear about us?</label>
-                            <select name="referral">
-                                <option value="">Select one</option>
-                                <option value="member">Current Member Referral</option>
-                                <option value="social">Social Media</option>
-                                <option value="industry">Industry Contact</option>
-                                <option value="search">Online Search</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-full">Submit Inquiry</button>
-                        <p class="form-note">We respond to all inquiries within 48 hours.</p>
                     </form>
+                    <div class="rr-success" id="rr-success">
+                        <div class="rr-success-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <h3>Request Received</h3>
+                        <p>Thank you — we review every request personally and typically respond within 24 hours with next steps and a tailored quote.</p>
+                        <p class="rr-success-note">Planning a shoot? Book a photoshoot with <strong>Ari Skin</strong> — <a href="https://instagram.com/ariskin" target="_blank" rel="noopener">@ariskin</a> · <a href="https://www.ariphotos.com/" target="_blank" rel="noopener">ariphotos.com</a></p>
+                    </div>
+                    <p class="form-note">No payment is taken to request. Pricing follows once your request is accepted.</p>
                 </div>
             </div>
         </div>
@@ -542,32 +421,21 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
+            <div class="footer-top">
                 <div class="footer-brand">
-                    <div class="footer-logo">
-                        <span class="logo-torch">TORCH</span>
-                        <span class="logo-atl">ATL</span>
-                    </div>
+                    <div class="footer-logo"><span class="logo-torch">TORCH</span><span class="logo-atl">ATL</span></div>
                     <p class="footer-tagline">Where Comfort Ignites Creativity</p>
                 </div>
                 <div class="footer-links">
-                    <a href="#about">About</a>
-                    <a href="#estate">The Estate</a>
-                    <a href="#membership">Partners</a>
-                    <a href="#inquire">Book Now</a>
+                    <a href="#about">About</a><a href="#estate">The Estate</a><a href="#book">Book the Estate</a><a href="#gallery">Gallery</a><a href="#partners">Partners</a><a href="#inquire">Request to Reserve</a>
                 </div>
-                <div class="footer-social">
-                    <a href="https://instagram.com/torchatlhq" target="_blank" rel="noopener" class="social-link" aria-label="Instagram">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                        </svg>
-                    </a>
-
-                    <a href="https://youtube.com/@torchatl" target="_blank" rel="noopener" class="social-link" aria-label="YouTube">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                        </svg>
-                    </a>
+                <div class="footer-contact">
+                    <a href="mailto:bookings@torchatl.com">bookings@torchatl.com</a>
+                    <a href="tel:+14048009507">(404) 800-9507</a>
+                    <div class="footer-social">
+                        <a href="https://instagram.com/torchatlhq" target="_blank" rel="noopener">Instagram</a>
+                        <a href="https://youtube.com/@torchatl" target="_blank" rel="noopener">YouTube</a>
+                    </div>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -577,18 +445,12 @@
         </div>
     </footer>
 
-    <!-- Success Modal -->
-    <div class="modal" id="success-modal">
-        <div class="modal-content">
-            <div class="modal-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-            </div>
-            <h3>Inquiry Received</h3>
-            <p>Thank you for your interest in TORCH ATL. We'll review your inquiry and respond within 48 hours.</p>
-            <button class="btn btn-primary" onclick="closeModal()">Close</button>
-        </div>
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+        <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+        <img id="lightbox-img" src="" alt="">
+        <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
     </div>
 
     <!-- Member Login Modal -->
@@ -596,28 +458,19 @@
         <div class="modal-content login-modal-content">
             <button class="modal-close" onclick="closeLoginModal()">&times;</button>
             <div class="login-header">
-                <div class="login-logo">
-                    <span class="logo-torch">TORCH</span>
-                    <span class="logo-atl">ATL</span>
-                </div>
+                <div class="login-logo"><span class="logo-torch">TORCH</span><span class="logo-atl">ATL</span></div>
                 <p class="login-tagline">Member Portal</p>
             </div>
             <form id="website-login-form" onsubmit="handleMemberLogin(event)">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="login-email" required placeholder="your@email.com">
-                </div>
-                <div class="form-group">
-                    <label>Access Code</label>
-                    <input type="password" id="login-code" required placeholder="Your access code">
-                </div>
+                <div class="form-group"><label>Email</label><input type="email" id="login-email" required placeholder="your@email.com"></div>
+                <div class="form-group"><label>Access Code</label><input type="password" id="login-code" required placeholder="Your access code"></div>
                 <div id="login-error" class="login-error"></div>
-                <button type="submit" class="btn btn-primary btn-full">Enter Portal</button>
+                <button type="submit" class="btn btn-gold btn-full">Enter Portal</button>
             </form>
-            <p class="login-help">Not a member? <a href="#inquire" onclick="closeLoginModal()">Request membership</a></p>
+            <p class="login-help">Not a member? <a href="#inquire" onclick="closeLoginModal()">Request access</a></p>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=12"></script>
 </body>
 </html>
