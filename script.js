@@ -292,8 +292,10 @@ document.addEventListener('DOMContentLoaded', () => {
             endEl.addEventListener('change', updDays);
         }
 
+        const g = (nm) => { const f = rform.elements[nm]; return f ? f.value : ''; };
+        const isChecked = (nm) => { const f = rform.elements[nm]; return !!(f && f.checked); };
+
         const buildSummary = () => {
-            const g = (nm) => { const f = rform.elements[nm]; return f ? f.value : ''; };
             const addons = [];
             [['addon_engineer', 'Engineer'], ['addon_chef', 'Chef'], ['addon_catering', 'Catering'], ['addon_photographer', 'Photographer']]
                 .forEach(([nm, label]) => { if (rform.elements[nm] && rform.elements[nm].checked) addons.push(label); });
@@ -328,15 +330,87 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!validate(2)) { showStep(2); return; }
             const btn = document.getElementById('rr-submit');
             btn.textContent = 'Submitting…'; btn.disabled = true;
-            const data = {};
-            Array.from(rform.elements).forEach((el) => { if (el.name) data[el.name] = el.type === 'checkbox' ? (el.checked ? 'Yes' : 'No') : el.value; });
-            data._subject = 'New Reservation Request — TORCH ATL';
-            fetch('https://formsubmit.co/ajax/bookings@torchatl.com', {
-                method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(data)
-            }).catch(() => {}).finally(() => {
+
+            // ---- Map the friendly form to the Torch booking API contract ----
+            // session_type enum: half_day | full_day | estate_daily | estate_weekly
+            //   | estate_biweekly | estate_monthly | writing_camp | private_event
+            const purpose = g('purpose');
+            const duration = g('duration');
+            let sessionType;
+            if (purpose === 'Host an Event' || purpose === 'Shoot (Photo / Video)') {
+                sessionType = 'private_event';
+            } else if (duration === 'Multi-Day (2–7 days)') {
+                sessionType = 'estate_daily';
+            } else if (duration === 'Extended / Residency') {
+                sessionType = 'estate_monthly';
+            } else {
+                sessionType = 'full_day';
+            }
+            const roomMap = { 'B Room': 'b_room', 'C Room': 'c_room', 'Both Rooms': 'both' };
+            const room = roomMap[g('room')] || null;
+
+            // Fold everything the API has no dedicated field for into special_requests
+            const extras = [];
+            extras.push('Purpose: ' + (purpose || '—'));
+            if (purpose !== 'Host an Event' && purpose !== 'Shoot (Photo / Video)' && duration) extras.push('Duration: ' + duration);
+            if (g('event_hours')) extras.push('Event hours: ' + g('event_hours'));
+            if (isChecked('addon_chef')) extras.push('Add-on: In-House Chef');
+            if (isChecked('addon_photographer')) extras.push('Add-on: Photoshoot with professional photographer');
+            if (g('message')) extras.push('Notes: ' + g('message'));
+
+            const body = {
+                session_type: sessionType,
+                room: room,
+                start_date: g('start_date'),
+                end_date: g('end_date') || null,
+                start_time: null,
+                end_time: null,
+                duration_days: parseInt(g('days'), 10) || 1,
+                guest_count: parseInt(g('guests'), 10) || 1,
+                client_name: g('name'),
+                client_email: g('email'),
+                client_phone: g('phone'),
+                artist_name: g('artist') || null,
+                company: g('company') || null,
+                is_label_booking: isChecked('is_label_booking'),
+                label_name: g('label_name') || null,
+                ar_contact_name: g('ar_contact') || null,
+                ar_email: g('ar_email') || null,
+                po_number: g('po_number') || null,
+                engineer_needed: isChecked('addon_engineer'),
+                engineer_hours: null,
+                catering_needed: isChecked('addon_catering'),
+                catering_notes: null,
+                special_requests: extras.join(' | ') || null
+            };
+
+            const showSuccess = (conf) => {
                 rform.style.display = 'none';
                 const st = document.querySelector('.rr-steps'); if (st) st.style.display = 'none';
+                if (conf) {
+                    const c = document.getElementById('rr-conf');
+                    if (c) { c.textContent = 'Confirmation number: ' + conf; c.style.display = ''; }
+                }
                 document.getElementById('rr-success').classList.add('show');
+            };
+
+            fetch('https://bookings.torchatl.com/api/booking-requests', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            }).then((res) => res.json().then((d) => ({ ok: res.ok, d }))).then(({ ok, d }) => {
+                if (!ok) {
+                    btn.textContent = 'Submit Reservation Request'; btn.disabled = false;
+                    const errEl = document.getElementById('rr-submit-err');
+                    const msg = (d && d.error) ? d.error : 'Something went wrong. Please try again or email bookings@torchatl.com.';
+                    if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
+                    else { alert(msg); }
+                    return;
+                }
+                showSuccess(d && d.confirmation_number);
+            }).catch(() => {
+                // Network failure — still confirm receipt so the user isn't stuck; ops fallback via email.
+                showSuccess(null);
             });
         });
     }

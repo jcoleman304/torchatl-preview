@@ -720,3 +720,7 @@ img { max-width: 100%; display: block; }
     .hero-tagline { font-size: 1.25rem; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
 }
+
+/* Reservation form: submit error + confirmation number */
+.rr-submit-err { color: #ff7a7a; font-size: 0.9rem; margin: 0 0 14px; text-align: center; }
+.rr-success-conf { color: var(--gold); font-size: 0.95rem; letter-spacing: 0.04em; font-weight: 600; margin-top: 10px; }
