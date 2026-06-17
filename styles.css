@@ -424,6 +424,7 @@ img { max-width: 100%; display: block; }
 .carousel-dots { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-top:22px; }
 .carousel-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.25); border:none; cursor:pointer; transition:var(--transition); padding:0; }
 .carousel-dot.active { background:var(--gold); width:22px; border-radius:4px; }
+.carousel-count { color:rgba(245,240,232,0.7); font-size:0.8rem; letter-spacing:0.15em; font-variant-numeric:tabular-nums; }
 @media (max-width: 768px) {
     .carousel-slide { height: clamp(300px, 58vh, 460px); }
     .carousel-track { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }

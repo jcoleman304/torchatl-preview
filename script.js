@@ -105,17 +105,27 @@ document.addEventListener('DOMContentLoaded', () => {
         let idx = 0, timer = null, scrollRAF = null;
         const delay = parseInt(car.dataset.autoplay, 10) || 0;
         const dots = [];
+        // large galleries: a "n / total" counter reads cleaner than dozens of wrapping dots
+        const manyDots = n > 16;
+        let counter = null;
         if (dotsWrap) {
-            slides.forEach((_, i) => {
-                const b = document.createElement('button');
-                b.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-                b.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-                b.addEventListener('click', () => { goTo(i); restart(); });
-                dotsWrap.appendChild(b);
-                dots.push(b);
-            });
+            if (manyDots) {
+                counter = document.createElement('span');
+                counter.className = 'carousel-count';
+                counter.textContent = '1 / ' + n;
+                dotsWrap.appendChild(counter);
+            } else {
+                slides.forEach((_, i) => {
+                    const b = document.createElement('button');
+                    b.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+                    b.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+                    b.addEventListener('click', () => { goTo(i); restart(); });
+                    dotsWrap.appendChild(b);
+                    dots.push(b);
+                });
+            }
         }
-        function setActive(i) { idx = (i + n) % n; dots.forEach((d, j) => d.classList.toggle('active', j === idx)); }
+        function setActive(i) { idx = (i + n) % n; dots.forEach((d, j) => d.classList.toggle('active', j === idx)); if (counter) counter.textContent = (idx + 1) + ' / ' + n; }
         function goTo(i) {
             setActive(i);
             if (mq.matches) {
