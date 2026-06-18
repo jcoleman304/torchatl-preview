@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 track.style.transform = 'translateX(-' + (idx * 100) + '%)';
             }
         }
-        function play() { if (delay && n > 1 && !mq.matches) timer = setInterval(() => goTo(idx + 1), delay); }
+        function play() { stop(); if (delay && n > 1 && !mq.matches) timer = setInterval(() => goTo(idx + 1), delay); }
         function stop() { clearInterval(timer); }
         function restart() { stop(); play(); }
         car.querySelector('.carousel-prev')?.addEventListener('click', () => { goTo(idx - 1); restart(); });
