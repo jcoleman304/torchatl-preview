@@ -2038,3 +2038,39 @@ button[type="submit"]:disabled,
     background: rgba(239, 68, 68, 0.2);
     color: var(--danger);
 }
+
+/* ============================================
+   Install-as-app button on the login screen
+   ============================================ */
+.install-btn {
+    margin: 18px auto 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--gold, #D4AF37);
+    color: var(--gold, #D4AF37);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 11px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.install-btn:hover {
+    background: var(--gold, #D4AF37);
+    color: #0A0A0A;
+}
+.install-btn .install-icon { font-size: 16px; line-height: 1; }
+.install-hint {
+    margin-top: 16px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text-secondary, #aaa);
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.install-hint strong { color: var(--gold, #D4AF37); font-weight: 600; }

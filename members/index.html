@@ -49,6 +49,14 @@
             </form>
 
             <p class="login-note">Membership by invitation only.</p>
+
+            <!-- Install-as-app affordance (shown only when installable, hidden once installed) -->
+            <button type="button" id="install-app-btn" class="install-btn" style="display:none;" onclick="promptInstall()">
+                <span class="install-icon">⤓</span> Install App
+            </button>
+            <p id="install-ios-hint" class="install-hint" style="display:none;">
+                Install this portal: tap <strong>Share</strong> <span aria-hidden="true">􀈂</span>, then <strong>Add to Home Screen</strong>.
+            </p>
         </div>
         <div class="login-bg"></div>
     </div>
@@ -773,6 +781,44 @@
                 });
             });
         }
+    </script>
+
+    <!-- Install-app affordance on the login screen -->
+    <script>
+        var deferredInstallPrompt = null;
+        var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+
+        // Android/Chromium: capture the native install prompt and reveal the button.
+        window.addEventListener('beforeinstallprompt', function (e) {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            var btn = document.getElementById('install-app-btn');
+            if (btn && !isStandalone) btn.style.display = 'inline-flex';
+        });
+
+        window.addEventListener('appinstalled', function () {
+            deferredInstallPrompt = null;
+            var btn = document.getElementById('install-app-btn'); if (btn) btn.style.display = 'none';
+            var hint = document.getElementById('install-ios-hint'); if (hint) hint.style.display = 'none';
+        });
+
+        function promptInstall() {
+            if (!deferredInstallPrompt) return;
+            deferredInstallPrompt.prompt();
+            deferredInstallPrompt.userChoice.finally(function () {
+                deferredInstallPrompt = null;
+                var btn = document.getElementById('install-app-btn'); if (btn) btn.style.display = 'none';
+            });
+        }
+
+        // iOS Safari never fires beforeinstallprompt — show the manual hint instead.
+        window.addEventListener('load', function () {
+            if (isIOS && !isStandalone) {
+                var hint = document.getElementById('install-ios-hint');
+                if (hint) hint.style.display = 'block';
+            }
+        });
     </script>
 </body>
 </html>
