@@ -82,6 +82,7 @@
             <nav class="header-nav">
                 <a href="#" class="nav-link active" data-section="dashboard">Dashboard</a>
                 <a href="#" class="nav-link" data-section="booking">Book Session</a>
+                <a href="#" class="nav-link" data-section="calendar">Calendar</a>
                 <a href="#" class="nav-link" data-section="hours">My Credits</a>
                 <a href="#" class="nav-link" data-section="guests">Guests</a>
                 <a href="#" class="nav-link" data-section="engineers">Engineers</a>
@@ -371,6 +372,30 @@
                             <button type="submit" class="btn primary full">Confirm Booking</button>
                         </form>
                     </div>
+                </div>
+            </section>
+
+            <!-- Calendar Section -->
+            <section id="calendar" class="section">
+                <div class="section-header">
+                    <h2>Calendar</h2>
+                    <p>Your sessions in detail — everything else shows as unavailable.</p>
+                </div>
+                <div class="cal-view">
+                    <div class="cal-header">
+                        <button class="cal-nav" onclick="changeMemberCalendarMonth(-1)" aria-label="Previous month">‹</button>
+                        <span id="member-cal-month" class="cal-title">—</span>
+                        <button class="cal-nav" onclick="changeMemberCalendarMonth(1)" aria-label="Next month">›</button>
+                    </div>
+                    <div class="cal-weekdays">
+                        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                    </div>
+                    <div id="member-cal-grid" class="cal-grid"></div>
+                    <div class="cal-legend">
+                        <span class="legend-item"><span class="cal-dot mine"></span> Your session</span>
+                        <span class="legend-item"><span class="cal-dot busy"></span> Unavailable</span>
+                    </div>
+                    <div id="member-cal-day" class="cal-day-detail"></div>
                 </div>
             </section>
 

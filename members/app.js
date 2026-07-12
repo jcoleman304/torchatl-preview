@@ -152,6 +152,84 @@ function showSection(sectionId) {
     document.querySelectorAll('.nav-link').forEach(l => {
         l.classList.toggle('active', l.dataset.section === sectionId);
     });
+
+    if (sectionId === 'calendar') renderMemberCalendar();
+}
+
+// ============================================
+// MEMBER CALENDAR (own sessions in detail; others as "Unavailable")
+// ============================================
+let memberCalMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+let memberCalEvents = [];
+
+async function renderMemberCalendar() {
+    const grid = document.getElementById('member-cal-grid');
+    const titleEl = document.getElementById('member-cal-month');
+    if (!grid) return;
+
+    const y = memberCalMonth.getFullYear();
+    const m = memberCalMonth.getMonth();
+    if (titleEl) titleEl.textContent = memberCalMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    try {
+        memberCalEvents = await TorchAPI.bookings.calendar(
+            formatDateISO(new Date(y, m, 1)),
+            formatDateISO(new Date(y, m + 1, 0))
+        );
+    } catch (e) {
+        memberCalEvents = [];
+        console.warn('[TORCH] Calendar load failed:', e.message);
+    }
+
+    const startDow = new Date(y, m, 1).getDay();
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+    const todayStr = formatDateISO(new Date());
+
+    let html = '';
+    for (let i = 0; i < startDow; i++) html += '<div class="cal-cell other"></div>';
+    for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = formatDateISO(new Date(y, m, d));
+        const dayEvents = memberCalEvents.filter(e => e.date === dateStr);
+        const hasMine = dayEvents.some(e => e.mine);
+        const hasBusy = dayEvents.some(e => !e.mine);
+        let dots = '';
+        if (hasMine) dots += '<span class="cal-dot mine"></span>';
+        if (hasBusy) dots += '<span class="cal-dot busy"></span>';
+        html += `<div class="cal-cell${dateStr === todayStr ? ' today' : ''}${dayEvents.length ? ' has-events' : ''}" onclick="selectMemberCalDay('${dateStr}')">`
+            + `<span class="cal-num">${d}</span><span class="cal-dots">${dots}</span></div>`;
+    }
+    grid.innerHTML = html;
+    document.getElementById('member-cal-day').innerHTML = '';
+}
+
+function changeMemberCalendarMonth(delta) {
+    memberCalMonth = new Date(memberCalMonth.getFullYear(), memberCalMonth.getMonth() + delta, 1);
+    renderMemberCalendar();
+}
+
+function selectMemberCalDay(dateStr) {
+    const el = document.getElementById('member-cal-day');
+    if (!el) return;
+    const label = formatDate(parseLocalDate(dateStr));
+    const evs = memberCalEvents.filter(e => e.date === dateStr)
+        .sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+    if (!evs.length) {
+        el.innerHTML = `<h4>${label}</h4><p class="cal-empty">Nothing booked. `
+            + `<a href="#" onclick="showSection('booking');return false;">Book a session →</a></p>`;
+        return;
+    }
+    const rows = evs.map(e => {
+        if (e.mine) {
+            const t = (e.type || 'Session'); const typeLabel = t.charAt(0).toUpperCase() + t.slice(1);
+            return `<div class="cal-ev mine"><span class="cal-ev-time">${formatTime(e.startTime)}–${formatTime(e.endTime)}</span>`
+                + `<span class="cal-ev-label">${escapeHtml(typeLabel)}${e.engineerName ? ' · ' + escapeHtml(e.engineerName) : ''}`
+                + `${e.status === 'pending' ? ' <em>(pending approval)</em>' : ''}</span></div>`;
+        }
+        return `<div class="cal-ev busy"><span class="cal-ev-time">${formatTime(e.startTime)}–${formatTime(e.endTime)}</span>`
+            + `<span class="cal-ev-label">Unavailable</span></div>`;
+    }).join('');
+    el.innerHTML = `<h4>${label}</h4>${rows}`;
 }
 
 // Populate Dashboard

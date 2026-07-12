@@ -145,6 +145,10 @@ const TorchAPI = (() => {
       return get(`/bookings/availability?date=${date}`);
     },
 
+    async calendar(from, to) {
+      return get(`/bookings/calendar?from=${from}&to=${to}`);
+    },
+
     async create(booking) {
       return post('/bookings', booking);
     },

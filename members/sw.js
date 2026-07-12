@@ -1,6 +1,6 @@
 // TORCH ATL Member Portal — service worker
 // Bump CACHE when shipping new app-shell assets so clients pick them up.
-const CACHE = 'torch-members-v3';
+const CACHE = 'torch-members-v4';
 const SHELL = [
   './',
   './index.html',
