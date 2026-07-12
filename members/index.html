@@ -50,13 +50,21 @@
 
             <p class="login-note">Membership by invitation only.</p>
 
-            <!-- Install-as-app affordance (shown only when installable, hidden once installed) -->
-            <button type="button" id="install-app-btn" class="install-btn" style="display:none;" onclick="promptInstall()">
-                <span class="install-icon">⤓</span> Install App
-            </button>
-            <p id="install-ios-hint" class="install-hint" style="display:none;">
-                Install this portal: tap <strong>Share</strong> <span aria-hidden="true">􀈂</span>, then <strong>Add to Home Screen</strong>.
-            </p>
+            <!-- Install-as-app affordance (hidden once installed / running standalone) -->
+            <div id="get-app" class="get-app">
+                <p class="get-app-label">Get the app</p>
+                <div class="app-buttons">
+                    <button type="button" class="app-btn" onclick="downloadIOS()">
+                        <svg class="app-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
+                        <span>Download iOS App</span>
+                    </button>
+                    <button type="button" class="app-btn" onclick="downloadAndroid()">
+                        <svg class="app-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0001.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.5036C15.5902 8.2439 13.8533 7.8508 12 7.8508s-3.5902.3931-5.1367 1.0989L4.841 5.4461a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3435-4.1021-2.6892-7.5743-6.1185-9.4396"/></svg>
+                        <span>Download Android App</span>
+                    </button>
+                </div>
+                <p id="install-hint" class="install-hint" style="display:none;"></p>
+            </div>
         </div>
         <div class="login-bg"></div>
     </div>
@@ -783,41 +791,44 @@
         }
     </script>
 
-    <!-- Install-app affordance on the login screen -->
+    <!-- Download iOS / Android app buttons -->
     <script>
         var deferredInstallPrompt = null;
         var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-        var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
 
-        // Android/Chromium: capture the native install prompt and reveal the button.
+        function showInstallHint(html) {
+            var h = document.getElementById('install-hint');
+            if (h) { h.innerHTML = html; h.style.display = 'block'; }
+        }
+
+        // Android/Chromium fires this when the app is installable — capture it so
+        // the Android button can trigger the real install prompt.
         window.addEventListener('beforeinstallprompt', function (e) {
             e.preventDefault();
             deferredInstallPrompt = e;
-            var btn = document.getElementById('install-app-btn');
-            if (btn && !isStandalone) btn.style.display = 'inline-flex';
         });
 
         window.addEventListener('appinstalled', function () {
             deferredInstallPrompt = null;
-            var btn = document.getElementById('install-app-btn'); if (btn) btn.style.display = 'none';
-            var hint = document.getElementById('install-ios-hint'); if (hint) hint.style.display = 'none';
+            var g = document.getElementById('get-app'); if (g) g.style.display = 'none';
         });
 
-        function promptInstall() {
-            if (!deferredInstallPrompt) return;
-            deferredInstallPrompt.prompt();
-            deferredInstallPrompt.userChoice.finally(function () {
-                deferredInstallPrompt = null;
-                var btn = document.getElementById('install-app-btn'); if (btn) btn.style.display = 'none';
-            });
+        function downloadIOS() {
+            showInstallHint('On iPhone: open this page in <strong>Safari</strong>, tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.');
         }
 
-        // iOS Safari never fires beforeinstallprompt — show the manual hint instead.
-        window.addEventListener('load', function () {
-            if (isIOS && !isStandalone) {
-                var hint = document.getElementById('install-ios-hint');
-                if (hint) hint.style.display = 'block';
+        function downloadAndroid() {
+            if (deferredInstallPrompt) {
+                deferredInstallPrompt.prompt();
+                deferredInstallPrompt.userChoice.finally(function () { deferredInstallPrompt = null; });
+            } else {
+                showInstallHint('On Android: open this page in <strong>Chrome</strong>, tap the <strong>&#8942;</strong> menu, then <strong>Install app</strong>.');
             }
+        }
+
+        // Already installed / running standalone — hide the whole section.
+        window.addEventListener('load', function () {
+            if (isStandalone) { var g = document.getElementById('get-app'); if (g) g.style.display = 'none'; }
         });
     </script>
 </body>

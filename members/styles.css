@@ -2074,3 +2074,50 @@ button[type="submit"]:disabled,
     margin-right: auto;
 }
 .install-hint strong { color: var(--gold, #D4AF37); font-weight: 600; }
+
+/* ============================================
+   Download iOS / Android app buttons (login)
+   ============================================ */
+.get-app { margin-top: 24px; }
+.get-app-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted, #666);
+    margin-bottom: 12px;
+}
+.app-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+.app-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+    background: var(--cream, #F5F0E8);
+    color: #0A0A0A;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    border-radius: 12px;
+    padding: 13px 22px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.app-btn:hover {
+    background: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+.app-btn:active { transform: translateY(0); }
+.app-btn-icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
