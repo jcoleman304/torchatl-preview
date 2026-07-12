@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TORCH ATL | Member Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader">
+            <div class="torch-flame"></div>
+            <span>TORCH</span>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <div class="login-brand">
+                <h1>TORCH</h1>
+                <span>ATL</span>
+            </div>
+            <p class="login-tagline">Where Comfort Ignites Creativity.</p>
+
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Access Code</label>
+                    <input type="password" id="login-code" placeholder="Enter your access code" required>
+                </div>
+                <button type="submit" class="btn primary full">Enter Portal</button>
+            </form>
+
+            <p class="login-note">Membership by invitation only.</p>
+        </div>
+        <div class="login-bg"></div>
+    </div>
+
+    <!-- Main Portal -->
+    <div id="portal-screen" class="screen">
+        <!-- Header -->
+        <header class="portal-header">
+            <div class="header-left">
+                <div class="logo">
+                    <h1>TORCH</h1>
+                    <span>ATL</span>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <a href="#" class="nav-link active" data-section="dashboard">Dashboard</a>
+                <a href="#" class="nav-link" data-section="booking">Book Session</a>
+                <a href="#" class="nav-link" data-section="hours">My Credits</a>
+                <a href="#" class="nav-link" data-section="guests">Guests</a>
+                <a href="#" class="nav-link" data-section="engineers">Engineers</a>
+                <a href="#" class="nav-link" data-section="billing">Billing</a>
+                <a href="#" class="nav-link" data-section="house-rules">House Rules</a>
+            </nav>
+            <div class="header-right">
+                <div class="member-info">
+                    <span class="member-name" id="header-member-name">Member</span>
+                    <span class="member-tier" id="header-member-tier">Tier</span>
+                </div>
+                <button class="btn-icon" onclick="logout()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="portal-main">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="welcome-banner">
+                    <div class="welcome-content">
+                        <h2>Welcome back, <span id="welcome-name">Member</span></h2>
+                        <p>Your creative sanctuary awaits.</p>
+                    </div>
+                    <div class="welcome-stats">
+                        <div class="stat">
+                            <span class="stat-value" id="hours-remaining">0</span>
+                            <span class="stat-label">Credits Left</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="next-session">--</span>
+                            <span class="stat-label">Next Session</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Quick Actions -->
+                    <div class="card quick-actions">
+                        <h3>Quick Actions</h3>
+                        <div class="action-buttons">
+                            <button class="action-btn" onclick="showSection('booking')">
+                                <span class="action-icon">📅</span>
+                                <span>Book Session</span>
+                            </button>
+                            <button class="action-btn" onclick="showSection('guests')">
+                                <span class="action-icon">👥</span>
+                                <span>Register Guests</span>
+                            </button>
+                            <button class="action-btn" onclick="showSection('hours')">
+                                <span class="action-icon">⏱️</span>
+                                <span>View Credits</span>
+                            </button>
+                            <button class="action-btn" onclick="openConcierge()">
+                                <span class="action-icon">💬</span>
+                                <span>Concierge</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Membership Card -->
+                    <div class="card membership-card">
+                        <div class="membership-header">
+                            <span class="membership-label">MEMBERSHIP</span>
+                            <span class="membership-tier-badge" id="tier-badge">TIER</span>
+                        </div>
+                        <div class="membership-details">
+                            <div class="member-avatar" id="member-avatar">JC</div>
+                            <div class="member-details">
+                                <h4 id="member-full-name">Member Name</h4>
+                                <p id="member-since">Member since Mar 2026</p>
+                            </div>
+                        </div>
+                        <div class="membership-benefits">
+                            <div class="benefit">
+                                <span class="benefit-value" id="monthly-hours">0</span>
+                                <span class="benefit-label">credits/mo</span>
+                            </div>
+                            <div class="benefit">
+                                <span class="benefit-value" id="booking-window">0</span>
+                                <span class="benefit-label">day booking</span>
+                            </div>
+                            <div class="benefit">
+                                <span class="benefit-value" id="guest-limit">0</span>
+                                <span class="benefit-label">collaborators</span>
+                            </div>
+                        </div>
+                        <div class="membership-footer">
+                            <span class="access-code-label">Access Code</span>
+                            <span class="access-code" id="access-code">****</span>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Sessions -->
+                    <div class="card upcoming-sessions">
+                        <h3>Upcoming Sessions</h3>
+                        <div id="upcoming-list" class="session-list">
+                            <!-- Populated by JS -->
+                        </div>
+                        <button class="btn secondary full" onclick="showSection('booking')">Book New Session</button>
+                    </div>
+
+                    <!-- Hours Usage -->
+                    <div class="card hours-overview">
+                        <h3>This Month's Credits</h3>
+                        <div class="hours-visual">
+                            <div class="hours-circle">
+                                <svg viewBox="0 0 100 100">
+                                    <circle class="bg" cx="50" cy="50" r="45"/>
+                                    <circle class="progress" id="hours-progress" cx="50" cy="50" r="45"
+                                        stroke-dasharray="283" stroke-dashoffset="283"/>
+                                </svg>
+                                <div class="hours-text">
+                                    <span class="hours-used" id="hours-used">0</span>
+                                    <span class="hours-total">/ <span id="hours-total">0</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hours-breakdown">
+                            <div class="breakdown-item">
+                                <span>Used</span>
+                                <span id="breakdown-used">0 hrs</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Scheduled</span>
+                                <span id="breakdown-scheduled">0 hrs</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Available</span>
+                                <span id="breakdown-available">0 hrs</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Announcements -->
+                    <div class="card announcements">
+                        <h3>Announcements</h3>
+                        <div id="announcement-list" class="announcement-list">
+                            <div class="announcement">
+                                <span class="announcement-date">Feb 9</span>
+                                <div class="announcement-content">
+                                    <h4>Grand Opening: March 15, 2026</h4>
+                                    <p>Founding members receive 15% off locked forever. Secure your spot now.</p>
+                                </div>
+                            </div>
+                            <div class="announcement">
+                                <span class="announcement-date">Feb 5</span>
+                                <div class="announcement-content">
+                                    <h4>New Equipment Arriving</h4>
+                                    <p>Upgraded monitoring system installation scheduled for late February.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Booking Section -->
+            <section id="booking" class="section">
+                <div class="section-header">
+                    <h2>Book a Session</h2>
+                    <p>Reserve your time at the estate</p>
+                </div>
+
+                <div class="booking-container">
+                    <div class="booking-calendar">
+                        <div class="calendar-header">
+                            <button onclick="changeCalendarMonth(-1)" class="cal-nav">&larr;</button>
+                            <h3 id="calendar-month-year">March 2026</h3>
+                            <button onclick="changeCalendarMonth(1)" class="cal-nav">&rarr;</button>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                        </div>
+                        <div class="calendar-days" id="calendar-days">
+                            <!-- Generated by JS -->
+                        </div>
+                        <div class="calendar-legend">
+                            <span class="legend-item"><span class="dot available"></span> Available</span>
+                            <span class="legend-item"><span class="dot booked"></span> Your Booking</span>
+                            <span class="legend-item"><span class="dot unavailable"></span> Unavailable</span>
+                        </div>
+                    </div>
+
+                    <div class="booking-form-container">
+                        <form id="booking-form" onsubmit="submitBooking(event)">
+                            <div class="selected-date-display">
+                                <span class="label">Selected Date</span>
+                                <span class="date" id="selected-date-text">Select a date</span>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Start Time</label>
+                                    <select id="booking-start" required>
+                                        <option value="">Select time</option>
+                                        <option value="10:00">10:00 AM</option>
+                                        <option value="11:00">11:00 AM</option>
+                                        <option value="12:00">12:00 PM</option>
+                                        <option value="13:00">1:00 PM</option>
+                                        <option value="14:00">2:00 PM</option>
+                                        <option value="15:00">3:00 PM</option>
+                                        <option value="16:00">4:00 PM</option>
+                                        <option value="17:00">5:00 PM</option>
+                                        <option value="18:00">6:00 PM</option>
+                                        <option value="19:00">7:00 PM</option>
+                                        <option value="20:00">8:00 PM</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>End Time</label>
+                                    <select id="booking-end" required>
+                                        <option value="">Select time</option>
+                                        <option value="14:00">2:00 PM</option>
+                                        <option value="15:00">3:00 PM</option>
+                                        <option value="16:00">4:00 PM</option>
+                                        <option value="17:00">5:00 PM</option>
+                                        <option value="18:00">6:00 PM</option>
+                                        <option value="19:00">7:00 PM</option>
+                                        <option value="20:00">8:00 PM</option>
+                                        <option value="21:00">9:00 PM</option>
+                                        <option value="22:00">10:00 PM</option>
+                                        <option value="23:00">11:00 PM</option>
+                                        <option value="00:00">12:00 AM</option>
+                                        <option value="02:00">2:00 AM</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Session Type</label>
+                                <select id="booking-type">
+                                    <option value="recording">Recording</option>
+                                    <option value="writing">Writing</option>
+                                    <option value="mixing">Mixing</option>
+                                    <option value="meeting">Meeting</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Number of Guests</label>
+                                <select id="booking-guests">
+                                    <option value="0">No guests</option>
+                                    <option value="1">1 guest</option>
+                                    <option value="2">2 guests</option>
+                                    <option value="3">3 guests</option>
+                                    <option value="4">4 guests</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Request Engineer (optional)</label>
+                                <select id="booking-engineer">
+                                    <option value="">No engineer preference</option>
+                                </select>
+                                <span class="field-hint">Select a preferred engineer for your session</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Notes (optional)</label>
+                                <textarea id="booking-notes" rows="3" placeholder="Any special requests or notes for this session..."></textarea>
+                            </div>
+
+                            <div class="booking-summary">
+                                <div class="summary-row">
+                                    <span>Duration</span>
+                                    <span id="summary-duration">0 hrs</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Credit Cost</span>
+                                    <span id="summary-credits">0 credits</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Credits After Booking</span>
+                                    <span id="summary-remaining">0 credits remaining</span>
+                                </div>
+                            </div>
+
+                            <div id="availability-hint" class="availability-hint"></div>
+
+                            <button type="submit" class="btn primary full">Confirm Booking</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hours Section -->
+            <section id="hours" class="section">
+                <div class="section-header">
+                    <h2>Credit Tracker</h2>
+                    <p>Monitor your monthly allocation</p>
+                </div>
+
+                <div class="hours-dashboard">
+                    <div class="hours-main-card">
+                        <div class="hours-big-display">
+                            <div class="hours-circle large">
+                                <svg viewBox="0 0 100 100">
+                                    <circle class="bg" cx="50" cy="50" r="45"/>
+                                    <circle class="progress" id="hours-progress-large" cx="50" cy="50" r="45"/>
+                                </svg>
+                                <div class="hours-text">
+                                    <span class="hours-remaining-big" id="hours-remaining-big">0</span>
+                                    <span class="hours-label">credits left</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hours-stats">
+                            <div class="hour-stat">
+                                <span class="hour-stat-value" id="stat-allocated">0</span>
+                                <span class="hour-stat-label">Monthly Credits</span>
+                            </div>
+                            <div class="hour-stat">
+                                <span class="hour-stat-value" id="stat-used">0</span>
+                                <span class="hour-stat-label">Hours Used</span>
+                            </div>
+                            <div class="hour-stat">
+                                <span class="hour-stat-value" id="stat-scheduled">0</span>
+                                <span class="hour-stat-label">Scheduled</span>
+                            </div>
+                            <div class="hour-stat">
+                                <span class="hour-stat-value" id="stat-available">0</span>
+                                <span class="hour-stat-label">Available</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hours-history">
+                        <h3>Session History</h3>
+                        <div class="history-list" id="session-history">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="hours-info">
+                        <h3>Hour Policy</h3>
+                        <div class="policy-item">
+                            <h4>Use-It-Or-Lose-It</h4>
+                            <p>Unused hours do not roll over to the next month. Plan your sessions accordingly.</p>
+                        </div>
+                        <div class="policy-item">
+                            <h4>Overage Rates</h4>
+                            <p>Additional hours beyond your allocation are billed at your tier's overage rate.</p>
+                        </div>
+                        <div class="policy-item">
+                            <h4>Cancellation</h4>
+                            <p>Cancel 24+ hours before: No penalty. Less than 24 hours: Hours deducted.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Guests Section -->
+            <section id="guests" class="section">
+                <div class="section-header">
+                    <h2>Guest Management</h2>
+                    <p>Pre-register guests for your sessions</p>
+                </div>
+
+                <div class="guests-container">
+                    <div class="card">
+                        <h3>Register Guests for Upcoming Session</h3>
+                        <form id="guest-form" onsubmit="registerGuest(event)">
+                            <div class="form-group">
+                                <label>Select Session</label>
+                                <select id="guest-session" required>
+                                    <option value="">Choose a session</option>
+                                    <!-- Populated by JS -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Guest Full Name</label>
+                                <input type="text" id="guest-name" placeholder="Enter guest's full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Guest Email (optional)</label>
+                                <input type="email" id="guest-email" placeholder="guest@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Guest Phone (optional)</label>
+                                <input type="tel" id="guest-phone" placeholder="(555) 555-5555">
+                            </div>
+                            <button type="submit" class="btn primary">Register Guest</button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h3>Registered Guests</h3>
+                        <div id="registered-guests" class="guest-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="card guest-policy">
+                        <h3>Guest Policy</h3>
+                        <ul>
+                            <li>All guests must be pre-registered at least 24 hours before the session</li>
+                            <li>Guests must present valid ID upon arrival</li>
+                            <li>First-time guests will sign a liability waiver</li>
+                            <li>You are responsible for your guests' conduct</li>
+                            <li>Guest limits are based on your membership tier</li>
+                        </ul>
+                        <div class="tier-guest-limits">
+                            <div class="limit-item">
+                                <span class="tier-name">Session</span>
+                                <span class="limit">2 guests</span>
+                            </div>
+                            <div class="limit-item">
+                                <span class="tier-name">Member</span>
+                                <span class="limit">4 guests</span>
+                            </div>
+                            <div class="limit-item">
+                                <span class="tier-name">Residency</span>
+                                <span class="limit">6 guests</span>
+                            </div>
+                            <div class="limit-item">
+                                <span class="tier-name">Ambassador</span>
+                                <span class="limit">8 guests</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Engineers Section -->
+            <section id="engineers" class="section">
+                <div class="section-header">
+                    <h2>Our Engineers</h2>
+                    <p>Meet the professionals behind the console</p>
+                </div>
+
+                <div class="engineers-grid" id="engineers-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Billing Section -->
+            <section id="billing" class="section">
+                <div class="section-header">
+                    <h2>Billing & Subscription</h2>
+                    <p>Manage your membership payment</p>
+                </div>
+
+                <div class="billing-container">
+                    <!-- Current Subscription -->
+                    <div class="card subscription-card">
+                        <div class="subscription-header">
+                            <div>
+                                <span class="subscription-label">CURRENT PLAN</span>
+                                <h3 id="billing-tier-name">Ambassador Membership</h3>
+                            </div>
+                            <span id="billing-status" class="subscription-status active">Active</span>
+                        </div>
+                        <div class="subscription-details">
+                            <div class="subscription-price">
+                                <span class="price-amount" id="billing-amount">$4,250</span>
+                                <span class="price-period">/month</span>
+                            </div>
+                            <div class="subscription-info">
+                                <div class="info-item">
+                                    <span class="info-label">Billing Cycle</span>
+                                    <span class="info-value">Monthly (1st of each month)</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Next Payment</span>
+                                    <span class="info-value" id="billing-next-date">April 1, 2026</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Member Since</span>
+                                    <span class="info-value" id="billing-member-since">March 15, 2026</span>
+                                </div>
+                                <div class="info-item founding">
+                                    <span class="info-label">Founding Rate</span>
+                                    <span class="info-value">15% discount locked forever</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="card">
+                        <h3>Payment Method</h3>
+                        <div class="payment-method" id="payment-method-display">
+                            <div class="card-display">
+                                <div class="card-icon">💳</div>
+                                <div class="card-details">
+                                    <span class="card-brand">Visa</span>
+                                    <span class="card-number">•••• •••• •••• 4242</span>
+                                    <span class="card-expiry">Expires 12/28</span>
+                                </div>
+                            </div>
+                            <button class="btn secondary" onclick="showUpdatePayment()">Update</button>
+                        </div>
+
+                        <!-- Update Payment Form (hidden by default) -->
+                        <div id="update-payment-form" class="update-payment-form" style="display: none;">
+                            <div class="form-group">
+                                <label>Card Details</label>
+                                <div id="card-container" class="square-card-container">
+                                    <!-- Square Web Payments SDK will render card input here -->
+                                </div>
+                                <div id="card-errors" class="card-errors"></div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn secondary" onclick="hideUpdatePayment()">Cancel</button>
+                                <button class="btn primary" id="card-button" onclick="handlePaymentMethod()">Save Card</button>
+                            </div>
+                            <p class="secure-note">🔒 Secured by Square. Your payment info is encrypted and never touches our servers.</p>
+                        </div>
+
+                        <!-- Square Configuration Status -->
+                        <div id="square-config-notice" class="square-config-notice" style="display: none;">
+                            <p>⚠️ Square is not configured. <a href="../TORCH_ATL_OPERATIONS_SUITE/index.html" target="_blank">Configure in Operations Suite</a></p>
+                        </div>
+                    </div>
+
+                    <!-- Payment History -->
+                    <div class="card payment-history-card">
+                        <div class="card-header-flex">
+                            <h3>Payment History</h3>
+                            <button class="btn secondary small" onclick="downloadInvoices()">Download All</button>
+                        </div>
+                        <div class="payment-history" id="payment-history">
+                            <div class="payment-item">
+                                <div class="payment-info">
+                                    <span class="payment-date">Mar 1, 2026</span>
+                                    <span class="payment-desc">Ambassador Membership - March</span>
+                                </div>
+                                <div class="payment-right">
+                                    <span class="payment-amount">$4,250.00</span>
+                                    <span class="payment-status paid">Paid</span>
+                                </div>
+                            </div>
+                            <div class="payment-item">
+                                <div class="payment-info">
+                                    <span class="payment-date">Mar 15, 2026</span>
+                                    <span class="payment-desc">Registration Fee (One-time)</span>
+                                </div>
+                                <div class="payment-right">
+                                    <span class="payment-amount">$2,125.00</span>
+                                    <span class="payment-status paid">Paid</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Billing Summary -->
+                    <div class="card">
+                        <h3>Membership Value</h3>
+                        <div class="value-breakdown" id="membership-value">
+                            <!-- Populated from the member's tier by populateBilling() -->
+                        </div>
+                    </div>
+
+                    <!-- Need Help -->
+                    <div class="card help-card">
+                        <h3>Need Help?</h3>
+                        <p>For billing questions or to make changes to your membership, contact our team.</p>
+                        <div class="help-options">
+                            <button class="btn secondary" onclick="openConcierge()">💬 Chat with Concierge</button>
+                            <a href="mailto:billing@torchatl.com" class="btn secondary">📧 Email Billing</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- House Rules Section -->
+            <section id="house-rules" class="section">
+                <div class="section-header">
+                    <h2>House Rules</h2>
+                    <p>Standards that protect the Torch experience</p>
+                </div>
+
+                <div class="rules-container">
+                    <div class="rules-intro">
+                        <p>Torch ATL is a sanctuary for serious creators. These rules exist to protect the privacy, productivity, and experience of every member. Violations may result in membership review or termination.</p>
+                    </div>
+
+                    <div class="rules-grid">
+                        <div class="rule-category">
+                            <h3>Booking & Access</h3>
+                            <ul class="rules-list">
+                                <li>Book sessions in advance through the portal</li>
+                                <li>No walk-ins or unscheduled visits</li>
+                                <li>30-minute grace period for late arrivals</li>
+                                <li>24-hour cancellation notice required</li>
+                                <li>Operating hours: 10:00 AM - 2:00 AM</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-category">
+                            <h3>Guests</h3>
+                            <ul class="rules-list">
+                                <li>Pre-register all guests 24 hours before</li>
+                                <li>Guest limits based on your tier</li>
+                                <li>You are responsible for guest conduct</li>
+                                <li>First-time guests must sign waiver</li>
+                                <li>Guests must present valid ID</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-category">
+                            <h3>Privacy & Discretion</h3>
+                            <ul class="rules-list">
+                                <li>Never share the property address</li>
+                                <li>No photography of other members</li>
+                                <li>Never confirm other members' presence</li>
+                                <li>No social media location tagging</li>
+                                <li>Respect confidentiality at all times</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-category">
+                            <h3>Conduct</h3>
+                            <ul class="rules-list">
+                                <li>Maintain a calm, professional environment</li>
+                                <li>Respect other members' sessions</li>
+                                <li>Keep noise contained to your session</li>
+                                <li>Clean up after your session</li>
+                                <li>Report any issues to concierge</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-category prohibited">
+                            <h3>Prohibited</h3>
+                            <ul class="rules-list">
+                                <li>No smoking inside the facility</li>
+                                <li>No illegal substances</li>
+                                <li>No weapons on property</li>
+                                <li>No unauthorized recording</li>
+                                <li>No disruptive behavior</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-category">
+                            <h3>Consequences</h3>
+                            <ul class="rules-list">
+                                <li>1st offense: Verbal warning (documented)</li>
+                                <li>2nd offense: Written warning</li>
+                                <li>3rd offense: Membership review</li>
+                                <li>Severe violations: Immediate termination</li>
+                                <li>No refunds for terminated memberships</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="rules-acknowledgment">
+                        <p>By maintaining your membership, you agree to abide by these rules and understand the consequences of violations.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Concierge Chat -->
+        <div id="concierge-modal" class="modal">
+            <div class="modal-content concierge-chat">
+                <div class="modal-header">
+                    <h3>Torch Concierge</h3>
+                    <button class="close-btn" onclick="closeConcierge()">&times;</button>
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot">
+                        <p>Hello! I'm your Torch Concierge. How can I assist you today?</p>
+                    </div>
+                </div>
+                <form class="chat-input" onsubmit="sendMessage(event)">
+                    <input type="text" id="chat-input" placeholder="Type your message...">
+                    <button type="submit" class="btn primary">Send</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div id="toast-container"></div>
+    </div>
+
+    <!-- Backend API Client -->
+    <script>
+        // Use the local backend during development, production API when deployed.
+        window.TORCH_API_URL = ['localhost', '127.0.0.1'].includes(location.hostname)
+            ? 'http://localhost:3001/api'
+            : 'https://api.torchatl.com/api';
+    </script>
+    <script src="api-client.js"></script>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+
+    <!-- Square Web Payments SDK -->
+    <script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+    <script src="square-billing.js"></script>
+</body>
+</html>
