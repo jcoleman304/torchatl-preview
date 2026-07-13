@@ -262,12 +262,7 @@ async function refreshEngineers() {
         }));
     } catch (e) {
         console.warn('[TORCH] Could not load engineers:', e.message);
-        // Keep static fallback
-        engineersList = [
-            { id: 1, name: 'James Rodriguez', role: 'Lead Engineer', specialties: ['Recording', 'Mixing', 'Mastering'], bio: '15 years experience in music production.', photoUrl: '', available: true },
-            { id: 2, name: 'Maya Chen', role: 'Recording Engineer', specialties: ['Recording', 'Vocal Production'], bio: 'Specialist in vocal production and sound design.', photoUrl: '', available: true },
-            { id: 3, name: 'Devon Williams', role: 'Producer/Engineer', specialties: ['Production', 'Beat Making', 'Mixing'], bio: 'Producer and engineer with hip-hop and R&B focus.', photoUrl: '', available: true }
-        ];
+        engineersList = [];  // no placeholder engineers — real ones come from the backend
     }
 }
 
