@@ -1057,15 +1057,16 @@ function populateEngineers() {
     container.innerHTML = engineers.map(eng => `
         <div class="engineer-card">
             <div class="engineer-avatar">
-                ${eng.photoUrl ? `<img src="${eng.photoUrl}" alt="${eng.name}">` : getInitials(eng.name)}
+                ${eng.photoUrl ? `<img src="${escapeHtml(eng.photoUrl)}" alt="${escapeHtml(eng.name)}">` : getInitials(eng.name)}
             </div>
             <div class="engineer-info">
-                <h3>${eng.name}</h3>
-                <span class="engineer-role">${eng.role}</span>
+                <h3>${escapeHtml(eng.name)}</h3>
+                <span class="engineer-role">${escapeHtml(eng.role)}</span>
                 <div class="engineer-specialties">
-                    ${eng.specialties.map(s => `<span class="specialty-tag">${s}</span>`).join('')}
+                    ${eng.specialties.map(s => `<span class="specialty-tag">${escapeHtml(s)}</span>`).join('')}
                 </div>
-                <p class="engineer-bio">${eng.bio}</p>
+                ${eng.bio ? `<p class="engineer-bio">${escapeHtml(eng.bio)}</p>` : ''}
+                ${eng.geniusUrl ? `<a class="engineer-genius" href="${escapeHtml(eng.geniusUrl)}" target="_blank" rel="noopener">View Credits ↗</a>` : ''}
                 <div class="engineer-availability">
                     <span class="availability-badge ${eng.available ? 'available' : 'unavailable'}">
                         ${eng.available ? 'Available' : 'Unavailable'}

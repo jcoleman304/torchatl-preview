@@ -257,7 +257,8 @@ async function refreshEngineers() {
             role: e.title || e.role || 'Engineer',
             specialties: e.specialties || [],
             bio: e.bio || '',
-            photoUrl: '',
+            photoUrl: e.photo_url || '',
+            geniusUrl: e.genius_url || '',
             available: e.available !== false
         }));
     } catch (e) {

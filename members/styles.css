@@ -2157,3 +2157,23 @@ button[type="submit"]:disabled,
 .cal-ev-label em { color: var(--warning, #f59e0b); font-style: normal; font-size: 12px; }
 .cal-empty { color: var(--text-muted, #666); font-size: 14px; }
 .cal-empty a { color: var(--gold, #D4AF37); }
+
+/* Engineer card: photo + credits link */
+.engineer-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    display: block;
+}
+.engineer-genius {
+    display: inline-block;
+    margin: 8px 0 2px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold, #D4AF37);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+    padding-bottom: 1px;
+}
+.engineer-genius:hover { color: var(--gold-light, #E5C76B); border-bottom-color: var(--gold, #D4AF37); }
