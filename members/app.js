@@ -448,6 +448,8 @@ function setupBookingListeners() {
         startSelect.addEventListener('change', updateBookingSummary);
         endSelect.addEventListener('change', updateBookingSummary);
     }
+    const engSelect = document.getElementById('booking-engineer');
+    if (engSelect) engSelect.addEventListener('change', updateBookingSummary);
 }
 
 // Update Booking Summary
@@ -479,6 +481,20 @@ function updateBookingSummary() {
             document.getElementById('summary-remaining').textContent = remaining + ' credits remaining';
         }
 
+        // Premium engineer surcharge (shown before booking; standard engineers = included).
+        const engRow = document.getElementById('summary-engineer-row');
+        const engEl = document.getElementById('summary-engineer');
+        const engSel = document.getElementById('booking-engineer');
+        const eng = engSel && engSel.value ? engineersList.find(e => String(e.id) === String(engSel.value)) : null;
+        if (engRow && engEl) {
+            if (eng && eng.premiumRate > 0) {
+                engEl.textContent = `+$${eng.premiumRate * hours} ($${eng.premiumRate}/hr × ${hours} hrs)`;
+                engRow.style.display = '';
+            } else {
+                engRow.style.display = 'none';
+            }
+        }
+
         // Availability + block validation share the hint line.
         const slot = checkSelectedSlot();
         if (hintEl) {
@@ -500,6 +516,8 @@ function updateBookingSummary() {
         if (submitBtn) submitBtn.disabled = !validBlock || !!(slot && slot.full);
     } else {
         if (creditsEl) creditsEl.textContent = '0 credits';
+        const engRow = document.getElementById('summary-engineer-row');
+        if (engRow) engRow.style.display = 'none';
         if (hintEl) { hintEl.textContent = ''; hintEl.className = 'availability-hint'; }
         if (submitBtn) submitBtn.disabled = false;
     }
@@ -1085,7 +1103,7 @@ function populateEngineerDropdown() {
 
     select.innerHTML = '<option value="">No engineer preference</option>' +
         engineers.filter(e => e.available).map(eng =>
-            `<option value="${eng.id}">${eng.name} - ${eng.role}</option>`
+            `<option value="${eng.id}">${eng.name} - ${eng.role}${eng.premiumRate > 0 ? ` (+$${eng.premiumRate}/hr)` : ''}</option>`
         ).join('');
 }
 

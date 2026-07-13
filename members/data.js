@@ -259,6 +259,7 @@ async function refreshEngineers() {
             bio: e.bio || '',
             photoUrl: e.photo_url || '',
             geniusUrl: e.genius_url || '',
+            premiumRate: Number(e.premium_rate) || 0,
             available: e.available !== false
         }));
     } catch (e) {
