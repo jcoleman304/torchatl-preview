@@ -287,6 +287,18 @@ const TorchAPI = (() => {
   };
 
   // ================================================================
+  // CONCIERGE (Ember — text chat)
+  // ================================================================
+  const concierge = {
+    async status() {
+      return get('/concierge/status');
+    },
+    async message(text, history = []) {
+      return post('/concierge/message', { message: text, history });
+    }
+  };
+
+  // ================================================================
   // HEALTH
   // ================================================================
   async function health() {
@@ -302,6 +314,7 @@ const TorchAPI = (() => {
     engineers,
     billing,
     admin,
+    concierge,
     health,
     // Expose base URL for debugging
     get BASE_URL() { return BASE_URL; }

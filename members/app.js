@@ -749,7 +749,11 @@ function closeConcierge() {
     document.getElementById('concierge-modal').classList.remove('active');
 }
 
-function sendMessage(event) {
+// Conversation history for the live concierge (Ember)
+let conciergeHistory = [];        // [{ role:'user'|'assistant', text }]
+let conciergeLive = null;         // null = unknown, true/false once checked
+
+async function sendMessage(event) {
     event.preventDefault();
 
     const input = document.getElementById('chat-input');
@@ -760,19 +764,51 @@ function sendMessage(event) {
     addChatMessage(message, 'user');
     input.value = '';
 
-    setTimeout(() => {
-        const response = generateConciergeResponse(message);
-        addChatMessage(response, 'bot');
-    }, 500);
+    // First message: check whether the live concierge is available.
+    if (conciergeLive === null) {
+        try {
+            const s = await TorchAPI.concierge.status();
+            conciergeLive = !!(s && s.available);
+        } catch (e) {
+            conciergeLive = false;
+        }
+    }
+
+    if (!conciergeLive) {
+        // Fallback to canned responses when the live concierge isn't configured.
+        setTimeout(() => addChatMessage(generateConciergeResponse(message), 'bot'), 400);
+        return;
+    }
+
+    const typing = addChatMessage('…', 'bot typing');
+    try {
+        const res = await TorchAPI.concierge.message(message, conciergeHistory);
+        if (typing) typing.remove();
+        const reply = (res && res.reply) || generateConciergeResponse(message);
+        addChatMessage(reply, 'bot');
+        conciergeHistory.push({ role: 'user', text: message });
+        conciergeHistory.push({ role: 'assistant', text: reply });
+        if (conciergeHistory.length > 20) conciergeHistory = conciergeHistory.slice(-20);
+        if (res && res.escalated) {
+            addChatMessage("I've flagged this for the Torch team — they'll follow up with you shortly.", 'bot');
+        }
+    } catch (e) {
+        if (typing) typing.remove();
+        // On a live failure, degrade to the canned response.
+        addChatMessage(generateConciergeResponse(message), 'bot');
+    }
 }
 
 function addChatMessage(text, sender) {
     const container = document.getElementById('chat-messages');
     const div = document.createElement('div');
     div.className = `message ${sender}`;
-    div.innerHTML = `<p>${text}</p>`;
+    const p = document.createElement('p');
+    p.textContent = text;          // textContent — never render model/user text as HTML
+    div.appendChild(p);
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
+    return div;
 }
 
 function generateConciergeResponse(message) {
