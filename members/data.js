@@ -93,7 +93,7 @@ const OPERATING_HOURS = {
 // Concierge Responses (static, no backend needed)
 const CONCIERGE_RESPONSES = {
     greetings: [
-        "Hello! I'm your Torch Concierge. How can I assist you today?",
+        "Hello! I'm Ember, your Torch Concierge. How can I assist you today?",
         "Welcome back! What can I help you with?",
         "Good to see you! How may I be of service?"
     ],
