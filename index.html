@@ -21,7 +21,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=10">
+    <link rel="stylesheet" href="styles.css?v=11">
 
     <meta name="theme-color" content="#0A0A0A">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -83,13 +83,15 @@
     <!-- Hero -->
     <section class="hero" id="hero">
         <div class="hero-media">
-            <div class="hero-slide is-active" style="background-image:url('images/band-outdoor.jpg');background-position:center 48%"></div>
-            <div class="hero-slide" style="background-image:url('images/hero-suite.jpg')"></div>
-            <div class="hero-slide" style="background-image:url('images/hero-lounge.jpg')"></div>
-            <div class="hero-slide" style="background-image:url('images/hero-studio.jpg')"></div>
-            <div class="hero-slide" style="background-image:url('images/hero-reception.jpg')"></div>
+            <video class="hero-video bg-video" autoplay muted loop playsinline poster="videos/posters/reception.jpg" aria-label="Arriving at the TORCH ATL reception">
+                <source src="videos/reception.mp4" type="video/mp4">
+            </video>
         </div>
         <div class="hero-scrim"></div>
+        <button class="video-toggle hero-toggle" aria-label="Pause video">
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+        </button>
         <div class="hero-content">
             <h1 class="hero-title">
                 <span class="title-torch">TORCH</span>
@@ -104,15 +106,15 @@
     <!-- About — editorial split -->
     <section class="split split--reverse reveal" id="about">
         <div class="split-media">
-            <div class="media-fade">
-                <img class="is-active" src="images/g-15-204-studio-equipment-neumann-u87.jpg" alt="Neumann U87 studio microphone" loading="lazy">
-                <img src="images/hero-studio.jpg" alt="TORCH ATL studio control room" loading="lazy">
-                <img src="images/g-22-116-studio-mood.jpg" alt="TORCH ATL studio mood" loading="lazy">
-                <img src="images/about-suite.jpg" alt="TORCH ATL Presidential Suite with TORCH welcome screen" loading="lazy">
-                <img src="images/hero-lounge.jpg" alt="TORCH ATL welcome lounge" loading="lazy">
+            <div class="video-wrap">
+                <video class="bg-video" muted loop playsinline preload="none" poster="videos/posters/black-studio.jpg" aria-label="Inside the TORCH ATL black studio">
+                    <source src="videos/black-studio.mp4" type="video/mp4">
+                </video>
+                <button class="video-toggle" aria-label="Pause video">
+                    <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                    <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+                </button>
             </div>
-            <button class="media-nav media-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
-            <button class="media-nav media-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
         </div>
         <div class="split-body">
             <span class="eyebrow">About</span>
@@ -147,17 +149,15 @@
             <div class="tab-panel active" id="panel-suites">
                 <div class="split">
                     <div class="split-media">
-                        <div class="media-fade">
-                            <img class="is-active" src="images/suites-bed.jpg" alt="TORCH ATL king suite with gold headboard" loading="lazy">
-                            <img src="images/d-robe.jpg" alt="Embroidered TORCH ATL robe" loading="lazy">
-                            <img src="images/g-23-220-suite-detail.jpg" alt="King suite detail" loading="lazy">
-                            <img src="images/g-32-150-work-presidental-suite-sitting-area-desk.jpg" alt="Suite sitting area desk" loading="lazy">
-                            <img src="images/d-nightstand.jpg" alt="In-suite styling with branded card" loading="lazy">
-                            <img src="images/d-bath.jpg" alt="Rainshower with gold-capped toiletries" loading="lazy">
-                            <img src="images/suite-jacuzzi.jpg" alt="Presidential suite bath with jacuzzi tub" loading="lazy">
+                        <div class="video-wrap">
+                            <video class="bg-video" muted loop playsinline preload="none" poster="videos/posters/master-bedroom.jpg" aria-label="Walkthrough of the Presidential Suite master bedroom">
+                                <source src="videos/master-bedroom.mp4" type="video/mp4">
+                            </video>
+                            <button class="video-toggle" aria-label="Pause video">
+                                <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                                <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+                            </button>
                         </div>
-                        <button class="media-nav media-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
-                        <button class="media-nav media-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
                     </div>
                     <div class="split-body">
                         <span class="eyebrow">Guest Suites</span>
@@ -179,6 +179,15 @@
                 <div class="section-head center" style="margin-bottom:36px">
                     <span class="eyebrow">The Studios</span>
                     <h2 class="display">Two Rooms. One Standard.</h2>
+                </div>
+                <div class="video-banner">
+                    <video class="bg-video" muted loop playsinline preload="none" poster="videos/posters/red-studio.jpg" aria-label="Inside the TORCH ATL red studio">
+                        <source src="videos/red-studio.mp4" type="video/mp4">
+                    </video>
+                    <button class="video-toggle" aria-label="Pause video">
+                        <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+                    </button>
                 </div>
                 <div class="carousel" data-autoplay="7000">
                     <div class="carousel-track">
@@ -239,10 +248,14 @@
     <!-- Partners — split -->
     <section class="split split--reverse reveal" id="partners">
         <div class="split-media">
-            <div class="media-fade">
-                <img class="is-active" src="images/partners.jpg" alt="TORCH ATL suite lifestyle workspace" loading="lazy">
-                <img src="images/g-31-33-work-entry-front-desk.jpg" alt="Front desk" loading="lazy">
-                <img src="images/g-63-v2-work-execs-anchor.jpg" alt="Executive workspace" loading="lazy">
+            <div class="video-wrap">
+                <video class="bg-video" muted loop playsinline preload="none" poster="videos/posters/upstairs-lounge.jpg" aria-label="The upstairs executive lounge">
+                    <source src="videos/upstairs-lounge.mp4" type="video/mp4">
+                </video>
+                <button class="video-toggle" aria-label="Pause video">
+                    <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                    <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+                </button>
             </div>
         </div>
         <div class="split-body">
@@ -314,6 +327,26 @@
                 <button class="carousel-btn carousel-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
                 <button class="carousel-btn carousel-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
                 <div class="carousel-dots"></div>
+            </div>
+            <div class="motion-grid reveal">
+                <div class="motion-item">
+                    <video class="bg-video" muted loop playsinline preload="none" poster="videos/posters/room1.jpg" aria-label="Guest suite walkthrough">
+                        <source src="videos/room1.mp4" type="video/mp4">
+                    </video>
+                    <span class="motion-cap">Guest Suite</span>
+                </div>
+                <div class="motion-item">
+                    <video class="bg-video" muted loop playsinline preload="none" poster="videos/posters/kitchen.jpg" aria-label="The chef's kitchen">
+                        <source src="videos/kitchen.mp4" type="video/mp4">
+                    </video>
+                    <span class="motion-cap">Chef's Kitchen</span>
+                </div>
+                <div class="motion-item">
+                    <video class="bg-video" muted loop playsinline preload="none" poster="videos/posters/backdrop.jpg" aria-label="The photoshoot wall">
+                        <source src="videos/backdrop.mp4" type="video/mp4">
+                    </video>
+                    <span class="motion-cap">Photoshoot Wall</span>
+                </div>
             </div>
         </div>
     </section>
@@ -506,6 +539,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=15"></script>
+    <script src="script.js?v=16"></script>
 </body>
 </html>

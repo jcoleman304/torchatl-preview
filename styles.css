@@ -725,3 +725,38 @@ img { max-width: 100%; display: block; }
 /* Reservation form: submit error + confirmation number */
 .rr-submit-err { color: #ff7a7a; font-size: 0.9rem; margin: 0 0 14px; text-align: center; }
 .rr-success-conf { color: var(--gold); font-size: 0.95rem; letter-spacing: 0.04em; font-weight: 600; margin-top: 10px; }
+
+/* ============ Ambient video (Shinola-style) ============ */
+.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.video-wrap { position: absolute; inset: 0; overflow: hidden; }
+.video-wrap video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.video-toggle {
+    position: absolute; right: 20px; bottom: 20px; z-index: 6;
+    width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(10,10,10,0.45); border: 1px solid rgba(245,240,232,0.35);
+    color: var(--cream); cursor: pointer;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: var(--transition); opacity: 0.75;
+}
+.video-toggle:hover { opacity: 1; border-color: var(--gold); color: var(--gold); }
+.video-toggle svg { width: 13px; height: 13px; pointer-events: none; }
+.video-toggle .icon-play { display: none; }
+.video-toggle.is-paused .icon-play { display: block; }
+.video-toggle.is-paused .icon-pause { display: none; }
+.hero .hero-toggle { bottom: 34px; right: 28px; }
+
+.video-banner { position: relative; aspect-ratio: 16 / 9; overflow: hidden; margin-bottom: 40px; }
+.video-banner video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+.motion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 48px; }
+.motion-item { position: relative; aspect-ratio: 16 / 9; overflow: hidden; }
+.motion-item video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+.motion-item:hover video { transform: scale(1.04); }
+.motion-cap { position: absolute; left: 18px; bottom: 14px; z-index: 3; font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,0.7); }
+.motion-item .video-toggle { display: none; }
+
+@media (max-width: 900px) {
+    .motion-grid { grid-template-columns: 1fr; gap: 14px; }
+    .hero .hero-toggle { bottom: 88px; right: 18px; }
+}

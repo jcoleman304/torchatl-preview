@@ -460,3 +460,44 @@ function handleAroomSignup(e) {
     form.querySelector('input[name="email"]').style.display = 'none';
     return false;
 }
+
+/* Ambient videos — lazy play/pause on visibility + Shinola-style toggle */
+document.addEventListener('DOMContentLoaded', () => {
+    const vids = document.querySelectorAll('video.bg-video');
+    if (!vids.length) return;
+
+    if ('IntersectionObserver' in window) {
+        const vo = new IntersectionObserver((entries) => {
+            entries.forEach((en) => {
+                const v = en.target;
+                if (en.isIntersecting) {
+                    if (!v.dataset.userPaused) v.play().catch(() => {});
+                } else if (!v.paused) {
+                    v.pause();
+                }
+            });
+        }, { threshold: 0.2 });
+        vids.forEach(v => vo.observe(v));
+    } else {
+        vids.forEach(v => v.play().catch(() => {}));
+    }
+
+    document.querySelectorAll('.video-toggle').forEach((btn) => {
+        const scope = btn.closest('.video-wrap, .video-banner, .motion-item, .hero') || document;
+        const v = scope.querySelector('video.bg-video');
+        if (!v) return;
+        btn.addEventListener('click', () => {
+            if (v.paused) {
+                delete v.dataset.userPaused;
+                v.play().catch(() => {});
+                btn.classList.remove('is-paused');
+                btn.setAttribute('aria-label', 'Pause video');
+            } else {
+                v.dataset.userPaused = '1';
+                v.pause();
+                btn.classList.add('is-paused');
+                btn.setAttribute('aria-label', 'Play video');
+            }
+        });
+    });
+});
