@@ -21,7 +21,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=11">
+    <link rel="stylesheet" href="styles.css?v=12">
 
     <meta name="theme-color" content="#0A0A0A">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -149,15 +149,17 @@
             <div class="tab-panel active" id="panel-suites">
                 <div class="split">
                     <div class="split-media">
-                        <div class="video-wrap">
-                            <video class="bg-video" muted loop playsinline preload="none" poster="videos/posters/master-bedroom.jpg" aria-label="Walkthrough of the Presidential Suite master bedroom">
-                                <source src="videos/master-bedroom.mp4" type="video/mp4">
-                            </video>
-                            <button class="video-toggle" aria-label="Pause video">
-                                <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                                <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
-                            </button>
+                        <div class="media-fade">
+                            <img class="is-active" src="images/d-robe.jpg" alt="Embroidered TORCH ATL robe" loading="lazy">
+                            <img src="images/suites-bed.jpg" alt="TORCH ATL king suite with gold headboard" loading="lazy">
+                            <img src="images/g-23-220-suite-detail.jpg" alt="King suite detail" loading="lazy">
+                            <img src="images/g-32-150-work-presidental-suite-sitting-area-desk.jpg" alt="Suite sitting area desk" loading="lazy">
+                            <img src="images/d-nightstand.jpg" alt="In-suite styling with branded card" loading="lazy">
+                            <img src="images/d-bath.jpg" alt="Rainshower with gold-capped toiletries" loading="lazy">
+                            <img src="images/suite-jacuzzi.jpg" alt="Presidential suite bath with jacuzzi tub" loading="lazy">
                         </div>
+                        <button class="media-nav media-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                        <button class="media-nav media-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
                     </div>
                     <div class="split-body">
                         <span class="eyebrow">Guest Suites</span>
@@ -172,6 +174,15 @@
                         <p>Branded robes, gold-capped toiletries, and five-star baths — the kind of boutique-hotel details that tell you someone thought of everything.</p>
                         <a href="#inquire" class="btn btn-gold" style="margin-top:8px;align-self:flex-start">Book the Estate</a>
                     </div>
+                </div>
+                <div class="video-banner" style="margin-top:40px;margin-bottom:0">
+                    <video class="bg-video" muted loop playsinline preload="none" poster="videos/posters/master-bedroom.jpg" aria-label="Walkthrough of the Presidential Suite master bedroom">
+                        <source src="videos/master-bedroom.mp4" type="video/mp4">
+                    </video>
+                    <button class="video-toggle" aria-label="Pause video">
+                        <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+                    </button>
                 </div>
             </div>
 
@@ -346,6 +357,12 @@
                         <source src="videos/backdrop.mp4" type="video/mp4">
                     </video>
                     <span class="motion-cap">Photoshoot Wall</span>
+                </div>
+                <div class="motion-item">
+                    <video class="bg-video" muted loop playsinline preload="none" poster="videos/posters/porch.jpg" aria-label="The outdoor porch and deck">
+                        <source src="videos/porch.mp4" type="video/mp4">
+                    </video>
+                    <span class="motion-cap">Outdoor Deck</span>
                 </div>
             </div>
         </div>
