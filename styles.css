@@ -760,3 +760,8 @@ img { max-width: 100%; display: block; }
     .motion-grid { grid-template-columns: 1fr; gap: 14px; }
     .hero .hero-toggle { bottom: 88px; right: 18px; }
 }
+
+/* ============ Membership ============ */
+.membership-body { max-width: 700px; margin: 0 auto; text-align: center; }
+.membership-body p { color: var(--silver); font-weight: 300; line-height: 1.85; margin-bottom: 1.4rem; }
+.membership-founding { font-family: var(--font-serif); font-style: italic; font-size: 1.15rem; color: var(--gold) !important; margin-top: 8px; }
