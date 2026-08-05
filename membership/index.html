@@ -59,9 +59,16 @@ section{padding:84px 0;border-bottom:1px solid var(--line)}
 
 /* estate grid */
 .grid{display:grid;gap:22px;grid-template-columns:repeat(3,1fr)}
+.feature{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.feature img{width:100%;height:170px;object-fit:cover}
+.feature .fbody{padding:18px 20px}
 .feature h4{color:var(--white);font-size:18px;margin-bottom:6px;font-family:var(--font-body);font-weight:600}
 .feature .tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:10px}
 .feature p{font-size:14px}
+/* image breaks + club life */
+.img-break{height:340px;overflow:hidden}
+.img-break img{width:100%;height:100%;object-fit:cover}
+.club-img{width:100%;height:300px;object-fit:cover;border-radius:8px;margin-top:24px}
 
 /* rooms / gear */
 .chain{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:24px;margin-bottom:26px;display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center}
@@ -179,12 +186,12 @@ footer a{color:var(--gold)}
     <p class="eyebrow">The Estate</p>
     <h2>Every membership includes the house.</h2>
     <div class="grid" style="margin-top:28px">
-      <div class="feature"><span class="tag">The Studios</span><p>Two industry-standard recording suites, always staffed with a Torch house engineer. Rooms are set to your preference sheet before you walk in.</p></div>
-      <div class="feature"><span class="tag">Chef’s Kitchen</span><p>A full chef’s kitchen at the center of the estate — where sessions pause and collaborations start.</p></div>
-      <div class="feature"><span class="tag">Photoshoot Wall</span><p>A dedicated content and photoshoot wall for rollout assets without leaving the property.</p></div>
-      <div class="feature"><span class="tag">Outdoor Deck</span><p>A private outdoor deck and grounds — gated, staffed, and yours during your session.</p></div>
-      <div class="feature"><span class="tag">Conference Room</span><p>Lounges, content wall, gated grounds, and concierge service on every visit — included with every tier.</p></div>
-      <div class="feature"><span class="tag">Guest Suites</span><p>Guest suites, estate buyouts, writing camps, private events, photography and videography — reserved for members first, always at preferred member rates.</p></div>
+      <div class="feature"><img src="../images/g-04-162-studio-hero.jpg" alt="B Room recording suite" loading="lazy"><div class="fbody"><span class="tag">The Studios</span><p>Two industry-standard recording suites, always staffed with a Torch house engineer. Rooms are set to your preference sheet before you walk in.</p></div></div>
+      <div class="feature"><img src="../images/g-16-86-amenities-kitchen.jpg" alt="Chef's kitchen" loading="lazy"><div class="fbody"><span class="tag">Chef’s Kitchen</span><p>A full chef’s kitchen at the center of the estate — where sessions pause and collaborations start.</p></div></div>
+      <div class="feature"><img src="../images/photoshoot-wall.jpg" alt="Photoshoot wall" loading="lazy"><div class="fbody"><span class="tag">Photoshoot Wall</span><p>A dedicated content and photoshoot wall for rollout assets without leaving the property.</p></div></div>
+      <div class="feature"><img src="../images/g-10-198-amenities-outdoor.jpg" alt="Outdoor deck" loading="lazy"><div class="fbody"><span class="tag">Outdoor Deck</span><p>A private outdoor deck and grounds — gated, staffed, and yours during your session.</p></div></div>
+      <div class="feature"><img src="../images/g-48-23-gallery-fill-conference.jpg" alt="Conference room" loading="lazy"><div class="fbody"><span class="tag">Conference Room</span><p>Lounges, content wall, gated grounds, and concierge service on every visit — included with every tier.</p></div></div>
+      <div class="feature"><img src="../images/g-king-suites.jpg" alt="King guest suite" loading="lazy"><div class="fbody"><span class="tag">Guest Suites</span><p>Guest suites, estate buyouts, writing camps, private events, photography and videography — reserved for members first, always at preferred member rates.</p></div></div>
     </div>
   </div>
 </section>
@@ -194,16 +201,23 @@ footer a{color:var(--gold)}
   <div class="wrap">
     <p class="eyebrow">The Rooms</p>
     <h2>Industry standard, to the last cable.</h2>
-    <p class="lead" style="color:var(--gold);margin-bottom:22px">Two suites. One signal chain the pros recognize on sight.</p>
+    <p class="lead" style="color:var(--gold);margin-bottom:22px">Two suites. Signal chains the pros recognize on sight.</p>
+    <p class="eyebrow" style="margin-bottom:10px">B Room</p>
     <div class="chain">
       <div class="node"><b>Neumann U87</b><span>Microphone</span></div><span class="arw">→</span>
       <div class="node"><b>Neve 1073 SPX</b><span>Preamp</span></div><span class="arw">→</span>
       <div class="node"><b>Tube-Tech CL1B</b><span>Compressor</span></div><span class="arw">→</span>
+      <div class="node"><b>UAD Apollo X6</b><span>Conversion</span></div>
+    </div>
+    <p class="eyebrow" style="margin-bottom:10px">C Room</p>
+    <div class="chain">
+      <div class="node"><b>Neumann TLM 103</b><span>Microphone</span></div><span class="arw">→</span>
+      <div class="node"><b>UA LA-610 MkII</b><span>Tube Preamp</span></div><span class="arw">→</span>
       <div class="node"><b>UAD Apollo X8</b><span>Conversion</span></div>
     </div>
     <div class="gear">
-      <div class="box"><h4>Microphones</h4><ul><li>Neumann U87</li><li>Neumann TLM 103 (×2)</li><li>Shure SM7B</li><li>Shure MV7X</li></ul></div>
-      <div class="box"><h4>Front End</h4><ul><li>Neve 1073 SPX preamp / channel strip</li><li>Tube-Tech CL1B compressor</li></ul></div>
+      <div class="box"><h4>Microphones</h4><ul><li>Neumann U87</li><li>Neumann TLM 103 (×2)</li><li>Shure SM7B</li><li>Shure MV7X (×2)</li></ul></div>
+      <div class="box"><h4>Front End</h4><ul><li>Neve 1073 SPX preamp / channel strip</li><li>Tube-Tech CL1B compressor</li><li>UA LA-610 MkII Classic tube preamp</li></ul></div>
       <div class="box"><h4>Conversion</h4><ul><li>UAD Apollo X8</li><li>UAD Apollo X6</li><li>UAD Apollo Twin</li></ul></div>
       <div class="box"><h4>Monitoring &amp; Power</h4><ul><li>Yamaha HS8 (2 pairs)</li><li>PreSonus headphone amplifier</li><li>Furman power conditioning</li></ul></div>
       <div class="box"><h4>Software</h4><ul><li>Pro Tools</li><li>Waves Complete bundle</li><li>UAD plugins</li><li>Auto-Tune (Antares) · VocAlign (Synchro Arts)</li></ul></div>
@@ -241,11 +255,15 @@ footer a{color:var(--gold)}
   </div>
 </section>
 
+<!-- IMAGE BREAK -->
+<div class="img-break"><img src="../images/g-outdoor-palmtree-sunset.jpg" alt="TORCH ATL grounds at sunset" loading="lazy"></div>
+
 <!-- CLUB LIFE -->
 <section>
   <div class="wrap">
     <p class="eyebrow">Club Life</p>
     <h2>Beyond the studio.</h2>
+    <img class="club-img" src="../images/g-1-loungejpg.jpg" alt="The executive lounge" loading="lazy">
     <div class="two" style="margin-top:24px">
       <div><h4>Listening nights</h4><p>Members-only, quarterly. Works-in-progress, no phones, real feedback from a room that knows what it’s hearing.</p></div>
       <div><h4>Industry mixers</h4><p>A curated guest list — A&amp;Rs, publishers, music supervisors, managers — invited into the estate each quarter.</p></div>
