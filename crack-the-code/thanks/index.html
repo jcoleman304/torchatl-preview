@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmed · Crack The Code</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;500&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0A0A0A;--panel:#121212;--line:rgba(255,255,255,.10);--silver:#a8a8a8;--cream:#F5F0E8;--gold:#D4AF37}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--cream);font-family:'Inter',sans-serif;font-weight:300;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background-image:radial-gradient(ellipse at 50% 0%,rgba(212,175,55,.10),transparent 60%)}
+.card{max-width:560px;text-align:center}
+.logo{font-family:'Playfair Display',serif;font-weight:700;font-size:20px;letter-spacing:.03em;color:#fff;margin-bottom:34px}
+.logo span{color:var(--gold);font-size:.7em;vertical-align:super}
+.eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:'Playfair Display',serif;font-size:clamp(30px,6vw,44px);color:#fff;margin:12px 0 16px}
+p{color:var(--silver);font-size:16px;line-height:1.6;margin-bottom:12px}
+a.btn{display:inline-block;margin-top:22px;padding:13px 26px;border:1px solid var(--line);border-radius:3px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream);text-decoration:none}
+a.btn:hover{border-color:var(--gold);color:var(--gold)}
+</style>
+</head>
+<body><div class="card">
+  <div class="logo">TORCH<span>ATL</span></div>
+  <div class="eyebrow">Crack The Code · Nov 6–8, 2026</div>
+  <h1 id="h">You're in.</h1>
+  <p id="p1">Your payment went through. A confirmation is on its way to your email.</p>
+  <p id="p2"></p>
+  <a class="btn" href="/crack-the-code/">Back to Crack The Code</a>
+</div>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search), tier = q.get('tier');
+  var h = document.getElementById('h'), p1 = document.getElementById('p1'), p2 = document.getElementById('p2');
+  if(tier === 'ga'){ h.textContent = "You're on the list."; p1.textContent = 'Your Code Mixer ticket is confirmed. Saturday November 7, doors 5:00 PM.'; p2.textContent = 'The estate address and gate instructions arrive by email and text 48 hours before. Bring one record if you want a Pass the Aux slot.'; }
+  else if(tier === 'residency' || tier === 'session'){ h.textContent = 'Seat confirmed.'; p1.textContent = 'Your payment went through and your seat is locked.'; p2.textContent = 'Your pre-work link is on its way to your inbox. It takes about 45 minutes and it is due October 30. That is how we build your session before you walk in.'; }
+  if(q.get('r')) p2.textContent += ' Reference CTC-' + q.get('r').replace(/\D/g,'') + '.';
+})();
+</script>
+</body>
+</html>

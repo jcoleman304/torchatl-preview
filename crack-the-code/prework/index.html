@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-work · Crack The Code</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0A0A0A;--panel:#121212;--line:rgba(255,255,255,.10);--gray:#8c8c8c;--silver:#a8a8a8;--cream:#F5F0E8;--white:#fff;--gold:#D4AF37;--gold-light:#E5C76B}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--cream);font-family:'Inter',sans-serif;font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:40px 24px 100px}
+.logo{font-family:'Playfair Display',serif;font-weight:700;font-size:20px;letter-spacing:.03em;color:#fff}
+.logo span{color:var(--gold);font-size:.7em;vertical-align:super}
+.eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-top:40px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(30px,6vw,46px);color:#fff;margin:10px 0 14px;line-height:1.1}
+h2{font-family:'Playfair Display',serif;font-size:22px;color:#fff;margin:48px 0 6px;padding-top:26px;border-top:1px solid var(--line)}
+h2 small{display:block;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+p{color:var(--silver)}
+.due{display:inline-block;margin:14px 0 0;padding:8px 14px;border:1px solid rgba(212,175,55,.4);border-radius:3px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.q{margin:22px 0}
+.q label{display:block;font-size:15px;color:var(--cream);margin-bottom:8px}
+.q label b{color:var(--gold);font-weight:500;margin-right:8px}
+.q textarea,.q input{width:100%;background:#0d0d0d;border:1px solid var(--line);border-radius:5px;color:var(--cream);font-size:15px;padding:12px 13px;font-family:'Inter',sans-serif;font-weight:300}
+.q textarea{min-height:88px;resize:vertical}
+.q textarea:focus,.q input:focus{outline:none;border-color:var(--gold)}
+.rec{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-bottom:10px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:rgba(10,10,10,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:14px 24px}
+.bar .in{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.btn{padding:12px 22px;border-radius:3px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;cursor:pointer;border:1px solid var(--line);background:none;color:var(--cream);font-family:'Inter',sans-serif}
+.btn-gold{background:var(--gold);color:var(--black);border-color:var(--gold)}
+.btn-gold:hover{background:var(--gold-light)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+#st{font-size:13px;color:var(--gray);min-height:1.2em}
+.ok{color:#7CCf8f!important}.err{color:#e08a8a!important}
+.done{background:var(--panel);border:1px solid rgba(212,175,55,.4);border-radius:10px;padding:28px;margin-top:30px}
+.hidden{display:none}
+@media(max-width:600px){.rec{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="wrap">
+  <div class="logo">TORCH<span>ATL</span></div>
+  <div id="invalid" class="hidden"><div class="eyebrow">Crack The Code</div><h1>This link isn't valid.</h1><p>Pre-work links are personal and sent by email after payment. If yours is not working, email <a href="mailto:admin@torchatl.com" style="color:var(--gold)">admin@torchatl.com</a>.</p></div>
+  <div id="main" class="hidden">
+    <div class="eyebrow">Crack The Code · <span id="tier"></span></div>
+    <h1 id="hello">Your pre-work.</h1>
+    <p>These answers build your session. Be honest and specific. Short answers are fine, vague ones are not. Your progress saves on this device and to Torch when you hit Save.</p>
+    <div class="due">Due <span id="due"></span></div>
+    <div id="done" class="done hidden"><strong style="color:#fff;font-weight:500">Submitted.</strong> <span id="done-when"></span> You can still edit and re-submit until the deadline.</div>
+
+    <form id="f">
+      <h2><small>Music</small>Your three records</h2>
+      <div class="q"><label>Ranked #1 → #3. #1 is the record you believe is strongest right now.</label>
+        <div class="rec"><input name="r1t" placeholder="#1 Title"><input name="r1u" placeholder="Link"></div>
+        <div class="rec"><input name="r2t" placeholder="#2 Title"><input name="r2u" placeholder="Link"></div>
+        <div class="rec"><input name="r3t" placeholder="#3 Title"><input name="r3u" placeholder="Link"></div></div>
+      <div class="q"><label><b>2</b>Which record should lead your next campaign? Why?</label><textarea name="q2"></textarea></div>
+      <div class="q"><label><b>3</b>What makes your music different?</label><textarea name="q3"></textarea></div>
+      <div class="q"><label><b>4</b>Which artists do listeners currently compare you to?</label><textarea name="q4"></textarea></div>
+      <div class="q"><label><b>5</b>Your 3–5 musical / creative references.</label><textarea name="q5"></textarea></div>
+
+      <h2><small>Identity</small>Who you are as an artist</h2>
+      <div class="q"><label><b>6</b>Describe yourself as an artist in one sentence.</label><textarea name="q6"></textarea></div>
+      <div class="q"><label><b>7</b>One word at the center of your artist world.</label><input name="q7"></div>
+      <div class="q"><label><b>8</b>What do you want people to feel when they experience you?</label><textarea name="q8"></textarea></div>
+      <div class="q"><label><b>9</b>Which parts of your real personality and life are central to the artist?</label><textarea name="q9"></textarea></div>
+      <div class="q"><label><b>10</b>What do you never want your artist brand to become?</label><textarea name="q10"></textarea></div>
+
+      <h2><small>Narrative</small>The story you are telling</h2>
+      <div class="q"><label><b>11</b>Why should someone care about you, not just your music?</label><textarea name="q11"></textarea></div>
+      <div class="q"><label><b>12</b>What story are you currently telling the world?</label><textarea name="q12"></textarea></div>
+      <div class="q"><label><b>13</b>Which experiences have shaped your perspective as an artist?</label><textarea name="q13"></textarea></div>
+      <div class="q"><label><b>14</b>If a fan introduced you to someone who had never heard of you, what would you want them to say?</label><textarea name="q14"></textarea></div>
+
+      <h2><small>Audience</small>Who this is for</h2>
+      <div class="q"><label><b>15</b>Who is your core audience?</label><textarea name="q15"></textarea></div>
+      <div class="q"><label><b>16</b>Describe one specific person who would become a serious fan: age range, interests, lifestyle, what they listen to, what they care about.</label><textarea name="q16"></textarea></div>
+      <div class="q"><label><b>17</b>Why would that person connect emotionally with you?</label><textarea name="q17"></textarea></div>
+      <div class="q"><label><b>18</b>Where are you currently finding your strongest audience?</label><textarea name="q18"></textarea></div>
+      <div class="q"><label><b>19</b>What evidence do you have? Streams, comments, DMs, shows, content performance.</label><textarea name="q19"></textarea></div>
+
+      <h2><small>Strategy</small>Where you are going</h2>
+      <div class="q"><label><b>20</b>Biggest goal for the next 12 months.</label><textarea name="q20"></textarea></div>
+      <div class="q"><label><b>21</b>The one thing preventing you from getting there.</label><textarea name="q21"></textarea></div>
+      <div class="q"><label><b>22</b>What you are currently doing to grow your career.</label><textarea name="q22"></textarea></div>
+      <div class="q"><label><b>23</b>What you have tried that has not worked.</label><textarea name="q23"></textarea></div>
+      <div class="q"><label><b>24</b>Who is on your team.</label><textarea name="q24"></textarea></div>
+      <div class="q"><label><b>25</b>Resources you realistically have now: budget, collaborators, studio access, content resources.</label><textarea name="q25"></textarea></div>
+
+      <h2><small>The Code</small>Where you stand</h2>
+      <div class="q"><label><b>26</b>What is your artist code right now? Music + Identity + Narrative + Audience + Strategy = ?</label><textarea name="q26"></textarea></div>
+      <div class="q"><label><b>27</b>The #1 question you want Joi and the Guest Decoder to answer.</label><textarea name="q27"></textarea></div>
+      <div class="q"><label><b>28</b>What are you willing to hear? Is there anything you are afraid we may tell you about your music, identity or career?</label><textarea name="q28"></textarea></div>
+    </form>
+  </div>
+</div>
+<div class="bar" id="bar" style="display:none"><div class="in">
+  <span id="st"></span>
+  <span><button class="btn" id="save">Save draft</button> <button class="btn btn-gold" id="submit">Submit pre-work</button></span>
+</div></div>
+<script>
+(function(){
+  var API = 'https://api.torchatl.com/api/crack-the-code/prework/';
+  var T = new URLSearchParams(location.search).get('t') || '';
+  var LS = 'ctc_prework_' + T.slice(0,8);
+  var f = document.getElementById('f'), st = document.getElementById('st');
+  function show(id){ document.getElementById(id).classList.remove('hidden'); }
+  function fmt(iso){ return new Date(iso).toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZone:'America/New_York'}) + ' ET'; }
+  function collect(){
+    var fd = new FormData(f), answers = {}, records = [];
+    for(var i=2;i<=28;i++){ answers['q'+i] = (fd.get('q'+i)||'').trim(); }
+    [1,2,3].forEach(function(i){ records.push({ title:(fd.get('r'+i+'t')||'').trim(), url:(fd.get('r'+i+'u')||'').trim() }); });
+    return { answers: answers, records: records };
+  }
+  function fill(answers, records){
+    Object.keys(answers||{}).forEach(function(k){ var el = f.elements[k]; if(el && !el.value) el.value = answers[k]; });
+    (records||[]).forEach(function(r,i){ var t=f.elements['r'+(i+1)+'t'], u=f.elements['r'+(i+1)+'u']; if(t && !t.value) t.value = r.title||''; if(u && !u.value) u.value = r.url||''; });
+  }
+  async function save(final){
+    var btns = [document.getElementById('save'), document.getElementById('submit')]; btns.forEach(function(b){ b.disabled = true; });
+    st.className=''; st.textContent = final ? 'Submitting…' : 'Saving…';
+    var body = collect(); body.final = !!final;
+    if(final){ var missing = Object.keys(body.answers).filter(function(k){ return !body.answers[k]; }).length + body.records.filter(function(r){ return !r.url; }).length;
+      if(missing){ st.className='err'; st.textContent = missing + ' answer' + (missing>1?'s':'') + ' still blank. Fill everything before submitting, or save a draft.'; btns.forEach(function(b){ b.disabled = false; }); return; } }
+    try{
+      var r = await fetch(API + encodeURIComponent(T), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      var d = await r.json().catch(function(){ return {}; });
+      if(!r.ok) throw new Error(d.error || 'Save failed');
+      st.className='ok'; st.textContent = final ? 'Submitted. Thank you.' : 'Saved ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      if(final){ show('done'); document.getElementById('done-when').textContent = 'Received ' + fmt(new Date().toISOString()) + '.'; window.scrollTo({top:0,behavior:'smooth'}); }
+    }catch(e){ st.className='err'; st.textContent = e.message + ' (your draft is still on this device)'; }
+    btns.forEach(function(b){ b.disabled = false; });
+  }
+  if(!T){ show('invalid'); return; }
+  fetch(API + encodeURIComponent(T)).then(function(r){ return r.ok ? r.json() : Promise.reject(); }).then(function(d){
+    show('main'); document.getElementById('bar').style.display='block';
+    document.getElementById('tier').textContent = d.tierName; document.getElementById('hello').textContent = d.firstName + ', your pre-work.';
+    document.getElementById('due').textContent = fmt(d.due);
+    try{ var local = JSON.parse(localStorage.getItem(LS)||'null'); if(local) fill(local.answers, local.records); }catch(e){}
+    fill(d.answers, d.records);
+    if(d.submittedAt){ show('done'); document.getElementById('done-when').textContent = 'Received ' + fmt(d.submittedAt) + '.'; }
+  }).catch(function(){ show('invalid'); });
+  f.addEventListener('input', function(){ try{ localStorage.setItem(LS, JSON.stringify(collect())); }catch(e){} });
+  document.getElementById('save').addEventListener('click', function(e){ e.preventDefault(); save(false); });
+  document.getElementById('submit').addEventListener('click', function(e){ e.preventDefault(); save(true); });
+})();
+</script>
+</body>
+</html>
