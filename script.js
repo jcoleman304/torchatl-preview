@@ -227,63 +227,106 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* Request to Reserve — multi-step form */
+    /* Request to Reserve — Create / Gather / Stay two-step intake */
     const rform = document.getElementById('reserve-form');
     const rrPurpose = document.getElementById('rr-purpose');
     const rrDuration = document.getElementById('rr-duration');
     const escapeHtml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-    /* Use-case tiles preselect purpose (and duration where it implies one) */
-    const TILE_MAP = {
-        camp: { purpose: 'Record / Write', duration: 'Multi-Day (2–7 days)' },
-        event: { purpose: 'Host an Event' },
-        'photo-video': { purpose: 'Shoot (Photo / Video)' },
-        podcast: { purpose: 'Other' }
+    const USE_CASES = {
+        Create: ['Music camp / album lock-in', 'Brand shoot / commercial', 'Film / photo production', 'Podcast', 'Livestream / Stream House', 'Podcast / stream hybrid', 'Reaction / watch-party content', 'Gaming session', 'Creator collab', 'Other production'],
+        Gather: ['Team off-site', 'Private dinner / hosted evening', 'Workshop / mastermind', 'Launch / listening evening', 'Industry gathering', 'Creator meetup / summit', 'Watch party / premiere', 'Tournament / gaming night', 'Brand-hosted creator evening', 'Other gathering'],
+        Stay: ['Artist residency', 'Creator residency', 'Executive stay', 'Production stay', 'Talent accommodations', 'Stream-house weekend', 'Content-batching stay', 'Partnership residency (label / publisher / management)', 'Other stay']
     };
-    document.querySelectorAll('.usecase[data-inquiry]').forEach((tile) => {
-        tile.addEventListener('click', () => {
-            const m = TILE_MAP[tile.dataset.inquiry];
-            if (!m) return;
-            if (rrPurpose && m.purpose) { rrPurpose.value = m.purpose; rrPurpose.dispatchEvent(new Event('change')); }
-            if (rrDuration && m.duration) rrDuration.value = m.duration;
+    const DURATIONS = {
+        Create: ['Estate Day (12 hours)', 'Multi-Day (2–7 days)', 'Extended production'],
+        Gather: [],
+        Stay: ['2-Night Lockout', '3–7 Nights', 'Multi-week residency']
+    };
+    const STUDIO_USES = /music|podcast|stream|hybrid|other production/i;
+    const CREATOR_USES = /stream|creator|reaction|gaming|watch|content-batching/i;
+
+    const verticalGroup = document.querySelector('.rr-verticals');
+    const purposeGroup = document.getElementById('rr-purpose-group');
+    const durationGroup = document.getElementById('rr-duration-group');
+    const eventHours = document.getElementById('rr-event-hours');
+    const roomGroup = document.getElementById('rr-room-group');
+    const platformsGroup = document.getElementById('rr-platforms-group');
+    const orgEl = document.getElementById('rr-org');
+
+    const fill = (sel, opts, keep) => {
+        if (!sel) return;
+        const prev = keep ? sel.value : '';
+        sel.innerHTML = '<option value="">Select…</option>' + opts.map((o) => '<option value="' + escapeHtml(o) + '">' + escapeHtml(o) + '</option>').join('');
+        if (prev && opts.includes(prev)) sel.value = prev;
+    };
+    const getVertical = () => { const f = rform && rform.elements['vertical']; return f ? f.value : ''; };
+
+    const onPurpose = () => {
+        const v = getVertical(); const u = rrPurpose ? rrPurpose.value : '';
+        if (roomGroup) roomGroup.style.display = (v === 'Create' && STUDIO_USES.test(u)) ? '' : 'none';
+        const creator = CREATOR_USES.test(u) || (orgEl && orgEl.value === 'Creator / Talent Management');
+        if (platformsGroup) platformsGroup.style.display = creator ? '' : 'none';
+    };
+    const onVertical = () => {
+        const v = getVertical();
+        if (verticalGroup) verticalGroup.classList.remove('is-invalid');
+        if (purposeGroup) purposeGroup.style.display = v ? '' : 'none';
+        fill(rrPurpose, USE_CASES[v] || [], true);
+        fill(rrDuration, DURATIONS[v] || [], true);
+        const hosted = v === 'Gather';
+        if (durationGroup) durationGroup.style.display = (v && !hosted) ? '' : 'none';
+        if (eventHours) eventHours.style.display = hosted ? '' : 'none';
+        if (rrDuration) rrDuration.required = !!(v && !hosted);
+        onPurpose();
+    };
+    const setVertical = (v, usecase) => {
+        if (!rform || !v) return;
+        const radio = rform.querySelector('input[name="vertical"][value="' + v + '"]');
+        if (!radio) return;
+        radio.checked = true; onVertical();
+        if (usecase && rrPurpose) { rrPurpose.value = usecase; onPurpose(); }
+    };
+
+    /* Section CTAs preselect the vertical (and a use case where one is implied) */
+    document.querySelectorAll('[data-inquiry]').forEach((el) => {
+        el.addEventListener('click', () => {
+            const v = { create: 'Create', gather: 'Gather', stay: 'Stay' }[el.dataset.inquiry];
+            if (v) setVertical(v, el.dataset.usecase || '');
         });
     });
+    /* Deep links from the creator page: /?v=create&u=Livestream%20%2F%20Stream%20House#inquire */
+    try {
+        const qs = new URLSearchParams(window.location.search);
+        const v = { create: 'Create', gather: 'Gather', stay: 'Stay' }[(qs.get('v') || '').toLowerCase()];
+        if (v) setVertical(v, qs.get('u') || '');
+    } catch (e) { /* no-op */ }
 
     if (rform) {
         const stepItems = Array.from(document.querySelectorAll('.rr-stepitem'));
         const steps = Array.from(rform.querySelectorAll('.rr-step'));
-        const roomGroup = document.getElementById('rr-room-group');
         const showStep = (n) => {
             steps.forEach((s) => s.classList.toggle('active', s.dataset.step == n));
             stepItems.forEach((it) => { const d = +it.dataset.step; it.classList.toggle('active', d == n); it.classList.toggle('done', d < n); });
             const top = document.getElementById('inquire'); if (top) top.scrollIntoView({ behavior: 'smooth', block: 'start' });
         };
         const validate = (n) => {
-            const reqs = n == 1 ? ['purpose', 'duration', 'start_date'] : n == 2 ? ['name', 'phone', 'email'] : [];
             let ok = true;
-            reqs.forEach((nm) => { const f = rform.elements[nm]; if (f) { const bad = !f.value.trim(); f.style.borderColor = bad ? '#ff5555' : ''; if (bad) ok = false; } });
+            if (n == 1) {
+                if (!getVertical()) { ok = false; if (verticalGroup) verticalGroup.classList.add('is-invalid'); }
+                const reqs = ['purpose', 'start_date'];
+                if (getVertical() !== 'Gather') reqs.push('duration');
+                reqs.forEach((nm) => { const f = rform.elements[nm]; if (f) { const bad = !f.value.trim(); f.style.borderColor = bad ? '#ff5555' : ''; if (bad) ok = false; } });
+            } else if (n == 2) {
+                ['name', 'phone', 'email'].forEach((nm) => { const f = rform.elements[nm]; if (f) { const bad = !f.value.trim(); f.style.borderColor = bad ? '#ff5555' : ''; if (bad) ok = false; } });
+            }
             return ok;
         };
-        const eventHours = document.getElementById('rr-event-hours');
-        if (rrPurpose) {
-            const durationGroup = document.getElementById('rr-duration-group');
-            const onPurpose = () => {
-                const p = rrPurpose.value;
-                const hourly = p === 'Host an Event' || p === 'Shoot (Photo / Video)';
-                if (roomGroup) roomGroup.style.display = (p === 'Record / Write') ? '' : 'none';
-                // hourly bookings (events, shoots) use an Hours field, not a day-count
-                if (durationGroup) durationGroup.style.display = hourly ? 'none' : '';
-                if (hourly && rrDuration) rrDuration.value = 'Single Day';
-                if (eventHours) {
-                    eventHours.style.display = hourly ? '' : 'none';
-                    const lbl = eventHours.querySelector('label');
-                    const inp = eventHours.querySelector('input');
-                    if (p === 'Shoot (Photo / Video)') { if (lbl) lbl.textContent = 'Shoot Length / Hours'; if (inp) inp.placeholder = 'e.g. 4 hours, or 10 AM – 4 PM'; }
-                    else if (p === 'Host an Event') { if (lbl) lbl.textContent = 'Event Hours'; if (inp) inp.placeholder = 'e.g. 7:00 PM – 12:00 AM'; }
-                }
-            };
-            rrPurpose.addEventListener('change', onPurpose); onPurpose();
-        }
+        rform.querySelectorAll('input[name="vertical"]').forEach((r) => r.addEventListener('change', onVertical));
+        if (rrPurpose) rrPurpose.addEventListener('change', onPurpose);
+        if (orgEl) orgEl.addEventListener('change', onPurpose);
+        onVertical();
+
         const lblToggle = document.getElementById('rr-label-toggle');
         const lblFields = document.getElementById('rr-label-fields');
         if (lblToggle && lblFields) lblToggle.addEventListener('change', () => lblFields.classList.toggle('show', lblToggle.checked));
@@ -304,16 +347,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const g = (nm) => { const f = rform.elements[nm]; return f ? f.value : ''; };
         const isChecked = (nm) => { const f = rform.elements[nm]; return !!(f && f.checked); };
+        const ADDONS = [['addon_engineer', 'Engineer'], ['addon_chef', 'Private Chef'], ['addon_catering', 'Catering'], ['addon_photographer', 'Photographer / Videographer'], ['addon_av', 'A/V & Livestream'], ['addon_lighting', 'Lighting Kit'], ['addon_security', 'Security'], ['addon_transport', 'Transportation']];
+        const addonList = () => ADDONS.filter(([nm]) => isChecked(nm)).map(([, label]) => label);
 
         const buildSummary = () => {
-            const addons = [];
-            [['addon_engineer', 'Engineer'], ['addon_chef', 'Chef'], ['addon_catering', 'Catering'], ['addon_photographer', 'Photographer']]
-                .forEach(([nm, label]) => { if (rform.elements[nm] && rform.elements[nm].checked) addons.push(label); });
+            const v = getVertical();
+            const addons = addonList();
             const rows = [
-                ['Here to', g('purpose')],
-                (g('purpose') === 'Host an Event' || g('purpose') === 'Shoot (Photo / Video)') ? null : ['Duration', g('duration')],
-                g('event_hours') ? ['Hours', g('event_hours')] : null,
-                (roomGroup.style.display !== 'none' && g('room')) ? ['Room', g('room')] : null,
+                ['Here to', [v, g('purpose')].filter(Boolean).join(' — ')],
+                g('org_type') ? ['Organization', g('org_type')] : null,
+                (platformsGroup && platformsGroup.style.display !== 'none' && g('platforms')) ? ['Platforms', g('platforms')] : null,
+                v === 'Gather' ? (g('event_hours') ? ['Hours', g('event_hours')] : null) : ['Duration', g('duration')],
+                (roomGroup && roomGroup.style.display !== 'none' && g('room')) ? ['Studio', g('room')] : null,
                 ['Dates', g('start_date') + (g('end_date') ? ' → ' + g('end_date') : '')],
                 ['Days / Guests', g('days') + ' day(s) · ' + g('guests') + ' guest(s)'],
                 addons.length ? ['Add-ons', addons.join(', ')] : null,
@@ -341,31 +386,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = document.getElementById('rr-submit');
             btn.textContent = 'Submitting…'; btn.disabled = true;
 
-            // ---- Map the friendly form to the Torch booking API contract ----
+            // ---- Map the intake to the Torch booking API contract ----
             // session_type enum: half_day | full_day | estate_daily | estate_weekly
             //   | estate_biweekly | estate_monthly | writing_camp | private_event
+            const v = getVertical();
             const purpose = g('purpose');
             const duration = g('duration');
             let sessionType;
-            if (purpose === 'Host an Event' || purpose === 'Shoot (Photo / Video)') {
-                sessionType = 'private_event';
-            } else if (duration === 'Multi-Day (2–7 days)') {
-                sessionType = 'estate_daily';
-            } else if (duration === 'Extended / Residency') {
-                sessionType = 'estate_monthly';
-            } else {
-                sessionType = 'full_day';
-            }
-            const roomMap = { 'B Room': 'b_room', 'C Room': 'c_room', 'Both Rooms': 'both' };
-            const room = roomMap[g('room')] || null;
+            if (v === 'Gather') sessionType = 'private_event';
+            else if (v === 'Stay') sessionType = (duration === 'Multi-week residency') ? 'estate_monthly' : 'estate_daily';
+            else if (duration === 'Multi-Day (2–7 days)') sessionType = 'estate_daily';
+            else if (duration === 'Extended production') sessionType = 'estate_monthly';
+            else sessionType = 'full_day';
+            const roomMap = { 'Studio B': 'b_room', 'Studio C': 'c_room', 'Both Studios': 'both' };
+            const room = (roomGroup && roomGroup.style.display !== 'none') ? (roomMap[g('room')] || null) : null;
 
             // Fold everything the API has no dedicated field for into special_requests
             const extras = [];
-            extras.push('Purpose: ' + (purpose || '—'));
-            if (purpose !== 'Host an Event' && purpose !== 'Shoot (Photo / Video)' && duration) extras.push('Duration: ' + duration);
-            if (g('event_hours')) extras.push('Event hours: ' + g('event_hours'));
-            if (isChecked('addon_chef')) extras.push('Add-on: In-House Chef');
-            if (isChecked('addon_photographer')) extras.push('Add-on: Photoshoot with professional photographer');
+            extras.push('Vertical: ' + (v || '—'));
+            extras.push('Use case: ' + (purpose || '—'));
+            if (g('org_type')) extras.push('Organization: ' + g('org_type'));
+            if (platformsGroup && platformsGroup.style.display !== 'none' && g('platforms')) extras.push('Platforms / audience: ' + g('platforms'));
+            if (v !== 'Gather' && duration) extras.push('Duration: ' + duration);
+            if (v === 'Gather' && g('event_hours')) extras.push('Event hours: ' + g('event_hours'));
+            addonList().filter((l) => l !== 'Engineer' && l !== 'Catering').forEach((l) => extras.push('Add-on: ' + l));
             if (g('message')) extras.push('Notes: ' + g('message'));
 
             const body = {
