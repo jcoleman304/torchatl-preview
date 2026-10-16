@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TORCH ATL | Member Portal</title>
-    <meta name="theme-color" content="#0a0a0a">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230A0A0A' width='100' height='100' rx='12'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%23D4AF37' font-family='Georgia'>T</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -39,7 +37,7 @@
                 <button type="submit" class="btn primary full">Enter Portal</button>
             </form>
 
-            <p class="login-note">Membership by invitation only.<br>Contact your sponsor for access.</p>
+            <p class="login-note">Membership by invitation only.</p>
         </div>
         <div class="login-bg"></div>
     </div>
@@ -59,21 +57,16 @@
                 <a href="#" class="nav-link" data-section="booking">Book Session</a>
                 <a href="#" class="nav-link" data-section="hours">My Hours</a>
                 <a href="#" class="nav-link" data-section="guests">Guests</a>
+                <a href="#" class="nav-link" data-section="engineers">Engineers</a>
                 <a href="#" class="nav-link" data-section="billing">Billing</a>
                 <a href="#" class="nav-link" data-section="house-rules">House Rules</a>
             </nav>
             <div class="header-right">
-                <a href="/" class="back-to-site">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 12H5M12 19l-7-7 7-7"/>
-                    </svg>
-                    <span>Website</span>
-                </a>
                 <div class="member-info">
                     <span class="member-name" id="header-member-name">Member</span>
                     <span class="member-tier" id="header-member-tier">Tier</span>
                 </div>
-                <button class="btn-icon" onclick="logout()" title="Logout">
+                <button class="btn-icon" onclick="logout()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                         <polyline points="16 17 21 12 16 7"></polyline>
@@ -205,21 +198,8 @@
                     <!-- Announcements -->
                     <div class="card announcements">
                         <h3>Announcements</h3>
-                        <div class="announcement-list">
-                            <div class="announcement">
-                                <span class="announcement-date">Feb 9</span>
-                                <div class="announcement-content">
-                                    <h4>Grand Opening: March 15, 2026</h4>
-                                    <p>Founding members receive 15% off locked forever. Secure your spot now.</p>
-                                </div>
-                            </div>
-                            <div class="announcement">
-                                <span class="announcement-date">Feb 5</span>
-                                <div class="announcement-content">
-                                    <h4>New Equipment Arriving</h4>
-                                    <p>Upgraded monitoring system installation scheduled for late February.</p>
-                                </div>
-                            </div>
+                        <div id="announcements-list">
+                            <p style="color: var(--text-muted); text-align: center; padding: 20px;">Loading announcements...</p>
                         </div>
                     </div>
                 </div>
@@ -316,6 +296,14 @@
                                     <option value="3">3 guests</option>
                                     <option value="4">4 guests</option>
                                 </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Request Engineer (optional)</label>
+                                <select id="booking-engineer">
+                                    <option value="">No engineer preference</option>
+                                </select>
+                                <span class="field-hint">Select a preferred engineer for your session</span>
                             </div>
 
                             <div class="form-group">
@@ -478,6 +466,18 @@
                 </div>
             </section>
 
+            <!-- Engineers Section -->
+            <section id="engineers" class="section">
+                <div class="section-header">
+                    <h2>Our Engineers</h2>
+                    <p>Meet the professionals behind the console</p>
+                </div>
+
+                <div class="engineers-grid" id="engineers-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
             <!-- Billing Section -->
             <section id="billing" class="section">
                 <div class="section-header">
@@ -554,7 +554,7 @@
 
                         <!-- Square Configuration Status -->
                         <div id="square-config-notice" class="square-config-notice" style="display: none;">
-                            <p>⚠️ Square is not configured. <a href="../TORCH_ATL_OPERATIONS_SUITE/index.html" target="_blank">Configure in Operations Suite</a></p>
+                            <p>⚠️ Square is not configured. <a href="https://ops.torchatl.com" target="_blank">Configure in Operations Suite</a></p>
                         </div>
                     </div>
 
@@ -565,26 +565,7 @@
                             <button class="btn secondary small" onclick="downloadInvoices()">Download All</button>
                         </div>
                         <div class="payment-history" id="payment-history">
-                            <div class="payment-item">
-                                <div class="payment-info">
-                                    <span class="payment-date">Mar 1, 2026</span>
-                                    <span class="payment-desc">Ambassador Membership - March</span>
-                                </div>
-                                <div class="payment-right">
-                                    <span class="payment-amount">$4,250.00</span>
-                                    <span class="payment-status paid">Paid</span>
-                                </div>
-                            </div>
-                            <div class="payment-item">
-                                <div class="payment-info">
-                                    <span class="payment-date">Mar 15, 2026</span>
-                                    <span class="payment-desc">Registration Fee (One-time)</span>
-                                </div>
-                                <div class="payment-right">
-                                    <span class="payment-amount">$2,125.00</span>
-                                    <span class="payment-status paid">Paid</span>
-                                </div>
-                            </div>
+                            <p style="color: var(--text-muted); text-align: center; padding: 20px;">Loading payment history...</p>
                         </div>
                     </div>
 
@@ -740,6 +721,18 @@
         <!-- Toast Container -->
         <div id="toast-container"></div>
     </div>
+
+    <!-- Backend API Client -->
+    <script>
+    window.TORCH_API_URL = (
+        window.location.protocol === 'file:' ||
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1'
+    )
+        ? 'http://localhost:3001/api'
+        : 'https://api.torchatl.com/api';
+    </script>
+    <script src="api-client.js"></script>
 
     <script src="data.js"></script>
     <script src="app.js"></script>

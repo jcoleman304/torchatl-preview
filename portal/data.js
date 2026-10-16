@@ -1,6 +1,7 @@
 // TORCH ATL Member Portal - Data Layer
+// API-first with localStorage cache fallback
 
-// Membership Tier Configuration
+// Membership Tier Configuration (also served by backend, kept here for offline/instant UI)
 const TIERS = {
     Session: {
         name: 'Session',
@@ -48,89 +49,6 @@ const TIERS = {
     }
 };
 
-// Demo Member Data
-const DEMO_MEMBERS = {
-    'joi@torchatl.com': {
-        id: 'TM000',
-        email: 'joi@torchatl.com',
-        accessCode: 'JOI2026',
-        name: 'Joi Coleman',
-        tier: 'Ambassador',
-        founding: true,
-        joinDate: '2026-03-15',
-        phone: '',
-        company: 'Torch Music Corporation',
-        hoursUsed: 0,
-        hoursScheduled: 0,
-        sessions: [],
-        guests: [],
-        history: []
-    },
-    'derrick@example.com': {
-        id: 'TM001',
-        email: 'derrick@example.com',
-        accessCode: 'TORCH2026',
-        name: 'Derrick Milano',
-        tier: 'Ambassador',
-        founding: true,
-        joinDate: '2026-03-15',
-        phone: '(404) 555-0101',
-        company: 'Milano Music Group',
-        hoursUsed: 24,
-        hoursScheduled: 16,
-        sessions: [
-            { id: 'S001', date: '2026-03-18', startTime: '14:00', endTime: '22:00', type: 'recording', hours: 8, status: 'confirmed' },
-            { id: 'S002', date: '2026-03-22', startTime: '12:00', endTime: '20:00', type: 'writing', hours: 8, status: 'confirmed' }
-        ],
-        guests: [
-            { name: 'Marcus Thompson', session: 'S001', email: 'marcus@email.com' },
-            { name: 'Sarah Chen', session: 'S001', email: 'sarah@email.com' }
-        ],
-        history: [
-            { date: '2026-03-10', type: 'Recording', hours: 8 },
-            { date: '2026-03-08', type: 'Writing', hours: 6 },
-            { date: '2026-03-05', type: 'Recording', hours: 10 }
-        ]
-    },
-    'dke@torchatl.com': {
-        id: 'TM003',
-        email: 'dke@torchatl.com',
-        accessCode: 'DKE2026',
-        name: 'DKE',
-        tier: 'Ambassador',
-        founding: true,
-        joinDate: '2026-02-01',
-        phone: '',
-        company: '',
-        hoursUsed: 0,
-        hoursScheduled: 0,
-        sessions: [],
-        guests: [],
-        history: []
-    },
-    'member@torch.com': {
-        id: 'TM002',
-        email: 'member@torch.com',
-        accessCode: 'DEMO2026',
-        name: 'Demo Member',
-        tier: 'Member',
-        founding: true,
-        joinDate: '2026-03-15',
-        phone: '(404) 555-0102',
-        company: 'Independent',
-        hoursUsed: 12,
-        hoursScheduled: 8,
-        sessions: [
-            { id: 'S003', date: '2026-03-20', startTime: '10:00', endTime: '18:00', type: 'recording', hours: 8, status: 'confirmed' }
-        ],
-        guests: [],
-        history: [
-            { date: '2026-03-12', type: 'Recording', hours: 6 },
-            { date: '2026-03-09', type: 'Mixing', hours: 6 }
-        ]
-    }
-};
-
 // Operating Hours
 const OPERATING_HOURS = {
     start: 10, // 10 AM
@@ -140,26 +58,7 @@ const OPERATING_HOURS = {
     transitionBuffer: 30 // minutes
 };
 
-// Announcements
-const ANNOUNCEMENTS = [
-    {
-        date: '2026-02-09',
-        title: 'Grand Opening: March 15, 2026',
-        content: 'Founding members receive 15% off locked forever. Secure your spot now.'
-    },
-    {
-        date: '2026-02-05',
-        title: 'New Equipment Arriving',
-        content: 'Upgraded monitoring system installation scheduled for late February.'
-    },
-    {
-        date: '2026-01-28',
-        title: 'Founding Member Applications',
-        content: 'Limited spots available for founding members. Reach out to your sponsor.'
-    }
-];
-
-// Concierge Responses
+// Concierge Responses (static, no backend needed)
 const CONCIERGE_RESPONSES = {
     greetings: [
         "Hello! I'm your Torch Concierge. How can I assist you today?",
@@ -188,39 +87,213 @@ const CONCIERGE_RESPONSES = {
     ]
 };
 
-// Current Member State (will be set on login)
-let currentMember = null;
-let selectedDate = null;
-let currentCalendarMonth = new Date(2026, 2, 1); // March 2026
+// ============================================
+// STATE
+// ============================================
 
-// Local Storage Keys
+let currentMember = null;       // Full member profile from backend
+let memberProfile = null;       // Full dashboard data (hours, upcoming, subscription, announcements)
+let engineersList = [];         // Engineers from backend
+let selectedDate = null;
+let currentCalendarMonth = new Date();
+currentCalendarMonth.setMonth(currentCalendarMonth.getMonth() + 1); // Next month for booking
+currentCalendarMonth.setDate(1);
+
+// Backend connectivity flag
+let backendAvailable = false;
+
 const STORAGE_KEYS = {
-    currentMember: 'torch_current_member',
-    bookings: 'torch_bookings',
-    guests: 'torch_guests'
+    currentMember: 'torch_portal_member',
+    profile: 'torch_portal_profile',
+    token: 'torch_api_token'
 };
 
-// Save to localStorage
+// ============================================
+// DATA FUNCTIONS — API-first, localStorage cache
+// ============================================
+
+// Save current state to localStorage (cache)
 function saveData() {
     if (currentMember) {
         localStorage.setItem(STORAGE_KEYS.currentMember, JSON.stringify(currentMember));
     }
+    if (memberProfile) {
+        localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(memberProfile));
+    }
 }
 
-// Load from localStorage
+// Load from localStorage cache (for instant UI on reload)
 function loadData() {
     const saved = localStorage.getItem(STORAGE_KEYS.currentMember);
     if (saved) {
         currentMember = JSON.parse(saved);
+        const profile = localStorage.getItem(STORAGE_KEYS.profile);
+        if (profile) memberProfile = JSON.parse(profile);
         return true;
     }
     return false;
 }
 
-// Clear session
+// Clear session — logout
 function clearSession() {
     currentMember = null;
+    memberProfile = null;
+    engineersList = [];
     localStorage.removeItem(STORAGE_KEYS.currentMember);
+    localStorage.removeItem(STORAGE_KEYS.profile);
+    if (typeof TorchAPI !== 'undefined') {
+        TorchAPI.auth.logout();
+    }
 }
 
-console.log('[TORCH] Data layer initialized');
+// Fetch fresh profile from backend and update local state
+async function refreshProfile() {
+    if (typeof TorchAPI === 'undefined' || !TorchAPI.auth.isAuthenticated()) return false;
+
+    try {
+        const data = await TorchAPI.members.getProfile();
+        memberProfile = data;
+
+        // Map backend profile to currentMember shape for UI compatibility
+        currentMember = {
+            id: data.member.id,
+            email: data.member.email,
+            name: data.member.name,
+            tier: data.member.tier,
+            founding: data.member.founding,
+            joinDate: (data.member.joinDate || '').split('T')[0],
+            phone: data.member.phone,
+            company: data.member.company,
+            hoursUsed: parseFloat(data.hours.used) || 0,
+            hoursScheduled: parseFloat(data.hours.scheduled) || 0,
+            sessions: (data.upcoming || []).map(b => ({
+                id: b.id,
+                date: (b.date || '').split('T')[0],
+                startTime: (b.start_time || '').slice(0, 5),
+                endTime: (b.end_time || '').slice(0, 5),
+                type: b.type,
+                hours: parseFloat(b.hours) || 0,
+                guests: b.guest_count,
+                notes: b.notes,
+                status: b.status,
+                engineerName: b.engineer_name
+            })),
+            guests: [],  // loaded separately
+            history: (data.history || []).map(b => ({
+                date: (b.date || '').split('T')[0],
+                type: b.type,
+                hours: parseFloat(b.hours) || 0
+            })),
+            tierConfig: data.tierConfig,
+            subscription: data.subscription,
+            announcements: data.announcements || []
+        };
+
+        // Load guests for each upcoming booking
+        try {
+            const allGuests = await TorchAPI.guests.list();
+            currentMember.guests = allGuests.map(g => ({
+                id: g.id,
+                name: g.name,
+                session: g.booking_id,
+                email: g.email || '',
+                phone: g.phone || ''
+            }));
+        } catch (e) {
+            console.warn('[TORCH] Could not load guests:', e.message);
+        }
+
+        saveData();
+        backendAvailable = true;
+        return true;
+    } catch (err) {
+        console.warn('[TORCH] Backend unavailable, using cached data:', err.message);
+        backendAvailable = false;
+        return false;
+    }
+}
+
+// Fetch engineers from backend
+async function refreshEngineers() {
+    if (typeof TorchAPI === 'undefined' || !TorchAPI.auth.isAuthenticated()) return;
+
+    try {
+        const engineers = await TorchAPI.engineers.list();
+        engineersList = engineers.map(e => ({
+            id: e.id,
+            name: e.name,
+            role: e.title || e.role || 'Engineer',
+            specialties: e.specialties || [],
+            bio: e.bio || '',
+            photoUrl: e.photo_url || '',
+            available: e.available !== false
+        }));
+    } catch (e) {
+        console.warn('[TORCH] Could not load engineers:', e.message);
+        // Keep static fallback
+        engineersList = [
+            { id: 1, name: 'James Rodriguez', role: 'Lead Engineer', specialties: ['Recording', 'Mixing', 'Mastering'], bio: '15 years experience in music production.', photoUrl: '', available: true },
+            { id: 2, name: 'Maya Chen', role: 'Recording Engineer', specialties: ['Recording', 'Vocal Production'], bio: 'Specialist in vocal production and sound design.', photoUrl: '', available: true },
+            { id: 3, name: 'Devon Williams', role: 'Producer/Engineer', specialties: ['Production', 'Beat Making', 'Mixing'], bio: 'Producer and engineer with hip-hop and R&B focus.', photoUrl: '', available: true }
+        ];
+    }
+}
+
+// Listen for auth expiration
+if (typeof window !== 'undefined') {
+    window.addEventListener('torch:auth:expired', () => {
+        clearSession();
+        if (document.getElementById('portal-screen')) {
+            document.getElementById('portal-screen').classList.remove('active');
+            document.getElementById('portal-screen').style.display = 'none';
+            document.getElementById('login-screen').classList.add('active');
+            document.getElementById('login-screen').style.display = '';
+        }
+        showToast('Session expired. Please log in again.', 'error');
+    });
+}
+
+// ============================================
+// SESSION INACTIVITY TIMEOUT (30 minutes)
+// ============================================
+const INACTIVITY_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+
+function updateLastActivity() {
+    localStorage.setItem('torch_last_activity', Date.now().toString());
+}
+
+function checkInactivity() {
+    const lastActivity = parseInt(localStorage.getItem('torch_last_activity') || '0');
+    if (lastActivity && (Date.now() - lastActivity > INACTIVITY_TIMEOUT_MS)) {
+        if (currentMember && TorchAPI.auth.isAuthenticated()) {
+            clearSession();
+            if (document.getElementById('portal-screen')) {
+                document.getElementById('portal-screen').classList.remove('active');
+                document.getElementById('portal-screen').style.display = 'none';
+                document.getElementById('login-screen').classList.add('active');
+                document.getElementById('login-screen').style.display = '';
+            }
+            showToast('Logged out due to inactivity.', 'info');
+        }
+    }
+}
+
+if (typeof window !== 'undefined') {
+    // Track user activity
+    ['click', 'keydown', 'scroll', 'touchstart'].forEach(event => {
+        document.addEventListener(event, updateLastActivity, { passive: true });
+    });
+
+    // Check inactivity every 60 seconds
+    setInterval(checkInactivity, 60 * 1000);
+
+    // Check on tab focus return
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) checkInactivity();
+    });
+
+    // Set initial activity timestamp
+    updateLastActivity();
+}
+
+console.log('[TORCH] Data layer initialized (API-first mode)');

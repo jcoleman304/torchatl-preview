@@ -321,33 +321,6 @@ body {
     gap: 16px;
 }
 
-.back-to-site {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-muted);
-    text-decoration: none;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    transition: all 0.2s ease;
-}
-
-.back-to-site:hover {
-    color: var(--gold);
-    border-color: var(--gold);
-}
-
-.back-to-site svg {
-    opacity: 0.7;
-}
-
-.back-to-site:hover svg {
-    opacity: 1;
-}
-
 .member-info {
     text-align: right;
 }
@@ -1873,5 +1846,135 @@ body {
 
     .help-options {
         flex-direction: column;
+    }
+}
+
+/* ============================================
+   ENGINEERS SECTION
+   ============================================ */
+
+.engineers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+}
+
+.engineer-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    gap: 20px;
+}
+
+.engineer-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--gold-dim);
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.engineer-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.engineer-info {
+    flex: 1;
+}
+
+.engineer-info h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text);
+}
+
+.engineer-role {
+    display: inline-block;
+    font-size: 13px;
+    color: var(--gold);
+    margin-bottom: 12px;
+}
+
+.engineer-specialties {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.specialty-tag {
+    font-size: 11px;
+    padding: 4px 10px;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text-secondary);
+}
+
+.engineer-bio {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.engineer-availability {
+    margin-top: auto;
+}
+
+.availability-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.availability-badge.available {
+    background: rgba(34, 197, 94, 0.2);
+    color: var(--success);
+}
+
+.availability-badge.unavailable {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--danger);
+}
+
+/* Field Hint */
+.field-hint {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+@media (max-width: 768px) {
+    .engineers-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .engineer-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .engineer-avatar {
+        margin: 0 auto;
+    }
+
+    .engineer-specialties {
+        justify-content: center;
     }
 }

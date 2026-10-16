@@ -1,4 +1,5 @@
 // TORCH ATL Member Portal - Application Logic
+// Wired to backend API (TorchAPI client)
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -7,12 +8,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('preloader').classList.add('hidden');
     }, 1500);
 
-    // Check for website login redirect
-    checkWebsiteLogin();
-
-    // Check for existing session
-    if (loadData() && currentMember) {
+    // Check for existing session (cached login)
+    if (loadData() && currentMember && TorchAPI.auth.isAuthenticated()) {
         showPortal();
+        // Refresh from backend in background
+        refreshProfile().then(() => {
+            populateDashboard();
+            renderCalendar();
+            populateGuestSessions();
+            populateRegisteredGuests();
+            populateSessionHistory();
+            populateBilling();
+        });
     }
 
     // Setup navigation
@@ -21,43 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Setup booking form listeners
     setupBookingListeners();
 });
-
-// Check for login from main website
-function checkWebsiteLogin() {
-    const loginEmail = localStorage.getItem('torch_current_member');
-    const loginTimestamp = localStorage.getItem('torch_login_timestamp');
-
-    if (loginEmail && loginTimestamp) {
-        // Check if login is recent (within 5 minutes)
-        const elapsed = Date.now() - parseInt(loginTimestamp);
-        const fiveMinutes = 5 * 60 * 1000;
-
-        if (elapsed < fiveMinutes) {
-            // Valid website login - authenticate member
-            const member = DEMO_MEMBERS[loginEmail];
-
-            if (member) {
-                currentMember = member;
-                saveData();
-
-                // Clear the website login tokens
-                localStorage.removeItem('torch_current_member');
-                localStorage.removeItem('torch_login_timestamp');
-
-                console.log('[TORCH] Website login authenticated:', member.name);
-
-                // Show welcome toast after portal loads
-                setTimeout(() => {
-                    showToast('Welcome back, ' + member.name.split(' ')[0] + '!', 'success');
-                }, 500);
-            }
-        } else {
-            // Login expired - clear tokens
-            localStorage.removeItem('torch_current_member');
-            localStorage.removeItem('torch_login_timestamp');
-        }
-    }
-}
 
 // Setup Navigation
 function setupNavigation() {
@@ -74,23 +44,63 @@ function setupNavigation() {
     });
 }
 
-// Handle Login
-function handleLogin(event) {
+// Handle Login — now async, calls backend API
+async function handleLogin(event) {
     event.preventDefault();
 
-    const email = document.getElementById('login-email').value.toLowerCase();
+    const email = document.getElementById('login-email').value.toLowerCase().trim();
     const code = document.getElementById('login-code').value;
+    const submitBtn = event.target.querySelector('button[type="submit"]');
 
-    // Check credentials
-    const member = DEMO_MEMBERS[email];
+    if (!email || !code) {
+        showToast('Please enter email and access code.', 'error');
+        return;
+    }
 
-    if (member && member.accessCode === code) {
-        currentMember = member;
+    // Disable button during login
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Signing in...';
+    }
+
+    try {
+        const { token, user } = await TorchAPI.auth.login(email, code);
+
+        // Map API user to currentMember shape
+        currentMember = {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            tier: user.tier,
+            founding: user.founding,
+            joinDate: (user.joinDate || '').split('T')[0],
+            phone: user.phone,
+            company: user.company,
+            hoursUsed: user.hours ? parseFloat(user.hours.used) || 0 : 0,
+            hoursScheduled: user.hours ? parseFloat(user.hours.scheduled) || 0 : 0,
+            sessions: [],
+            guests: [],
+            history: [],
+            tierConfig: user.tierConfig
+        };
+
+        backendAvailable = true;
         saveData();
+
+        // Fetch full profile in background
+        await refreshProfile();
+        await refreshEngineers();
+
         showPortal();
-        showToast('Welcome back, ' + member.name.split(' ')[0] + '!', 'success');
-    } else {
-        showToast('Invalid credentials. Please try again.', 'error');
+        showToast('Welcome back, ' + user.name.split(' ')[0] + '!', 'success');
+    } catch (err) {
+        console.error('[TORCH] Login failed:', err);
+        showToast(err.message || 'Invalid credentials. Please try again.', 'error');
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Sign In';
+        }
     }
 }
 
@@ -98,6 +108,7 @@ function handleLogin(event) {
 function showPortal() {
     try {
         document.getElementById('login-screen').classList.remove('active');
+        document.getElementById('login-screen').style.display = 'none';
         document.getElementById('portal-screen').classList.add('active');
         document.getElementById('portal-screen').style.display = 'block';
         populateDashboard();
@@ -106,9 +117,10 @@ function showPortal() {
         populateRegisteredGuests();
         populateSessionHistory();
         populateBilling();
+        populateEngineers();
+        populateEngineerDropdown();
     } catch (error) {
         console.error('[TORCH] Portal error:', error);
-        // Still show the portal even if there's an error
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('portal-screen').style.display = 'block';
     }
@@ -118,7 +130,9 @@ function showPortal() {
 function logout() {
     clearSession();
     document.getElementById('portal-screen').classList.remove('active');
+    document.getElementById('portal-screen').style.display = 'none';
     document.getElementById('login-screen').classList.add('active');
+    document.getElementById('login-screen').style.display = '';
     document.getElementById('login-form').reset();
     showToast('You have been logged out.', 'info');
 }
@@ -138,8 +152,8 @@ function showSection(sectionId) {
 function populateDashboard() {
     if (!currentMember) return;
 
-    const tier = TIERS[currentMember.tier];
-    const hoursRemaining = tier.hours - currentMember.hoursUsed - currentMember.hoursScheduled;
+    const tier = currentMember.tierConfig || TIERS[currentMember.tier];
+    const hoursRemaining = (tier.hours || 0) - currentMember.hoursUsed - currentMember.hoursScheduled;
 
     // Header info
     document.getElementById('header-member-name').textContent = currentMember.name.split(' ')[0];
@@ -166,7 +180,7 @@ function populateDashboard() {
     document.getElementById('monthly-hours').textContent = tier.hours;
     document.getElementById('booking-window').textContent = tier.bookingWindow;
     document.getElementById('guest-limit').textContent = tier.guestLimit;
-    document.getElementById('access-code').textContent = '••••' + currentMember.accessCode.slice(-4);
+    document.getElementById('access-code').textContent = '••••••';
 
     // Hours circle
     const usedPercent = (currentMember.hoursUsed / tier.hours) * 100;
@@ -188,7 +202,7 @@ function populateDashboard() {
         <div class="session-item">
             <div>
                 <div class="session-date">${formatDate(new Date(s.date))}</div>
-                <div class="session-time">${formatTime(s.startTime)} - ${formatTime(s.endTime)}</div>
+                <div class="session-time">${formatTime(s.startTime)} - ${formatTime(s.endTime)}${s.engineerName ? ' — ' + s.engineerName : ''}</div>
             </div>
             <span class="session-hours">${s.hours} hrs</span>
         </div>
@@ -208,6 +222,23 @@ function populateDashboard() {
         progressLarge.style.strokeDasharray = circumference;
         progressLarge.style.strokeDashoffset = offset;
     }
+
+    // Announcements (from backend if available)
+    const announcements = currentMember.announcements || [];
+    const announcementsContainer = document.getElementById('announcements-list');
+    if (announcementsContainer) {
+        if (announcements.length > 0) {
+            announcementsContainer.innerHTML = announcements.map(a => `
+                <div class="announcement-item">
+                    <div class="announcement-title">${a.title}</div>
+                    <div class="announcement-content">${a.content}</div>
+                    <div class="announcement-date">${formatDate(new Date(a.created_at || a.date))}</div>
+                </div>
+            `).join('');
+        } else {
+            announcementsContainer.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No announcements</p>';
+        }
+    }
 }
 
 // Render Calendar
@@ -223,8 +254,7 @@ function renderCalendar() {
     const daysInPrevMonth = new Date(year, month, 0).getDate();
 
     let html = '';
-    // Use a date in March 2026 for demo purposes
-    const today = new Date(2026, 2, 15);
+    const today = new Date();
 
     // Previous month days
     for (let i = firstDay - 1; i >= 0; i--) {
@@ -297,21 +327,21 @@ function updateBookingSummary() {
     if (startTime && endTime) {
         const start = parseInt(startTime.split(':')[0]);
         let end = parseInt(endTime.split(':')[0]);
-        if (end < start) end += 24; // Handle overnight sessions
+        if (end < start) end += 24;
 
         const hours = end - start;
         document.getElementById('summary-duration').textContent = hours + ' hours';
 
         if (currentMember) {
-            const tier = TIERS[currentMember.tier];
+            const tier = currentMember.tierConfig || TIERS[currentMember.tier];
             const remaining = tier.hours - currentMember.hoursUsed - currentMember.hoursScheduled - hours;
             document.getElementById('summary-remaining').textContent = remaining + ' hours remaining';
         }
     }
 }
 
-// Submit Booking
-function submitBooking(event) {
+// Submit Booking — async, sends to backend API
+async function submitBooking(event) {
     event.preventDefault();
 
     if (!selectedDate) {
@@ -322,60 +352,68 @@ function submitBooking(event) {
     const startTime = document.getElementById('booking-start').value;
     const endTime = document.getElementById('booking-end').value;
     const type = document.getElementById('booking-type').value;
-    const guests = parseInt(document.getElementById('booking-guests').value);
+    const guestCount = parseInt(document.getElementById('booking-guests').value) || 0;
     const notes = document.getElementById('booking-notes').value;
+    const engineerId = document.getElementById('booking-engineer')?.value || null;
 
     if (!startTime || !endTime) {
         showToast('Please select start and end times.', 'error');
         return;
     }
 
-    // Calculate hours
+    // Calculate hours for UI validation
     const start = parseInt(startTime.split(':')[0]);
     let end = parseInt(endTime.split(':')[0]);
     if (end < start) end += 24;
     const hours = end - start;
 
-    // Check guest limit
-    const tier = TIERS[currentMember.tier];
-    if (guests > tier.guestLimit) {
+    const tier = currentMember.tierConfig || TIERS[currentMember.tier];
+
+    // Quick client-side checks
+    if (guestCount > tier.guestLimit) {
         showToast(`Your tier allows maximum ${tier.guestLimit} guests.`, 'error');
         return;
     }
 
-    // Check hours
     const available = tier.hours - currentMember.hoursUsed - currentMember.hoursScheduled;
     if (hours > available) {
         showToast(`You only have ${available} hours available.`, 'error');
         return;
     }
 
-    // Create booking
-    const booking = {
-        id: 'S' + Date.now(),
-        date: selectedDate,
-        startTime: startTime,
-        endTime: endTime,
-        type: type,
-        hours: hours,
-        guests: guests,
-        notes: notes,
-        status: 'confirmed'
-    };
+    // Submit to backend
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Booking...'; }
 
-    currentMember.sessions.push(booking);
-    currentMember.hoursScheduled += hours;
-    saveData();
+    try {
+        const booking = await TorchAPI.bookings.create({
+            date: selectedDate,
+            startTime: startTime,
+            endTime: endTime,
+            type: type,
+            guestCount: guestCount,
+            engineerId: engineerId || undefined,
+            notes: notes || undefined
+        });
 
-    // Reset form
-    document.getElementById('booking-form').reset();
-    selectedDate = null;
-    document.getElementById('selected-date-text').textContent = 'Select a date';
+        // Refresh profile to get updated hours and sessions
+        await refreshProfile();
 
-    showToast('Session booked successfully!', 'success');
-    populateDashboard();
-    renderCalendar();
-    populateGuestSessions();
+        // Reset form
+        document.getElementById('booking-form').reset();
+        selectedDate = null;
+        document.getElementById('selected-date-text').textContent = 'Select a date';
+
+        showToast('Session booked successfully!', 'success');
+        populateDashboard();
+        renderCalendar();
+        populateGuestSessions();
+    } catch (err) {
+        console.error('[TORCH] Booking failed:', err);
+        showToast(err.message || 'Booking failed. Please try again.', 'error');
+    } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Book Session'; }
+    }
 }
 
 // Populate Guest Sessions Dropdown
@@ -392,8 +430,8 @@ function populateGuestSessions() {
     select.innerHTML = '<option value="">Choose a session</option>' + options;
 }
 
-// Register Guest
-function registerGuest(event) {
+// Register Guest — async, sends to backend API
+async function registerGuest(event) {
     event.preventDefault();
 
     const sessionId = document.getElementById('guest-session').value;
@@ -406,28 +444,18 @@ function registerGuest(event) {
         return;
     }
 
-    // Check guest limit
-    const session = currentMember.sessions.find(s => s.id === sessionId);
-    const tier = TIERS[currentMember.tier];
-    const currentGuests = currentMember.guests.filter(g => g.session === sessionId).length;
+    try {
+        await TorchAPI.guests.register(sessionId, { name, email, phone });
+        await refreshProfile();
 
-    if (currentGuests >= tier.guestLimit) {
-        showToast(`Maximum ${tier.guestLimit} guests allowed for your tier.`, 'error');
-        return;
+        document.getElementById('guest-form').reset();
+        showToast('Guest registered successfully!', 'success');
+        populateRegisteredGuests();
+        populateGuestSessions();
+    } catch (err) {
+        console.error('[TORCH] Guest registration failed:', err);
+        showToast(err.message || 'Failed to register guest.', 'error');
     }
-
-    // Add guest
-    currentMember.guests.push({
-        name: name,
-        session: sessionId,
-        email: email || '',
-        phone: phone || ''
-    });
-
-    saveData();
-    document.getElementById('guest-form').reset();
-    showToast('Guest registered successfully!', 'success');
-    populateRegisteredGuests();
 }
 
 // Populate Registered Guests
@@ -437,7 +465,7 @@ function populateRegisteredGuests() {
     const container = document.getElementById('registered-guests');
     if (!container) return;
 
-    if (currentMember.guests.length === 0) {
+    if (!currentMember.guests || currentMember.guests.length === 0) {
         container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No guests registered</p>';
         return;
     }
@@ -450,7 +478,7 @@ function populateRegisteredGuests() {
                     <div class="guest-name">${g.name}</div>
                     <div class="guest-session">${session ? formatDate(new Date(session.date)) : 'Unknown session'}</div>
                 </div>
-                <button class="btn-icon" onclick="removeGuest('${g.name}', '${g.session}')">✕</button>
+                <button class="btn-icon" onclick="removeGuest('${g.id}')">✕</button>
             </div>
         `;
     }).join('');
@@ -458,12 +486,17 @@ function populateRegisteredGuests() {
     container.innerHTML = html;
 }
 
-// Remove Guest
-function removeGuest(name, sessionId) {
-    currentMember.guests = currentMember.guests.filter(g => !(g.name === name && g.session === sessionId));
-    saveData();
-    populateRegisteredGuests();
-    showToast('Guest removed.', 'info');
+// Remove Guest — async, calls backend API
+async function removeGuest(guestId) {
+    try {
+        await TorchAPI.guests.remove(guestId);
+        await refreshProfile();
+        populateRegisteredGuests();
+        showToast('Guest removed.', 'info');
+    } catch (err) {
+        console.error('[TORCH] Guest removal failed:', err);
+        showToast(err.message || 'Failed to remove guest.', 'error');
+    }
 }
 
 // Populate Session History
@@ -473,7 +506,7 @@ function populateSessionHistory() {
     const container = document.getElementById('session-history');
     if (!container) return;
 
-    if (currentMember.history.length === 0) {
+    if (!currentMember.history || currentMember.history.length === 0) {
         container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No session history</p>';
         return;
     }
@@ -508,11 +541,9 @@ function sendMessage(event) {
 
     if (!message) return;
 
-    // Add user message
     addChatMessage(message, 'user');
     input.value = '';
 
-    // Generate response
     setTimeout(() => {
         const response = generateConciergeResponse(message);
         addChatMessage(response, 'bot');
@@ -609,14 +640,12 @@ document.addEventListener('keydown', (e) => {
 // BILLING FUNCTIONS
 // ============================================
 
-// Populate billing section
-function populateBilling() {
+async function populateBilling() {
     if (!currentMember) return;
 
-    const tier = TIERS[currentMember.tier];
+    const tier = currentMember.tierConfig || TIERS[currentMember.tier];
     const rate = currentMember.founding ? tier.foundingRate : tier.monthlyRate;
 
-    // Update billing display
     const tierNameEl = document.getElementById('billing-tier-name');
     const amountEl = document.getElementById('billing-amount');
     const memberSinceEl = document.getElementById('billing-member-since');
@@ -624,22 +653,73 @@ function populateBilling() {
     if (tierNameEl) tierNameEl.textContent = currentMember.tier + ' Membership';
     if (amountEl) amountEl.textContent = '$' + rate.toLocaleString();
     if (memberSinceEl) memberSinceEl.textContent = formatDate(new Date(currentMember.joinDate));
+
+    // Show subscription details from backend
+    if (currentMember.subscription) {
+        const sub = currentMember.subscription;
+        const nextBilling = document.getElementById('billing-next-date');
+        if (nextBilling && sub.nextBillingDate) {
+            nextBilling.textContent = formatDate(new Date(sub.nextBillingDate));
+        }
+        const statusEl = document.getElementById('billing-status');
+        if (statusEl) {
+            statusEl.textContent = sub.status.charAt(0).toUpperCase() + sub.status.slice(1);
+            statusEl.className = 'billing-status ' + sub.status;
+        }
+        // Payment method
+        if (sub.paymentMethodLast4) {
+            const cardEl = document.querySelector('.card-number');
+            if (cardEl) cardEl.textContent = '•••• •••• •••• ' + sub.paymentMethodLast4;
+            const brandEl = document.querySelector('.card-brand');
+            if (brandEl) brandEl.textContent = sub.paymentMethodBrand || '';
+        }
+    }
+
+    // Fetch real payment history from backend
+    const container = document.getElementById('payment-history');
+    if (container) {
+        try {
+            const payments = await TorchAPI.billing.getPayments();
+            if (payments && payments.length > 0) {
+                container.innerHTML = payments.map(p => {
+                    const amount = typeof p.amount === 'number' && p.amount > 100
+                        ? (p.amount / 100).toFixed(2)
+                        : parseFloat(p.amount || 0).toFixed(2);
+                    const status = p.status || 'completed';
+                    return `
+                        <div class="payment-item">
+                            <div class="payment-info">
+                                <span class="payment-date">${formatDate(new Date(p.created_at))}</span>
+                                <span class="payment-desc">${p.description || p.type || 'Payment'}</span>
+                            </div>
+                            <div class="payment-right">
+                                <span class="payment-amount">$${parseFloat(amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span class="payment-status ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No payments yet</p>';
+            }
+        } catch (err) {
+            console.warn('[TORCH] Could not load payment history:', err.message);
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No payments yet</p>';
+        }
+    }
 }
 
-// Show update payment form
 function showUpdatePayment() {
     document.getElementById('payment-method-display').style.display = 'none';
     document.getElementById('update-payment-form').style.display = 'block';
 }
 
-// Hide update payment form
 function hideUpdatePayment() {
     document.getElementById('payment-method-display').style.display = 'flex';
     document.getElementById('update-payment-form').style.display = 'none';
 }
 
-// Save payment method
-function savePaymentMethod() {
+async function savePaymentMethod() {
     const cardNumber = document.getElementById('new-card-number').value;
     const expiry = document.getElementById('new-card-expiry').value;
     const cvv = document.getElementById('new-card-cvv').value;
@@ -650,25 +730,46 @@ function savePaymentMethod() {
         return;
     }
 
-    // In production, this would call Square API
-    // For demo, we'll just show success
-    showToast('Payment method updated successfully!', 'success');
-    hideUpdatePayment();
-
-    // Update display with last 4 digits
     const last4 = cardNumber.replace(/\s/g, '').slice(-4);
-    document.querySelector('.card-number').textContent = '•••• •••• •••• ' + last4;
-    document.querySelector('.card-expiry').textContent = 'Expires ' + expiry;
+
+    try {
+        await TorchAPI.billing.updatePaymentMethod('card_nonce_placeholder', last4, 'Visa');
+        showToast('Payment method updated successfully!', 'success');
+        hideUpdatePayment();
+        document.querySelector('.card-number').textContent = '•••• •••• •••• ' + last4;
+        document.querySelector('.card-expiry').textContent = 'Expires ' + expiry;
+    } catch (err) {
+        showToast(err.message || 'Failed to update payment method.', 'error');
+    }
 }
 
-// Download invoices
-function downloadInvoices() {
-    showToast('Preparing invoice download...', 'info');
-
-    // In production, this would generate/download PDFs
-    setTimeout(() => {
-        showToast('Invoices downloaded to your device.', 'success');
-    }, 1500);
+async function downloadInvoices() {
+    showToast('Preparing invoices...', 'info');
+    try {
+        const invoices = await TorchAPI.billing.getInvoices();
+        if (!invoices || invoices.length === 0) {
+            showToast('No invoices found.', 'info');
+            return;
+        }
+        const csv = 'Date,Description,Amount,Status\n' +
+            invoices.map(i => {
+                const amount = typeof i.amount === 'number' && i.amount > 100
+                    ? (i.amount / 100).toFixed(2)
+                    : parseFloat(i.amount || 0).toFixed(2);
+                return `"${i.created_at || ''}","${(i.description || 'Membership').replace(/"/g, '""')}","$${amount}","${i.status || 'completed'}"`;
+            }).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'torch-invoices-' + new Date().toISOString().split('T')[0] + '.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Invoices downloaded.', 'success');
+    } catch (err) {
+        console.warn('[TORCH] Invoice download failed:', err.message);
+        showToast('Could not download invoices.', 'error');
+    }
 }
 
 // Format card number with spaces
@@ -694,6 +795,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-console.log('[TORCH] Member Portal initialized');
-console.log('[TORCH] Demo login: member@torch.com / DEMO2026');
-console.log('[TORCH] Owner login: joi@torchatl.com / JOI2026');
+// ============================================
+// ENGINEERS SECTION
+// ============================================
+
+function populateEngineers() {
+    const container = document.getElementById('engineers-grid');
+    if (!container) return;
+
+    const engineers = engineersList.length > 0 ? engineersList : [];
+
+    if (engineers.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Loading engineers...</p>';
+        return;
+    }
+
+    container.innerHTML = engineers.map(eng => `
+        <div class="engineer-card">
+            <div class="engineer-avatar">
+                ${eng.photoUrl ? `<img src="${eng.photoUrl}" alt="${eng.name}">` : getInitials(eng.name)}
+            </div>
+            <div class="engineer-info">
+                <h3>${eng.name}</h3>
+                <span class="engineer-role">${eng.role}</span>
+                <div class="engineer-specialties">
+                    ${eng.specialties.map(s => `<span class="specialty-tag">${s}</span>`).join('')}
+                </div>
+                <p class="engineer-bio">${eng.bio}</p>
+                <div class="engineer-availability">
+                    <span class="availability-badge ${eng.available ? 'available' : 'unavailable'}">
+                        ${eng.available ? 'Available' : 'Unavailable'}
+                    </span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function populateEngineerDropdown() {
+    const select = document.getElementById('booking-engineer');
+    if (!select) return;
+
+    const engineers = engineersList.length > 0 ? engineersList : [];
+
+    select.innerHTML = '<option value="">No engineer preference</option>' +
+        engineers.filter(e => e.available).map(eng =>
+            `<option value="${eng.id}">${eng.name} - ${eng.role}</option>`
+        ).join('');
+}
+
+console.log('[TORCH] Member Portal initialized (backend-wired)');
