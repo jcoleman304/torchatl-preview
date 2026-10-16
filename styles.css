@@ -850,3 +850,5 @@ img { max-width: 100%; display: block; }
     .rr-verticals { grid-template-columns: 1fr; }
     .rr-addons { grid-template-columns: 1fr; }
 }
+.tiers--two { grid-template-columns: repeat(2, 1fr); max-width: 860px; margin: 0 auto; }
+@media (max-width: 768px) { .tiers--two { grid-template-columns: 1fr; } }
