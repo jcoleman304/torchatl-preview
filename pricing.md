@@ -15,6 +15,8 @@ Private creative estate, east side of Atlanta, Georgia. Create. Gather. Stay. Al
 - Includes: everything in the Estate Day plus overnight in all three guest suites (The Torch Suite, King I, King II; up to 10 guests), 24-hour creative access, dedicated coordinator; exclusive to one client for the full stay
 - Use: album lock-ins, writing camps, team off-sites with overnight, stream-house weekends, retreats; larger productions scoped per project as one quote
 - Add-ons: engineer, private chef and catering (from $300/day), photographer/videographer, A/V and livestream, lighting kit, security, transportation
+- Camps & lock-ins: the signature format (both studios, roster on property, chef, coordinator, one invoice); see https://torchatl.com/#camps
+- Label and publisher accounts: prepaid camp blocks and residency seats available on request; terms quoted privately
 
 ## Private Event (hosted)
 - Price: quoted by scope
