@@ -11,7 +11,7 @@ Private creative estate, east side of Atlanta, Georgia. Create. Gather. Stay. Al
 
 ## Estate Lockout (overnight)
 - Price: from $1,500 per night
-- Minimum: 3 nights
+- Minimum: 2 nights
 - Includes: everything in the Estate Day plus overnight in all three guest suites (The Torch Suite, King I, King II; up to 10 guests), 24-hour creative access, dedicated coordinator; exclusive to one client for the full stay
 - Use: album lock-ins, writing camps, team off-sites with overnight, stream-house weekends, retreats; larger productions scoped per project as one quote
 - Add-ons: engineer, private chef and catering (from $300/day), photographer/videographer, A/V and livestream, lighting kit, security, transportation
@@ -29,7 +29,7 @@ Private creative estate, east side of Atlanta, Georgia. Create. Gather. Stay. Al
 
 ## Creator formats (quoted by scope; see https://torchatl.com/creators/)
 - Stream Day: 12 hours, one set, estate access
-- Stream House Weekend: 3-night lockout, up to 10 creators
+- Stream House Weekend: 2-night lockout, up to 10 creators
 - Creator Residency: by the day, lodging included
 
 ## Member & partner block sessions (not a public rate)

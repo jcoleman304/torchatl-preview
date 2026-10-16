@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const DURATIONS = {
         Create: ['Estate Day (12 hours)', 'Multi-Day (2–7 days)', 'Extended production'],
         Gather: [],
-        Stay: ['3-Night Lockout', '4–7 Nights', 'Multi-week residency']
+        Stay: ['2-Night Lockout', '3–7 Nights', 'Multi-week residency']
     };
     const STUDIO_USES = /music|podcast|stream|hybrid|other production/i;
     const CREATOR_USES = /stream|creator|reaction|gaming|watch|content-batching/i;
