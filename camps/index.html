@@ -72,6 +72,14 @@
   .btn.line { border:1px solid var(--gold); color:var(--gold); margin-top:22px; }
   .btn.ghost { display:inline-block; border:1px solid var(--line); color:var(--cream); font-weight:500; padding:13px 22px; }
 
+  .admin { border:1px solid var(--gold); border-radius:14px; padding:28px 26px 24px; background:var(--card); }
+  .admin h2 { font-size:clamp(24px,4vw,34px); margin-top:8px; line-height:1.2; }
+  .admin .lead { color:#cfcfc8; font-size:15px; max-width:720px; margin-top:12px; }
+  .admin .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:22px; }
+  .admin .grid div { border-top:1px solid var(--line); padding-top:14px; }
+  .admin b { display:block; font-weight:500; font-size:14.5px; margin-bottom:4px; color:var(--cream); }
+  .admin p { font-size:13.5px; color:var(--muted); line-height:1.55; }
+  .offer .hook { margin-top:16px; padding:10px 12px; border-left:2px solid var(--gold); font-size:13.5px; color:var(--cream); background:#161613; }
   .steps { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
   .lane { border:1px solid var(--line); border-radius:14px; padding:24px 24px 20px; background:var(--card); }
   .lane h3 { font-size:20px; margin-top:6px; }
@@ -97,6 +105,7 @@
   @media (max-width:760px) {
     .inc { grid-template-columns:1fr 1fr; }
     .offers, .steps { grid-template-columns:1fr; }
+    .admin .grid { grid-template-columns:1fr 1fr; }
     header { padding-top:34px; }
   }
 </style>
@@ -175,10 +184,25 @@
           <li>On-site security, 8 hours per residency day</li>
           <li>Standard turnover cleaning for up to five stays</li>
         </ul>
+        <div class="hook">Approve one PO. Nothing else to budget for the year. Your team just sends dates.</div>
         <div class="fine">Minimum 3 consecutive nights per reservation. Reservations are subject to estate and staff availability; 7 days' notice requested, 14 preferred. One PO, one invoice, one concierge.</div>
         <a class="btn line" href="mailto:bookings@torchatl.com?subject=Torch%20ATL%20%E2%80%94%20Label%20Residency%20Account&body=Hi%20Joi%2C%0A%0AWe%27d%20like%20to%20discuss%20a%20Residency%20Account.%0A%0ACompany%3A%20%0ARoster%20or%20projects%20in%20mind%3A%20%0ALikely%20windows%20in%20the%20next%2012%20months%3A%20%0A%0AThanks%2C%0A">Discuss an account</a>
       </div>
 
+    </div>
+  </section>
+
+  <section id="admin">
+    <div class="admin">
+      <div class="eyebrow">Built for A&amp;R admin</div>
+      <h2 class="serif">One PO. One invoice. Then just send dates.</h2>
+      <p class="lead">The Residency Account is designed so a label approves it once and never has to go back for money. Stays, studios, engineers, security and cleaning are already paid for. Your team's only job is to tell us who is coming and when.</p>
+      <div class="grid">
+        <div><b>One approval, once</b><p>Budget the account one time. No per-camp POs, no new vendor setup for each artist, no stacking hotel, studio and engineer invoices.</p></div>
+        <div><b>Nothing to coordinate</b><p>Engineers, security, turnover cleaning and a named concierge are in the price. You send the artist. We run the stay.</p></div>
+        <div><b>One email per stay</b><p>Your booking contact emails artist, dates and nights. Torch confirms and sends an updated night balance after each stay.</p></div>
+        <div><b>No surprises</b><p>Chef, transport, content or added hours are quoted and approved before they are booked. If you never ask, you never see another invoice.</p></div>
+      </div>
     </div>
   </section>
 
