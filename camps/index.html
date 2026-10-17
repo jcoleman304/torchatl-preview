@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#0A0A0A">
+<title>Camps &amp; Residencies 2027 — TORCH ATL</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="TORCH ATL — Camps &amp; Residencies 2027">
+<meta property="og:description" content="Stay and record. Engineers and security already arranged. A private recording estate outside Atlanta. Two ways to book for 2027.">
+<meta property="og:url" content="https://torchatl.com/camps/">
+<meta property="og:image" content="https://torchatl.com/estate/walkthrough-poster.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:site_name" content="TORCH ATL">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --black:#0A0A0A; --gold:#D4AF37; --cream:#F5F5F0; --muted:#8a8a85; --line:#2a2a28; --card:#111110; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--black); color:var(--cream); font-family:'Inter',-apple-system,sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 20px; }
+  a { color:var(--gold); text-decoration:none; }
+  .serif { font-family:'Playfair Display',Georgia,serif; font-weight:500; }
+  .eyebrow { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--gold); }
+  .eyebrow.muted { color:var(--muted); }
+
+  header { text-align:center; padding:44px 0 28px; }
+  header .logo { width:min(52vw,220px); height:auto; display:block; margin:0 auto 18px; }
+  header .eyebrow { margin-top:4px; }
+
+  .hero { text-align:center; padding:8px 0 30px; }
+  .hero h1 { font-size:clamp(30px,6vw,52px); line-height:1.12; letter-spacing:-0.01em; }
+  .hero h1 em { font-style:normal; color:var(--gold); }
+  .hero p { max-width:620px; margin:20px auto 0; color:#cfcfc8; font-size:clamp(15px,2.2vw,17.5px); font-weight:300; }
+  .hero .specs { margin-top:22px; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); }
+  .hero .specs span { color:var(--muted); padding:0 8px; }
+
+  .player { width:100%; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#000; }
+  video { display:block; width:100%; height:auto; }
+  .caption { text-align:center; color:var(--muted); font-size:12.5px; margin-top:12px; letter-spacing:0.5px; }
+
+  section { padding:48px 0 0; }
+  .sec-head { margin-bottom:22px; }
+  .sec-head h2 { font-size:clamp(24px,4vw,34px); margin-top:8px; line-height:1.2; }
+
+  .inc { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .inc div { border-top:1px solid var(--line); padding-top:14px; }
+  .inc b { display:block; font-weight:500; font-size:14.5px; margin-bottom:4px; }
+  .inc p { font-size:13.5px; color:var(--muted); line-height:1.55; }
+
+  .offers { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .offer { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:28px 26px 26px; position:relative; display:flex; flex-direction:column; }
+  .offer.rec { border-color:var(--gold); }
+  .offer .tag { position:absolute; top:-11px; right:22px; background:var(--gold); color:#0A0A0A; font-size:10px; letter-spacing:2.5px; text-transform:uppercase; font-weight:600; padding:4px 10px; border-radius:3px; }
+  .offer h3 { font-size:clamp(22px,3vw,27px); margin-top:8px; line-height:1.2; }
+  .offer .meta { font-size:12.5px; color:var(--muted); margin-top:6px; }
+  .offer .price { font-family:'Playfair Display',Georgia,serif; font-size:clamp(38px,6vw,50px); color:var(--gold); line-height:1; margin:18px 0 4px; }
+  .offer .per { font-size:12.5px; color:var(--muted); }
+  .offer hr { border:0; border-top:1px solid var(--line); margin:20px 0 18px; }
+  .offer p { font-size:14.5px; color:#cfcfc8; }
+  .offer ul { list-style:none; margin-top:14px; }
+  .offer li { font-size:14px; color:#cfcfc8; padding:5px 0 5px 18px; position:relative; }
+  .offer li::before { content:""; position:absolute; left:0; top:13px; width:7px; height:7px; background:var(--gold); }
+  .offer .fine { margin-top:14px; font-size:12.5px; color:var(--muted); line-height:1.55; }
+  .btn { display:block; text-align:center; margin-top:auto; padding:15px 18px; border-radius:8px; font-weight:600; font-size:14px; letter-spacing:1px; text-transform:uppercase; }
+  .btn.gold { background:var(--gold); color:#0A0A0A; margin-top:22px; }
+  .btn.line { border:1px solid var(--gold); color:var(--gold); margin-top:22px; }
+  .btn.ghost { display:inline-block; border:1px solid var(--line); color:var(--cream); font-weight:500; padding:13px 22px; }
+
+  .steps { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .lane { border:1px solid var(--line); border-radius:14px; padding:24px 24px 20px; background:var(--card); }
+  .lane h3 { font-size:20px; margin-top:6px; }
+  .lane ol { margin-top:14px; padding-left:0; list-style:none; counter-reset:s; }
+  .lane li { counter-increment:s; position:relative; padding:8px 0 8px 36px; font-size:14px; color:#cfcfc8; border-top:1px solid var(--line); }
+  .lane li:first-child { border-top:0; }
+  .lane li::before { content:counter(s,decimal-leading-zero); position:absolute; left:0; top:9px; font-family:'Playfair Display',Georgia,serif; color:var(--gold); font-size:16px; }
+  .lane .note { margin-top:12px; font-size:12.5px; color:var(--muted); }
+
+  .pdf { text-align:center; padding-top:40px; }
+  .pdf p { color:var(--muted); font-size:13.5px; margin-bottom:14px; }
+
+  .founder { margin-top:48px; border-left:3px solid var(--gold); background:var(--card); padding:18px 22px; font-size:14.5px; color:#cfcfc8; }
+  .founder b { color:var(--gold); font-weight:500; }
+
+  .contact { text-align:center; padding:48px 0 20px; border-top:1px solid var(--line); margin-top:48px; }
+  .contact h2 { font-size:clamp(24px,4vw,32px); margin-top:8px; }
+  .contact p { color:var(--muted); font-size:14px; margin-top:10px; }
+  .contact .mail { display:inline-block; margin-top:16px; font-size:clamp(17px,3vw,22px); color:var(--gold); letter-spacing:0.5px; }
+  .legal { max-width:860px; margin:36px auto 0; font-size:11.5px; color:#6a6a65; line-height:1.6; text-align:center; }
+  .private { text-align:center; margin:26px 0 54px; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#55554f; }
+
+  @media (max-width:760px) {
+    .inc { grid-template-columns:1fr 1fr; }
+    .offers, .steps { grid-template-columns:1fr; }
+    header { padding-top:34px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img class="logo" src="/signin/logo.png" alt="TORCH ATL">
+    <div class="eyebrow">Private &middot; By request</div>
+  </header>
+
+  <div class="hero">
+    <h1 class="serif">Stay and record.<br><em>Engineers and security already arranged.</em></h1>
+    <p>A private, gated recording estate outside Atlanta, run by a team that has produced camps. You bring the artist. Torch handles everything else.</p>
+    <div class="specs">2 recording suites <span>/</span> 3 guest suites <span>/</span> Up to 10 overnight guests</div>
+  </div>
+
+  <div class="player">
+    <video controls playsinline preload="metadata"
+           poster="/estate/walkthrough-poster.jpg"
+           src="/camps/walkthrough.mp4"></video>
+  </div>
+  <div class="caption">Arrive. Record. Rest. &nbsp;&middot;&nbsp; 1:26 walkthrough, sound on</div>
+
+  <section id="included">
+    <div class="sec-head">
+      <div class="eyebrow">Included in every stay</div>
+    </div>
+    <div class="inc">
+      <div><b>Two engineers, two studios</b><p>One Torch engineer per studio, 8 hours each per day. 16 combined hours daily, scheduled with Torch.</p></div>
+      <div><b>Security</b><p>One on-site security professional, 8 hours per day of your stay.</p></div>
+      <div><b>Your concierge</b><p>One named Torch point person from booking to checkout. On call throughout.</p></div>
+      <div><b>Turnover cleaning</b><p>One post-camp turnover per camp. Up to five turnovers on the Residency Account.</p></div>
+    </div>
+  </section>
+
+  <section id="offers">
+    <div class="sec-head">
+      <div class="eyebrow">Two ways to book for 2027</div>
+      <h2 class="serif">A confirmed camp, or an account your roster draws on.</h2>
+    </div>
+    <div class="offers">
+
+      <div class="offer">
+        <div class="eyebrow muted">Package 1</div>
+        <h3 class="serif">5-Night Camp / Lock-In</h3>
+        <div class="meta">Five consecutive nights &nbsp;|&nbsp; One upfront package price</div>
+        <div class="price">$12,000</div>
+        <div class="per">$2,400 per night</div>
+        <hr>
+        <p>One project, five consecutive nights, exclusive use of the estate. Confirmed dates, one price, one invoice.</p>
+        <ul>
+          <li>Exclusive use of the private gated estate</li>
+          <li>2 recording suites, 3 guest suites and creative common areas</li>
+          <li>2 Torch engineers, 8 hours each per day</li>
+          <li>On-site security, 8 hours per day</li>
+          <li>One post-camp turnover cleaning</li>
+        </ul>
+        <a class="btn gold" href="mailto:bookings@torchatl.com?subject=Torch%20ATL%20%E2%80%94%205-Night%20Camp%20date%20request&body=Hi%20Joi%2C%0A%0AWe%27d%20like%20to%20look%20at%20dates%20for%20a%205-night%20camp.%0A%0AArtist%20or%20project%3A%20%0APreferred%20window%3A%20%0AApprox.%20headcount%3A%20%0A%0AThanks%2C%0A">Request camp dates</a>
+      </div>
+
+      <div class="offer rec">
+        <div class="tag">Recommended</div>
+        <div class="eyebrow muted">Package 2</div>
+        <h3 class="serif">Label Residency Account</h3>
+        <div class="meta">15 prepaid nights &nbsp;|&nbsp; One upfront payment</div>
+        <div class="price">$34,000</div>
+        <div class="per">$2,267 per night</div>
+        <hr>
+        <p>Fifteen prepaid nights, redeemable over twelve months across your roster. Run 3-night camps, 5-night lock-ins, longer stays, or one continuous residency.</p>
+        <ul>
+          <li>Exclusive access to the private Torch ATL estate</li>
+          <li>2 recording suites and 3 guest suites</li>
+          <li>2 Torch engineers, 8 hours each per residency day</li>
+          <li>On-site security, 8 hours per residency day</li>
+          <li>Standard turnover cleaning for up to five stays</li>
+        </ul>
+        <div class="fine">Minimum 3 consecutive nights per reservation. Reservations are subject to estate and staff availability; 7 days' notice requested, 14 preferred. One PO, one invoice, one concierge.</div>
+        <a class="btn line" href="mailto:bookings@torchatl.com?subject=Torch%20ATL%20%E2%80%94%20Label%20Residency%20Account&body=Hi%20Joi%2C%0A%0AWe%27d%20like%20to%20discuss%20a%20Residency%20Account.%0A%0ACompany%3A%20%0ARoster%20or%20projects%20in%20mind%3A%20%0ALikely%20windows%20in%20the%20next%2012%20months%3A%20%0A%0AThanks%2C%0A">Discuss an account</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="sec-head">
+      <div class="eyebrow">How booking works</div>
+      <h2 class="serif">A camp buys dates. An account buys nights.</h2>
+    </div>
+    <div class="steps">
+      <div class="lane">
+        <div class="eyebrow muted">5-Night Camp</div>
+        <h3 class="serif">Confirmed dates</h3>
+        <ol>
+          <li>Send your preferred window. Torch replies with availability within one business day.</li>
+          <li>Camp Agreement and invoice issued. Signature and payment confirm your five nights.</li>
+          <li>Your concierge opens the camp: engineers scheduled, estate prepared, team welcomed.</li>
+        </ol>
+        <div class="note">Your dates are held exclusively for you once the agreement is signed and paid.</div>
+      </div>
+      <div class="lane">
+        <div class="eyebrow muted">Residency Account</div>
+        <h3 class="serif">Prepaid nights, booked as you go</h3>
+        <ol>
+          <li>A short call to cover your roster and likely windows. Residency Agreement and one invoice issued; paid at signing.</li>
+          <li>Your account opens with 15 nights, redeemable over 12 months. One booking contact on your side, one concierge on ours.</li>
+          <li>Request each stay by email (artist, dates, nights). Torch confirms against availability; confirmed stays reduce your night balance.</li>
+        </ol>
+        <div class="note">Individual reservations are subject to availability and are not confirmed until Torch confirms them in writing.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pdf">
+    <p>Both packages, inclusions and terms on two pages.</p>
+    <a class="btn ghost" href="/camps/Torch_ATL_Packages_2027.pdf" target="_blank" rel="noopener">Download the packages PDF</a>
+  </div>
+
+  <div class="founder">
+    <b>Owned by Joi Coleman.</b> Nine years at Atlantic Records in studio operations and as an A&amp;R. Grammy-nominated songwriter. Torch is built by someone who has run camps.
+  </div>
+
+  <div class="contact" id="contact">
+    <div class="eyebrow">Book your camp</div>
+    <h2 class="serif">Ready when you are.</h2>
+    <p>Send a window and a headcount. Replies within one business day.</p>
+    <a class="mail" href="mailto:bookings@torchatl.com">bookings@torchatl.com</a>
+    <p><a href="https://torchatl.com">torchatl.com</a></p>
+  </div>
+
+  <p class="legal">Both packages are prepaid. Dates are subject to availability and confirmed in your agreement. Exclusive estate use during confirmed stays. Engineer coverage is 16 combined hours daily (8 hours per engineer); the client may coordinate daily schedules with Torch. Security is 8 hours daily. Additional engineering hours, extended security, private chef and catering, transportation, content, photoshoots and events are quoted separately and require approval before booking. Exceptional cleaning or damage may incur additional charges. Guest limits, studio access hours, cancellation terms and applicable taxes are specified in the agreement before purchase.</p>
+
+  <div class="private">Private link &mdash; shared for label &amp; partner review. Please keep within your team.</div>
+
+</div>
+</body>
+</html>
