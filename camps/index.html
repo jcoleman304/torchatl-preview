@@ -59,7 +59,8 @@
   .offer .tag { position:absolute; top:-11px; right:22px; background:var(--gold); color:#0A0A0A; font-size:10px; letter-spacing:2.5px; text-transform:uppercase; font-weight:600; padding:4px 10px; border-radius:3px; }
   .offer h3 { font-size:clamp(22px,3vw,27px); margin-top:8px; line-height:1.2; }
   .offer .meta { font-size:12.5px; color:var(--muted); margin-top:6px; }
-  .offer .price { font-family:'Playfair Display',Georgia,serif; font-size:clamp(38px,6vw,50px); color:var(--gold); line-height:1; margin:18px 0 4px; }
+  .offer .invest { margin-top:18px; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
+  .offer .price { font-family:'Playfair Display',Georgia,serif; font-size:clamp(38px,6vw,50px); color:var(--gold); line-height:1; margin:6px 0 4px; }
   .offer .per { font-size:12.5px; color:var(--muted); }
   .offer hr { border:0; border-top:1px solid var(--line); margin:20px 0 18px; }
   .offer p { font-size:14.5px; color:#cfcfc8; }
@@ -95,6 +96,15 @@
   .founder { margin-top:48px; border-left:3px solid var(--gold); background:var(--card); padding:18px 22px; font-size:14.5px; color:#cfcfc8; }
   .founder b { color:var(--gold); font-weight:500; }
 
+  .faq { padding-top:48px; }
+  .faq details { border-top:1px solid var(--line); }
+  .faq details:last-of-type { border-bottom:1px solid var(--line); }
+  .faq summary { cursor:pointer; list-style:none; padding:16px 36px 16px 0; font-size:15.5px; font-weight:500; position:relative; }
+  .faq summary::-webkit-details-marker { display:none; }
+  .faq summary::after { content:"+"; position:absolute; right:4px; top:12px; color:var(--gold); font-size:22px; font-weight:300; }
+  .faq details[open] summary::after { content:"\2013"; }
+  .faq .a { padding:0 0 18px; font-size:14.5px; color:#cfcfc8; max-width:760px; }
+  .faq .ask { margin-top:18px; font-size:14px; color:var(--muted); }
   .contact { text-align:center; padding:48px 0 20px; border-top:1px solid var(--line); margin-top:48px; }
   .contact h2 { font-size:clamp(24px,4vw,32px); margin-top:8px; }
   .contact p { color:var(--muted); font-size:14px; margin-top:10px; }
@@ -154,6 +164,7 @@
         <div class="eyebrow muted">Package 1</div>
         <h3 class="serif">5-Night Camp / Lock-In</h3>
         <div class="meta">Five consecutive nights &nbsp;|&nbsp; One upfront package price</div>
+        <div class="invest">Your investment today is</div>
         <div class="price">$12,000</div>
         <div class="per">$2,400 per night</div>
         <hr>
@@ -165,7 +176,7 @@
           <li>On-site security, 8 hours per day</li>
           <li>One post-camp turnover cleaning</li>
         </ul>
-        <a class="btn gold" href="mailto:bookings@torchatl.com?subject=Torch%20ATL%20%E2%80%94%205-Night%20Camp%20date%20request&body=Hi%20Joi%2C%0A%0AWe%27d%20like%20to%20look%20at%20dates%20for%20a%205-night%20camp.%0A%0AArtist%20or%20project%3A%20%0APreferred%20window%3A%20%0AApprox.%20headcount%3A%20%0A%0AThanks%2C%0A">Request camp dates</a>
+        <a class="btn gold" href="mailto:bookings@torchatl.com?subject=Torch%20ATL%20%E2%80%94%205-Night%20Camp%20date%20request&body=Hi%20Joi%2C%0A%0AWe%27d%20like%20to%20look%20at%20dates%20for%20a%205-night%20camp.%0A%0AArtist%20or%20project%3A%20%0APreferred%20window%3A%20%0AApprox.%20headcount%3A%20%0A%0AThanks%2C%0A">Secure your spot</a>
       </div>
 
       <div class="offer rec">
@@ -173,6 +184,7 @@
         <div class="eyebrow muted">Package 2</div>
         <h3 class="serif">Label Residency Account</h3>
         <div class="meta">15 prepaid nights &nbsp;|&nbsp; One upfront payment</div>
+        <div class="invest">Your investment today is</div>
         <div class="price">$34,000</div>
         <div class="per">$2,267 per night</div>
         <hr>
@@ -243,9 +255,41 @@
     <b>Owned by Joi Coleman.</b> Nine years at Atlantic Records in studio operations and as an A&amp;R. Grammy-nominated songwriter. Torch is built by someone who has run camps.
   </div>
 
+  <section class="faq" id="faq">
+    <div class="sec-head">
+      <div class="eyebrow">Before we get started</div>
+      <h2 class="serif">Questions before we get started</h2>
+    </div>
+    <details>
+      <summary>How does the night balance work on the Residency Account?</summary>
+      <div class="a">Fifteen nights are prepaid on one invoice. Each confirmed stay reduces the balance, and Torch sends an updated balance after every stay. Nights are redeemable for 12 months from the agreement effective date.</div>
+    </details>
+    <details>
+      <summary>Can different artists on our roster use the account?</summary>
+      <div class="a">Yes. The account belongs to the label, not one artist. Use nights across multiple roster artists for 3-night camps, 5-night lock-ins, longer stays, or one continuous residency. One booking contact on your side, one concierge on ours.</div>
+    </details>
+    <details>
+      <summary>How much notice do you need for a stay?</summary>
+      <div class="a">Seven days requested, fourteen preferred. Shorter-notice requests are welcome when the estate and staff are available. Each reservation is a minimum of three consecutive nights.</div>
+    </details>
+    <details>
+      <summary>Is the estate exclusively ours during a stay?</summary>
+      <div class="a">Yes. Exclusive estate use during confirmed stays: both recording suites, all three guest suites, lounges, meeting room, content wall and grounds, with up to ten overnight guests.</div>
+    </details>
+    <details>
+      <summary>What is included, and what is quoted separately?</summary>
+      <div class="a">Included: two Torch engineers at 8 hours each per day, on-site security 8 hours per day, a named concierge, and turnover cleaning. Quoted separately and approved before booking: additional engineering hours, extended security, private chef and catering, transportation, content days and photoshoots.</div>
+    </details>
+    <details>
+      <summary>How do we pay?</summary>
+      <div class="a">Both packages are prepaid. One PO and one invoice. Dates are confirmed in your agreement, which also sets guest limits, studio access hours, cancellation terms and applicable taxes.</div>
+    </details>
+    <p class="ask">Anything else? Email <a href="mailto:bookings@torchatl.com?subject=Torch%20ATL%20%E2%80%94%20question%20before%20booking">bookings@torchatl.com</a> and we will answer within one business day.</p>
+  </section>
+
   <div class="contact" id="contact">
     <div class="eyebrow">Book your camp</div>
-    <h2 class="serif">Ready when you are.</h2>
+    <h2 class="serif">Secure your spot.</h2>
     <p>Send a window and a headcount. Replies within one business day.</p>
     <a class="mail" href="mailto:bookings@torchatl.com">bookings@torchatl.com</a>
     <p><a href="https://torchatl.com">torchatl.com</a></p>
