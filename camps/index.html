@@ -117,6 +117,20 @@
 
   /* lanes */
   .steps { display:grid; grid-template-columns:1fr 1fr; gap:64px; }
+  /* gear */
+  .gear { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
+  .suite { border-top:1px solid var(--line); padding-top:22px; }
+  .suite .eyebrow { font-size:10px; }
+  .suite h3 { font-size:28px; margin-top:10px; line-height:1.15; }
+  .suite .chain { margin-top:14px; font-size:15.5px; color:var(--cream); line-height:1.6; }
+  .suite .chain span { color:var(--gold); padding:0 8px; }
+  .suite p { margin-top:10px; font-size:14px; color:var(--muted); }
+  .kv { margin-top:44px; border-top:1px solid var(--line); }
+  .kv div { display:grid; grid-template-columns:180px 1fr; gap:24px; padding:14px 0; border-bottom:1px solid var(--line); font-size:15px; }
+  .kv dt { color:var(--muted); font-weight:400; }
+  .kv dd { color:var(--ink); }
+  .gear-note { margin-top:22px; font-size:13.5px; color:var(--muted); text-align:center; }
+  .gear-note a { color:var(--gold); }
   .lane h3 { font-size:30px; margin-top:10px; line-height:1.15; }
   .lane ol { list-style:none; margin-top:22px; counter-reset:s; }
   .lane li { counter-increment:s; position:relative; padding:16px 0 16px 48px; font-size:15px; color:var(--ink); border-top:1px solid var(--line); }
@@ -165,6 +179,8 @@
     .offer { padding:0; }
     .offer + .offer { padding:56px 0 0; border-left:0; border-top:1px solid var(--line); margin-top:56px; }
     .steps { grid-template-columns:1fr; gap:48px; }
+    .gear { grid-template-columns:1fr; gap:36px; }
+    .kv div { grid-template-columns:1fr; gap:4px; }
   }
   @media (max-width:480px) {
     .inc, .admin .grid { grid-template-columns:1fr; }
@@ -178,6 +194,7 @@
     <a href="#top"><img class="logo" src="../signin/logo.png" alt="TORCH ATL"></a>
     <nav class="links">
       <a href="#estate">The Estate</a>
+      <a href="#studios">Studios</a>
       <a href="#offers">Packages</a>
       <a href="#how">How It Works</a>
       <a href="#faq">Questions</a>
@@ -243,6 +260,37 @@
   </div>
 </section>
 </div>
+
+<section id="studios">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">The studios</div>
+      <h2 class="serif">Two suites, pro-grade end to end.</h2>
+    </div>
+    <div class="gear">
+      <div class="suite">
+        <div class="eyebrow">Recording Suite B</div>
+        <h3 class="serif">Primary tracking suite</h3>
+        <div class="chain">Neumann U87<span>&rarr;</span>Neve 1073 SPX<span>&rarr;</span>Tube-Tech CL1B<span>&rarr;</span>UAD Apollo X6</div>
+        <p>Lead vocals and main sessions. Pro Tools, Yamaha HS8 monitoring, PreSonus headphone distribution, Furman power. Private bathroom in-room.</p>
+      </div>
+      <div class="suite">
+        <div class="eyebrow">Recording Suite C</div>
+        <h3 class="serif">Second suite</h3>
+        <div class="chain">Neumann TLM 103<span>&rarr;</span>UA LA-610 MkII<span>&rarr;</span>UAD Apollo X8</div>
+        <p>Camps, writing rooms and podcast or broadcast, with Shure SM7B and MV7X on hand. Pro Tools, Yamaha HS8 monitoring, PreSonus headphone distribution, Furman power. Private bathroom in-room.</p>
+      </div>
+    </div>
+    <dl class="kv">
+      <div><dt>Microphones</dt><dd>Neumann U87 &middot; Neumann TLM 103 (&times;2) &middot; Shure SM7B &middot; Shure MV7X (&times;2)</dd></div>
+      <div><dt>Front end</dt><dd>Neve 1073 SPX preamp / channel strip &middot; Tube-Tech CL1B compressor &middot; UA LA-610 MkII tube preamp</dd></div>
+      <div><dt>Conversion</dt><dd>UAD Apollo X8 &middot; Apollo X6 &middot; Apollo Twin</dd></div>
+      <div><dt>Monitoring &amp; power</dt><dd>Yamaha HS8 (2 pairs) &middot; PreSonus headphone amplifier &middot; Furman power conditioning</dd></div>
+      <div><dt>Software</dt><dd>Pro Tools &middot; Waves Complete &middot; UAD plugins &middot; Auto-Tune (Antares) &middot; VocAlign (Synchro Arts)</dd></div>
+    </dl>
+    <p class="gear-note">Both suites run simultaneously. Full rider at <a href="../gear.html">torchatl.com/gear</a>. Inventory subject to periodic audit.</p>
+  </div>
+</section>
 
 <section id="offers">
   <div class="wrap">
