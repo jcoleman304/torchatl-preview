@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const USE_CASES = {
         Create: ['Music camp / album lock-in', 'Brand shoot / commercial', 'Film / photo production', 'Podcast', 'Livestream / Stream House', 'Podcast / stream hybrid', 'Reaction / watch-party content', 'Gaming session', 'Creator collab', 'Other production'],
         Gather: ['Team off-site', 'Private dinner / hosted evening', 'Workshop / mastermind', 'Launch / listening evening', 'Industry gathering', 'Creator meetup / summit', 'Watch party / premiere', 'Tournament / gaming night', 'Brand-hosted creator evening', 'Other gathering'],
-        Stay: ['Artist residency', 'Creator residency', 'Executive stay', 'Production stay', 'Talent accommodations', 'Stream-house weekend', 'Content-batching stay', 'Partnership residency (label / publisher / management)', 'Other stay']
+        Stay: ['Artist residency', 'Creator residency', 'Executive stay', 'Production stay', 'Talent accommodations', 'Stream-house weekend', 'Content-batching stay', 'Label Camp Account (prepaid nights)', 'Other stay']
     };
     const DURATIONS = {
         Create: ['Estate Day (12 hours)', 'Multi-Day (2–7 days)', 'Extended production'],

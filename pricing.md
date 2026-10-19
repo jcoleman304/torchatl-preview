@@ -27,7 +27,7 @@ Private creative estate, east side of Atlanta, Georgia. Create. Gather. Stay. Al
 - Price: quoted by scope, by the day
 - Use: artist, creator, executive, and production residencies, talent accommodations, content-batching stays; a few nights to multi-week
 - Includes: guest suites, 24-hour access, housekeeping and turnover, chef options, dedicated coordinator
-- Partnerships: extended residencies for labels, publishers, and management teams, tailored to the roster and calendar
+- Label Camp Account: prepaid nights for labels, publishers, and management companies; one PO, one invoice, nights used across the roster for camps and recording trips; quoted on request
 
 ## Creator formats (quoted by scope; see https://torchatl.com/creators/)
 - Stream Day: 12 hours, one set, estate access
