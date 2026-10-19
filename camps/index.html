@@ -41,12 +41,18 @@
   .nav .cta { font-size:14.5px; font-weight:400; color:var(--cream); }
 
   /* hero */
-  .hero { text-align:center; padding:96px 0 88px; }
+  .hero-band { position:relative; overflow:hidden; background:var(--black) url('hero-poster.jpg') center/cover no-repeat; }
+  .hero-media { position:absolute; inset:0; z-index:0; }
+  .hero-media video { width:100%; height:100%; object-fit:cover; display:block; }
+  .hero-media::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(10,10,10,.62) 0%, rgba(10,10,10,.58) 45%, rgba(10,10,10,.90) 100%); }
+  .hero-band .wrap { position:relative; z-index:1; }
+  .hero { text-align:center; padding:132px 0 112px; }
+  @media (prefers-reduced-motion:reduce) { .hero-media video { display:none; } }
   .hero h1 { font-size:clamp(44px,7vw,84px); line-height:1.02; max-width:900px; margin:0 auto; }
   .hero h1 em { font-style:italic; color:var(--gold); }
   .hero p { max-width:620px; margin:30px auto 0; font-size:clamp(16px,2vw,19px); color:var(--ink); }
   .hero .specs { margin-top:26px; font-weight:500; color:var(--cream); font-size:clamp(15px,1.8vw,17px); }
-  .hero .loc { margin-top:10px; font-size:14px; color:var(--muted); max-width:560px; margin-left:auto; margin-right:auto; }
+  .hero .loc { margin-top:10px; font-size:14px; color:var(--ink); max-width:560px; margin-left:auto; margin-right:auto; }
   .hero .actions { margin-top:36px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
   .hero .actions .alt { font-size:14px; color:var(--muted); align-self:center; }
   .hero .actions .alt a { color:var(--cream); border-bottom:1px solid var(--line); }
@@ -83,7 +89,9 @@
   .offer h3 { font-size:clamp(32px,3.6vw,44px); line-height:1.1; margin-top:10px; }
   .offer .meta { font-size:14px; color:var(--muted); margin-top:8px; }
   .offer .invest { margin-top:34px; font-size:12px; letter-spacing:2.5px; text-transform:uppercase; color:var(--muted); }
-  .offer .price { font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(56px,7vw,84px); color:var(--gold); line-height:1; margin-top:6px; }
+  .offer .price { font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(56px,7vw,84px); color:var(--gold); line-height:1; margin-top:34px; }
+  .whofor { max-width:720px; margin:-16px auto 48px; text-align:center; font-size:16px; color:var(--ink); }
+  .whofor b { font-weight:500; color:var(--cream); }
   .offer .desc { margin-top:26px; font-size:16px; color:var(--ink); }
   .offer ul { list-style:none; margin-top:22px; border-top:1px solid var(--line); }
   .offer li { font-size:15px; color:var(--ink); padding:11px 0; border-bottom:1px solid var(--line); }
@@ -115,6 +123,7 @@
   .pdf { text-align:center; }
   .pdf p { color:var(--ink); font-size:15.5px; margin-bottom:18px; }
   .founder { text-align:center; max-width:760px; margin:0 auto; }
+  .founder .portrait { width:104px; height:104px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 28px; border:1px solid var(--gold); }
   .founder p { font-family:'Cormorant Garamond',Georgia,serif; font-size:clamp(21px,2.4vw,26px); line-height:1.45; color:var(--cream); }
   .founder small { display:block; margin-top:18px; font-size:12px; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold); font-family:'Inter',sans-serif; }
 
@@ -144,7 +153,7 @@
 
   @media (max-width:860px) {
     .nav .links { display:none; }
-    .hero { padding:64px 0 56px; }
+    .hero { padding:88px 0 72px; }
     section { padding:64px 0; }
     .strip { grid-template-columns:1fr 1fr; gap:6px; padding:6px; }
     .inc, .admin .grid { grid-template-columns:1fr 1fr; gap:24px; }
@@ -173,7 +182,8 @@
   </div>
 </div>
 
-<div class="band" id="top">
+<div class="band hero-band" id="top">
+  <div class="hero-media"><video autoplay muted loop playsinline preload="auto" poster="hero-poster.jpg" aria-hidden="true"><source src="hero-loop.mp4" type="video/mp4"></video></div>
   <div class="wrap hero">
     <h1 class="serif">Bring the team.<br><em>Stay. Record. Create.</em></h1>
     <p>Torch ATL is a private, gated recording estate built for writing/recording camps and album lock-ins. Bring your artists, writers, and producers together, with space to make music, stay overnight, create content, and recharge between sessions.</p>
@@ -232,13 +242,13 @@
       <div class="eyebrow">Two ways to book</div>
       <h2 class="serif">A confirmed camp, or an account<br>your roster draws on.</h2>
     </div>
+    <p class="whofor"><b>Camp Accounts are built for labels and management companies</b> with multiple projects a year. Book a single camp for one project, or open an account and send dates as projects come up.</p>
     <div class="offers">
 
       <div class="offer">
         <div class="eyebrow">Package 1</div>
         <h3 class="serif">5-Night Camp / Lock-In</h3>
         <div class="meta">Five consecutive nights &nbsp;&middot;&nbsp; One upfront package price</div>
-        <div class="invest">Your investment today is</div>
         <div class="price">$12,000</div>
         <p class="desc">One project, five consecutive nights, exclusive use of the estate. Confirmed dates, one price, one invoice.</p>
         <ul>
@@ -248,14 +258,13 @@
           <li>On-site security, 8 hours per day</li>
           <li>One post-camp turnover cleaning</li>
         </ul>
-        <div class="act"><a class="pill gold" href="mailto:bookings@torchatl.com?subject=Torch%20ATL%20%E2%80%94%205-Night%20Camp%20date%20request&body=Hi%20Joi%2C%0A%0AWe%27d%20like%20to%20look%20at%20dates%20for%20a%205-night%20camp.%0A%0AArtist%20or%20project%3A%20%0APreferred%20window%3A%20%0AApprox.%20headcount%3A%20%0A%0AThanks%2C%0A">Secure your spot</a></div>
+        <div class="act"><a class="pill outline" href="mailto:bookings@torchatl.com?subject=Torch%20ATL%20%E2%80%94%205-Night%20Camp%20date%20request&body=Hi%20Joi%2C%0A%0AWe%27d%20like%20to%20look%20at%20dates%20for%20a%205-night%20camp.%0A%0AArtist%20or%20project%3A%20%0APreferred%20window%3A%20%0AApprox.%20headcount%3A%20%0A%0AThanks%2C%0A">Secure your spot</a></div>
       </div>
 
       <div class="offer">
         <div class="eyebrow">Package 2 &nbsp;&middot;&nbsp; Recommended</div>
         <h3 class="serif">Label Camp Account</h3>
         <div class="meta">15 prepaid nights &nbsp;&middot;&nbsp; One upfront payment</div>
-        <div class="invest">Your investment today is</div>
         <div class="price">$34,000</div>
         <p class="desc">Fifteen prepaid nights, redeemable over twelve months across your roster. Run 3-night camps, 5-night lock-ins, longer stays, or one continuous residency.</p>
         <ul>
@@ -267,7 +276,7 @@
         </ul>
         <div class="hook">Approve one PO. Nothing else to budget for the year. Your team just sends dates.</div>
         <div class="fine">Minimum 3 consecutive nights per reservation. Reservations are subject to estate and staff availability; 7 days' notice requested, 14 preferred. One PO, one invoice, one concierge.</div>
-        <div class="act"><a class="pill outline" href="mailto:bookings@torchatl.com?subject=Torch%20ATL%20%E2%80%94%20Label%20Camp%20Account&body=Hi%20Joi%2C%0A%0AWe%27d%20like%20to%20discuss%20a%20Camp%20Account.%0A%0ACompany%3A%20%0ARoster%20or%20projects%20in%20mind%3A%20%0ALikely%20windows%20in%20the%20next%2012%20months%3A%20%0A%0AThanks%2C%0A">Discuss an account</a></div>
+        <div class="act"><a class="pill gold" href="mailto:bookings@torchatl.com?subject=Torch%20ATL%20%E2%80%94%20Label%20Camp%20Account&body=Hi%20Joi%2C%0A%0AWe%27d%20like%20to%20open%20a%20Camp%20Account.%0A%0ACompany%3A%20%0ARoster%20or%20projects%20in%20mind%3A%20%0ALikely%20windows%20in%20the%20next%2012%20months%3A%20%0A%0AThanks%2C%0A">Open an account</a></div>
       </div>
 
     </div>
@@ -328,6 +337,7 @@
 <div class="band">
 <section>
   <div class="wrap founder">
+    <img class="portrait" src="joi-coleman.jpg" alt="Joi Coleman, Owner of Torch ATL">
     <p>Having worked as an A&amp;R at Atlantic and as a studio manager, I know how much back-and-forth goes into coordinating studio time and accommodations for artists, writers, and producers. I built Torch ATL to simplify that process for labels, bringing recording space and overnight stays together in one booking&mdash;so your team spends less time managing logistics and more time moving projects forward.</p>
     <small>Joi Coleman &middot; Owner, Torch ATL</small>
   </div>
