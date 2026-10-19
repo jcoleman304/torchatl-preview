@@ -53,7 +53,7 @@
   .hero .actions .alt a { color:var(--cream); border-bottom:1px solid var(--line); }
 
   /* photo strip */
-  .strip { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:10px; }
+  .strip { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; padding:10px; }
   .strip figure { position:relative; aspect-ratio:4/5; overflow:hidden; background:#000; }
   .strip img { width:100%; height:100%; object-fit:cover; display:block; filter:saturate(0.92); }
   .strip figcaption { position:absolute; left:0; right:0; bottom:0; padding:22px 20px; font-size:16px; font-weight:400; color:#fff; background:linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0)); }
@@ -129,7 +129,8 @@
   .kv div { display:grid; grid-template-columns:180px 1fr; gap:24px; padding:14px 0; border-bottom:1px solid var(--line); font-size:15px; }
   .kv dt { color:var(--muted); font-weight:400; }
   .kv dd { color:var(--ink); }
-  .gear-note { margin-top:22px; font-size:13.5px; color:var(--muted); text-align:center; }
+  .gear-dl { text-align:center; margin-top:48px; }
+  .gear-note { margin-top:18px; font-size:13.5px; color:var(--muted); text-align:center; }
   .gear-note a { color:var(--gold); }
   .lane h3 { font-size:30px; margin-top:10px; line-height:1.15; }
   .lane ol { list-style:none; margin-top:22px; counter-reset:s; }
@@ -174,6 +175,7 @@
     .hero { padding:64px 0 56px; }
     section { padding:64px 0; }
     .strip { grid-template-columns:1fr 1fr; gap:6px; padding:6px; }
+    .strip figure:nth-child(5) { grid-column:span 2; aspect-ratio:8/5; }
     .inc, .admin .grid { grid-template-columns:1fr 1fr; gap:24px; }
     .offers { grid-template-columns:1fr; }
     .offer { padding:0; }
@@ -223,6 +225,7 @@
   <figure><img src="../images/g-01-314-homepage-hero-suite.jpg" alt="Guest suite"><figcaption>Three guest suites</figcaption></figure>
   <figure><img src="executive-lounge.jpg" alt="Executive lounge"><figcaption>Executive lounge</figcaption></figure>
   <figure><img src="../images/g-40-278-amenities-deck-dining-jpg.jpg" alt="Deck"><figcaption>Grill and deck</figcaption></figure>
+  <figure><img src="../images/d-robe.jpg" alt="Torch ATL branded robe"><figcaption>Hospitality in every suite</figcaption></figure>
 </div>
 
 <section id="video">
@@ -281,14 +284,10 @@
         <p>Camps, writing rooms and podcast or broadcast, with Shure SM7B and MV7X on hand. Pro Tools, Yamaha HS8 monitoring, PreSonus headphone distribution, Furman power. Private bathroom in-room.</p>
       </div>
     </div>
-    <dl class="kv">
-      <div><dt>Microphones</dt><dd>Neumann U87 &middot; Neumann TLM 103 (&times;2) &middot; Shure SM7B &middot; Shure MV7X (&times;2)</dd></div>
-      <div><dt>Front end</dt><dd>Neve 1073 SPX preamp / channel strip &middot; Tube-Tech CL1B compressor &middot; UA LA-610 MkII tube preamp</dd></div>
-      <div><dt>Conversion</dt><dd>UAD Apollo X8 &middot; Apollo X6 &middot; Apollo Twin</dd></div>
-      <div><dt>Monitoring &amp; power</dt><dd>Yamaha HS8 (2 pairs) &middot; PreSonus headphone amplifier &middot; Furman power conditioning</dd></div>
-      <div><dt>Software</dt><dd>Pro Tools &middot; Waves Complete &middot; UAD plugins &middot; Auto-Tune (Antares) &middot; VocAlign (Synchro Arts)</dd></div>
-    </dl>
-    <p class="gear-note">Both suites run simultaneously. Full rider at <a href="../gear.html">torchatl.com/gear</a>. Inventory subject to periodic audit.</p>
+    <div class="gear-dl">
+      <a class="pill ghost" href="Torch_ATL_Equipment_List.pdf" download>Download the equipment list</a>
+      <p class="gear-note">Both suites run simultaneously. Microphones, front end, conversion, monitoring and software on one page. Inventory subject to periodic audit.</p>
+    </div>
   </div>
 </section>
 
