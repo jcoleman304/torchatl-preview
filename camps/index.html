@@ -63,7 +63,13 @@
   .sec-head p { max-width:640px; margin:18px auto 0; color:var(--ink); font-size:16.5px; }
 
   /* video */
-  .player { border-radius:4px; overflow:hidden; background:#000; }
+  .player { border-radius:4px; overflow:hidden; background:#000; position:relative; }
+  .play { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; background:rgba(10,10,10,.28); color:var(--cream); cursor:pointer; border:0; width:100%; font-family:'Inter',sans-serif; transition:background .25s; }
+  .play:hover { background:rgba(10,10,10,.42); }
+  .play .ring { width:84px; height:84px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; box-shadow:0 10px 40px rgba(0,0,0,.45); }
+  .play .ring svg { width:28px; height:28px; margin-left:5px; fill:var(--black); }
+  .play span { font-size:12px; letter-spacing:2.5px; text-transform:uppercase; }
+  .player.on .play { display:none; }
   video { display:block; width:100%; height:auto; }
   .caption { text-align:center; color:var(--muted); font-size:13px; margin-top:16px; }
   .clients { text-align:center; margin-top:34px; font-size:15px; color:var(--muted); }
@@ -207,9 +213,13 @@
       <h2 class="serif">Arrive. Record. Rest.</h2>
     </div>
     <div class="player">
-      <video controls playsinline preload="metadata"
+      <video id="walk" playsinline preload="metadata"
              poster="../estate/walkthrough-poster.jpg"
              src="walkthrough.mp4"></video>
+      <button class="play" type="button" aria-label="Play the walkthrough video" onclick="var v=document.getElementById('walk');v.controls=true;this.parentNode.classList.add('on');v.play();">
+        <div class="ring"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div>
+        <span>Play video</span>
+      </button>
     </div>
     <div class="caption">1:26 &middot; sound on</div>
   </div>
