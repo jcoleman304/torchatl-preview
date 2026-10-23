@@ -5,7 +5,7 @@ Private creative estate, east side of Atlanta, Georgia. Create. Gather. Stay. Al
 ## Estate Day
 - Price: from $1,800
 - Duration: up to 12 consecutive hours, no overnight
-- Includes: Studio B and Studio C, Content Wall, Strategy Room, both lounges, chef's kitchen, deck and grounds, all three guest suites as day space, gated parking, exclusive to one client
+- Includes: Studio B and Studio C, Content Wall, Strategy Room, both lounges, chef's kitchen, deck and grounds, gated parking, exclusive to one client
 - Use: productions, brand and film shoots, podcast and stream days, hosted days
 - Who: open by request
 
