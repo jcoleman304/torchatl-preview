@@ -35,8 +35,8 @@ Private creative estate, east side of Atlanta, Georgia. Create. Gather. Stay. Al
 - Creator Residency: by the day, lodging included
 
 ## Member & partner block sessions (not a public rate)
-- Studio B: $140/hr with house engineer, $60/hr without an engineer
-- Studio C: $120/hr with house engineer, $50/hr without an engineer
+- Studio B: $95/hr with house engineer
+- Studio C: $85/hr with house engineer
 - Minimum: 4 hours
 - Who: Torch members and label/partner accounts only
 
