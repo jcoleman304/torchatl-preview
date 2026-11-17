@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Your Tour — TORCH ATL</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0A0A0A;--panel:#121212;--panel-2:#161513;--line:rgba(255,255,255,.10);--gray:#8c8c8c;--silver:#a8a8a8;--cream:#F5F0E8;--white:#fff;--gold:#D4AF37;--gold-light:#E5C76B;--danger:#ef4444;
+  --font-display:'Playfair Display',Georgia,serif;--font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--cream);font-family:var(--font-body);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:var(--gold)}
+.nav{border-bottom:1px solid var(--line);padding:18px 24px}
+.logo{font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:1px;color:var(--white);text-decoration:none}
+.logo .a{color:var(--gold);font-size:.55em;vertical-align:super;margin-left:2px}
+.wrap{max-width:640px;margin:0 auto;padding:48px 22px 80px}
+.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+h1{font-family:var(--font-display);font-weight:600;font-size:clamp(30px,5vw,42px);color:var(--white);line-height:1.15;margin-bottom:12px}
+.lead{color:var(--silver);font-size:17px}
+.current{background:var(--panel);border:1px solid rgba(212,175,55,.3);border-radius:12px;padding:20px 24px;margin:28px 0 8px}
+.current .k{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gray)}
+.current .v{font-family:var(--font-display);font-size:24px;color:var(--gold);margin-top:4px}
+.day{margin-top:30px}
+.day h2{font-family:var(--font-display);font-size:19px;color:var(--white);font-weight:600;margin-bottom:12px}
+.times{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.slot{background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--cream);font-family:var(--font-body);font-size:15px;padding:13px 8px;cursor:pointer;transition:all .15s}
+.slot:hover{border-color:var(--gold);color:var(--gold)}
+.slot.sel{background:var(--gold);border-color:var(--gold);color:var(--black);font-weight:600}
+.slot.mine{border-color:rgba(212,175,55,.6)}
+.bar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--black) 30%);padding:28px 0 18px;margin-top:26px}
+.btn{display:block;border:none;cursor:pointer;font-family:var(--font-body);font-weight:600;font-size:15px;letter-spacing:.04em;padding:16px 30px;border-radius:6px;width:100%;transition:all .2s;background:var(--gold);color:var(--black)}
+.btn:hover{background:var(--gold-light)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.fine{color:var(--gray);font-size:13px;margin-top:14px;line-height:1.6}
+.err{color:var(--danger);font-size:14px;min-height:1.2em;margin-top:10px}
+.hidden{display:none!important}
+.state{text-align:center;padding:60px 0}
+.state .big{font-size:52px;margin-bottom:14px;color:var(--gold)}
+.spinner{width:22px;height:22px;border:2px solid rgba(212,175,55,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;display:inline-block;vertical-align:middle;margin-right:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="/" class="logo">TORCH<span class="a">ATL</span></a></nav>
+
+<main class="wrap">
+  <div id="loading" class="state"><span class="spinner"></span> Opening your tour link…</div>
+
+  <div id="bad" class="state hidden">
+    <div class="big">✦</div>
+    <h1 id="bad-title">This tour link isn't available</h1>
+    <p class="lead" id="bad-msg"></p>
+    <p class="fine" style="margin-top:24px">Reply to your email from Torch ATL and we'll sort it out.</p>
+  </div>
+
+  <div id="pick" class="hidden">
+    <p class="eyebrow">A Private Creative Estate · Estate Tour</p>
+    <h1><span id="first"></span>, come see the estate.</h1>
+    <p class="lead">The tour takes about forty-five minutes: both studios, the house, and a conversation about what you're building. Pick a time that works. All times are Eastern.</p>
+
+    <div class="current hidden" id="current">
+      <div class="k">Your tour is booked for</div>
+      <div class="v" id="current-when"></div>
+      <p class="fine" style="margin-top:8px">Choose a different time below to move it.</p>
+    </div>
+
+    <div id="days"></div>
+    <p class="lead hidden" id="none" style="margin-top:30px">There are no open tour times in the next two weeks. Reply to your email from Torch ATL and we'll find a time with you.</p>
+
+    <div class="bar" id="bar">
+      <button class="btn" id="book" disabled>Choose a time</button>
+      <p class="err" id="err"></p>
+    </div>
+  </div>
+
+  <div id="done" class="state hidden">
+    <div class="big">✦</div>
+    <p class="eyebrow" id="done-eyebrow">Tour booked</p>
+    <h1 id="done-when"></h1>
+    <p class="lead">A confirmation is on its way to your inbox with what you need for arrival. We look forward to having you at the house.</p>
+    <p class="fine">Need to change it? Open this same link again and pick a new time.</p>
+  </div>
+</main>
+<footer>TORCH ATL · Where Comfort Ignites Creativity</footer>
+
+<script>
+(function(){
+  var API = (['localhost','127.0.0.1'].indexOf(location.hostname) >= 0) ? 'http://localhost:3001/api' : 'https://api.torchatl.com/api';
+  var token = new URLSearchParams(location.search).get('t') || '';
+  var $ = function(id){ return document.getElementById(id); };
+  var show = function(id){ ['loading','bad','pick','done'].forEach(function(x){ $(x).classList.toggle('hidden', x!==id); }); };
+  var selected = null, data = null;
+
+  function fail(title, msg){ $('bad-title').textContent = title; $('bad-msg').textContent = msg || ''; show('bad'); }
+
+  async function call(path, opts){
+    var r = await fetch(API+path, Object.assign({ headers:{'Content-Type':'application/json'} }, opts||{}));
+    var d = await r.json().catch(function(){ return {}; });
+    if(!r.ok){ var e = new Error(d.error || ('Request failed ('+r.status+')')); e.status = r.status; e.data = d; throw e; }
+    return d;
+  }
+
+  function renderSlots(slots){
+    var days = $('days'); days.textContent = '';
+    selected = null; $('book').disabled = true; $('book').textContent = 'Choose a time';
+    $('none').classList.toggle('hidden', slots.length > 0);
+    $('bar').classList.toggle('hidden', slots.length === 0);
+    var byDay = {};
+    slots.forEach(function(s){ (byDay[s.date] = byDay[s.date] || { label: s.day, slots: [] }).slots.push(s); });
+    Object.keys(byDay).sort().forEach(function(d){
+      var sec = document.createElement('div'); sec.className = 'day';
+      var h = document.createElement('h2'); h.textContent = byDay[d].label; sec.appendChild(h);
+      var grid = document.createElement('div'); grid.className = 'times';
+      byDay[d].slots.forEach(function(s){
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'slot'; b.textContent = s.timeLabel;
+        if(data.tour && data.tour.date === s.date && data.tour.time === s.time) b.classList.add('mine');
+        b.addEventListener('click', function(){
+          Array.prototype.forEach.call(document.querySelectorAll('.slot.sel'), function(x){ x.classList.remove('sel'); });
+          b.classList.add('sel'); selected = s; $('err').textContent = '';
+          $('book').disabled = false;
+          $('book').textContent = (data.tour ? 'Move my tour to ' : 'Book ') + s.full;
+        });
+        grid.appendChild(b);
+      });
+      sec.appendChild(grid); days.appendChild(sec);
+    });
+  }
+
+  function render(d){
+    data = d;
+    $('first').textContent = d.firstName;
+    if(d.tour){ $('current-when').textContent = d.tour.full; $('current').classList.remove('hidden'); }
+    renderSlots(d.slots || []);
+    show('pick');
+  }
+
+  $('book').addEventListener('click', async function(){
+    if(!selected) return;
+    var btn = this, label = btn.textContent; $('err').textContent = '';
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Booking…';
+    try{
+      var r = await call('/tours/'+encodeURIComponent(token)+'/book', { method:'POST', body: JSON.stringify({ date: selected.date, time: selected.time }) });
+      $('done-eyebrow').textContent = r.rescheduled ? 'Tour updated' : 'Tour booked';
+      $('done-when').textContent = r.tour.full;
+      show('done'); window.scrollTo(0,0);
+    }catch(ex){
+      $('err').textContent = ex.message;
+      if(ex.data && ex.data.slots){ renderSlots(ex.data.slots); } else { btn.disabled = false; btn.textContent = label; }
+    }
+  });
+
+  (async function boot(){
+    if(!token){ return fail('This tour link is incomplete', 'Open the link exactly as it appears in your email.'); }
+    var d;
+    try{ d = await call('/tours/'+encodeURIComponent(token)); }
+    catch(ex){ return fail('This tour link isn\'t available', ex.message); }
+    if(d.state === 'closed'){ return fail('This tour link is no longer active', ''); }
+    render(d);
+  })();
+})();
+</script>
+</body>
+</html>

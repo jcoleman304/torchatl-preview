@@ -278,9 +278,9 @@ function populateDashboard() {
     document.getElementById('hours-total').textContent = tier.hours;
 
     // Hours breakdown
-    document.getElementById('breakdown-used').textContent = currentMember.hoursUsed + ' credits';
-    document.getElementById('breakdown-scheduled').textContent = currentMember.hoursScheduled + ' credits';
-    document.getElementById('breakdown-available').textContent = hoursRemaining + ' credits';
+    document.getElementById('breakdown-used').textContent = currentMember.hoursUsed + ' hours';
+    document.getElementById('breakdown-scheduled').textContent = currentMember.hoursScheduled + ' hours';
+    document.getElementById('breakdown-available').textContent = hoursRemaining + ' hours';
 
     // Upcoming sessions
     const upcomingHtml = currentMember.sessions.map(s => `
@@ -290,7 +290,7 @@ function populateDashboard() {
                 <div class="session-time">${formatTime(s.startTime)} - ${formatTime(s.endTime)}${s.engineerName ? ' — ' + s.engineerName : ''}</div>
             </div>
             <div class="session-item-right">
-                <span class="session-hours">${s.hours} credits</span>
+                <span class="session-hours">${s.hours} hours</span>
                 <button type="button" class="btn-cancel-session" onclick="cancelBooking('${s.id}')">Cancel</button>
             </div>
         </div>
@@ -468,17 +468,18 @@ function updateBookingSummary() {
         if (end < start) end += 24;
 
         const hours = end - start;
-        const validBlock = hours >= 4 && hours <= 16 && hours % 4 === 0;
+        const closedDay = !!selectedDate && new Date(selectedDate).getUTCDay() === 0; // Sunday
+        const validBlock = hours >= 3 && hours <= 16 && !closedDay;
         // Credit cost is peak-weighted for the selected date.
         const credits = selectedDate ? calcCredits(selectedDate, startTime, endTime) : hours;
 
         document.getElementById('summary-duration').textContent = hours + ' hrs';
-        if (creditsEl) creditsEl.textContent = credits + ' credits' + (credits > hours ? ' (peak)' : '');
+        if (creditsEl) creditsEl.textContent = credits + ' hours';
 
         if (currentMember) {
             const tier = currentMember.tierConfig || TIERS[currentMember.tier];
             const remaining = tier.hours - currentMember.hoursUsed - currentMember.hoursScheduled - credits;
-            document.getElementById('summary-remaining').textContent = remaining + ' credits remaining';
+            document.getElementById('summary-remaining').textContent = remaining + ' hours remaining';
         }
 
         // Premium engineer surcharge (shown before booking; standard engineers = included).
@@ -499,7 +500,7 @@ function updateBookingSummary() {
         const slot = checkSelectedSlot();
         if (hintEl) {
             if (!validBlock) {
-                hintEl.textContent = '● Sessions book in 4-hour blocks (4, 8, 12, or 16 hours)';
+                hintEl.textContent = closedDay ? '● Member sessions run Monday to Saturday' : '● Sessions are 3 hours or longer';
                 hintEl.className = 'availability-hint full';
             } else if (!slot) {
                 hintEl.textContent = credits > hours ? '● Peak evening — 1.25 credits/hour' : '';
@@ -515,7 +516,7 @@ function updateBookingSummary() {
         }
         if (submitBtn) submitBtn.disabled = !validBlock || !!(slot && slot.full);
     } else {
-        if (creditsEl) creditsEl.textContent = '0 credits';
+        if (creditsEl) creditsEl.textContent = '0 hours';
         const engRow = document.getElementById('summary-engineer-row');
         if (engRow) engRow.style.display = 'none';
         if (hintEl) { hintEl.textContent = ''; hintEl.className = 'availability-hint'; }
@@ -554,8 +555,12 @@ async function submitBooking(event) {
     const tier = currentMember.tierConfig || TIERS[currentMember.tier];
 
     // Quick client-side checks
-    if (hours < 4 || hours > 16 || hours % 4 !== 0) {
-        showToast('Sessions book in 4-hour blocks (4, 8, 12, or 16 hours).', 'error');
+    if (selectedDate && new Date(selectedDate).getUTCDay() === 0) {
+        showToast('Member sessions run Monday to Saturday. Please pick another day.', 'error');
+        return;
+    }
+    if (hours < 3 || hours > 16) {
+        showToast('Sessions are 3 hours or longer (16 max).', 'error');
         return;
     }
     if (guestCount > tier.guestLimit) {
@@ -565,7 +570,7 @@ async function submitBooking(event) {
 
     const available = tier.hours - currentMember.hoursUsed - currentMember.hoursScheduled;
     if (credits > available) {
-        showToast(`You only have ${available} credits available (this session costs ${credits}).`, 'error');
+        showToast(`You only have ${available} hours available (this session uses ${credits}).`, 'error');
         return;
     }
 
@@ -595,7 +600,7 @@ async function submitBooking(event) {
         showToast('Session booked successfully!', 'success');
         // Surface any billable overage the backend flagged (no longer silent).
         if (booking && booking.overage && booking.overage.credits > 0) {
-            showToast(`Heads up: ${booking.overage.credits} credit(s) over your monthly allocation will bill at $${booking.overage.rate}/credit.`, 'info');
+            showToast(`Heads up: ${booking.overage.credits} hour(s) over your monthly hours will bill at $${booking.overage.rate}/hour.`, 'info');
         }
         populateDashboard();
         renderCalendar();
@@ -733,7 +738,7 @@ function populateSessionHistory() {
                 <div class="history-date">${formatDate(parseLocalDate(h.date))}</div>
                 <div class="history-type">${h.type}</div>
             </div>
-            <span class="history-hours">${h.hours} credits</span>
+            <span class="history-hours">${h.hours} hours</span>
         </div>
     `).join('');
 
@@ -891,9 +896,10 @@ function parseLocalDate(value) {
     return new Date(value);
 }
 
-// Peak-weighted credit cost (mirrors backend): Thu–Sun after 6 PM = 1.25 cr/hr.
-// dateStr is 'YYYY-MM-DD'; whole-hour sessions (4-hour blocks).
-const PEAK_MULTIPLIER = 1.25;
+// Hour cost (mirrors backend). Membership v4 has no peak weighting, so the
+// multiplier is 1 and an hour costs an hour; the peak machinery is kept only
+// so it can be turned back on. dateStr is 'YYYY-MM-DD'; whole-hour sessions.
+const PEAK_MULTIPLIER = 1;
 const PEAK_DAYS = [4, 5, 6, 0]; // Thu, Fri, Sat, Sun (UTC day)
 function calcCredits(dateStr, startTime, endTime) {
     const peakDay = PEAK_DAYS.indexOf(new Date(dateStr).getUTCDay()) >= 0;
@@ -946,14 +952,15 @@ function populateBilling() {
     if (valueEl) {
         const credits = tier.credits || tier.hours || 0;
         const rows = [
-            [`Monthly Credits (${credits} credits)`, tier.studioValue ? '$' + tier.studioValue.toLocaleString() + ' value' : 'Included'],
-            [`Booking Window (${tier.bookingWindow} days)`, 'Included'],
+            [`Studio Hours (${credits} a month)`, 'Unused hours roll over one month'],
+            ['Engineer', tier.engineerIncluded === false ? 'Bring your own, or add one when you book' : 'Included on every session'],
+            ['Booking Window', 'Open slots up to ' + (tier.bookingWindowLabel || tier.bookingWindow + ' days ahead')],
             [`Collaborators (${tier.guestLimit} per session)`, 'Included']
         ];
         if (tier.suitePrivileges) rows.push(['Suite Privileges', tier.suitePrivileges]);
-        if (tier.buyoutRate > 0) rows.push(['Estate Buyout — member rate', tier.buyoutRate + '% off']);
+        if (tier.memberDiscount > 0) rows.push(['Member rate — events, camps, stays, hosting', tier.memberDiscount + '% off']);
         if (tier.rosterArtists > 0) rows.push(['Roster Artists', tier.rosterArtists + ' on your account']);
-        rows.push(['A&R Office Hours & Events', 'Included']);
+        rows.push(['First notice of events & camps', 'Included']);
         valueEl.innerHTML = rows.map(([label, val]) =>
             `<div class="value-item"><span>${escapeHtml(label)}</span><span class="value-amount">${escapeHtml(val)}</span></div>`
         ).join('') +

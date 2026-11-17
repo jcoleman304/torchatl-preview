@@ -2,82 +2,34 @@
 // API-first with localStorage cache fallback
 
 // Membership Tier Configuration (also served by backend, kept here for offline/instant UI)
-// Torch ATL tiers (brochure model). 1 Torch Credit = 1 studio hour, engineer
-// included. `hours` mirrors `credits` so existing credit math keeps working.
+// Membership v4: Flame and Blaze. 10 studio hours a month, 3-hour minimum
+// sessions, Monday to Saturday, no peak weighting, unused hours roll over one
+// month. `credits` mirrors `hours` so existing math keeps working. Ember and
+// The Torch are retired tiers kept only so accounts still on them load.
 const TIERS = {
-    Ember: {
-        name: 'Ember',
-        monthlyRate: 500,
-        foundingRate: 500,
-        hours: 8,
-        credits: 8,
-        studioValue: 960,
-        access: 'Weekdays 10–6',
-        bookingWindow: 7,
-        guestLimit: 3,
-        buyoutRate: 0,
-        rosterArtists: 0,
-        initiation: 500,
-        builtFor: 'Podcasters & content creators',
-        overageRate: 120,
-        priority: 4,
-        color: '#C2703D'
-    },
     Flame: {
-        name: 'Flame',
-        monthlyRate: 1500,
-        foundingRate: 1500,
-        hours: 16,
-        credits: 16,
-        studioValue: 1920,
-        access: 'Full calendar',
-        bookingWindow: 14,
-        guestLimit: 3,
-        buyoutRate: 10,
-        rosterArtists: 0,
-        initiation: 500,
-        builtFor: 'Working artists & writers',
-        overageRate: 120,
-        priority: 3,
-        color: '#E0833A'
+        name: 'Flame', monthlyRate: 500, foundingRate: 500, hours: 10, credits: 10,
+        access: 'Monday to Saturday, open slots', bookingWindow: 3, bookingWindowLabel: '72 hours ahead',
+        engineerIncluded: false, memberDiscount: 10, guestLimit: 3, buyoutRate: 10, rosterArtists: 0,
+        overageRate: 90, priority: 2, color: '#E0833A'
     },
     Blaze: {
-        name: 'Blaze',
-        monthlyRate: 3000,
-        foundingRate: 3000,
-        hours: 36,
-        credits: 36,
-        studioValue: 4320,
-        access: 'Full calendar',
-        bookingWindow: 21,
-        guestLimit: 3,
-        suitePrivileges: '4 credits / night',
-        buyoutRate: 15,
-        rosterArtists: 0,
-        initiation: 1000,
-        builtFor: 'Album mode & producer rosters',
-        overageRate: 120,
-        priority: 2,
-        color: '#D4574A'
+        name: 'Blaze', monthlyRate: 750, foundingRate: 750, hours: 10, credits: 10,
+        access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead (priority)',
+        engineerIncluded: true, memberDiscount: 15, guestLimit: 3, buyoutRate: 15, rosterArtists: 0,
+        overageRate: 90, priority: 1, color: '#D4574A'
+    },
+    Ember: {
+        name: 'Ember', legacy: true, monthlyRate: 500, foundingRate: 500, hours: 8, credits: 8,
+        access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
+        engineerIncluded: true, memberDiscount: 0, guestLimit: 3, buyoutRate: 0, rosterArtists: 0,
+        overageRate: 90, priority: 4, color: '#C2703D'
     },
     'The Torch': {
-        name: 'The Torch',
-        monthlyRate: 4500,
-        foundingRate: 4500,
-        hours: 56,
-        credits: 56,
-        studioValue: 6720,
-        access: 'Full calendar',
-        bookingWindow: 30,
-        guestLimit: 3,
-        suitePrivileges: '4 credits / night',
-        buyoutRate: 20,
-        rosterArtists: 2,
-        initiation: 1000,
-        builtFor: 'Labels, managers, exec producers',
-        overageRate: 120,
-        priority: 1,
-        color: '#D4AF37'
+        name: 'The Torch', legacy: true, monthlyRate: 4500, foundingRate: 4500, hours: 56, credits: 56,
+        access: 'Monday to Saturday, open slots', bookingWindow: 30, bookingWindowLabel: '30 days ahead',
+        engineerIncluded: true, memberDiscount: 20, guestLimit: 3, buyoutRate: 20, rosterArtists: 2,
+        overageRate: 90, priority: 1, color: '#D4AF37'
     }
 };
 
@@ -85,7 +37,7 @@ const TIERS = {
 const OPERATING_HOURS = {
     start: 10, // 10 AM
     end: 26,   // 2 AM (next day)
-    minSession: 4,
+    minSession: 3,
     maxSession: 12,
     transitionBuffer: 30 // minutes
 };

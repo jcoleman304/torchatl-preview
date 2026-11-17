@@ -40,15 +40,15 @@ Private creative estate, east side of Atlanta, Georgia. Create. Gather. Stay. Al
 - Minimum: 4 hours
 - Who: Torch members and label/partner accounts only
 
-## Torch Membership (twelve keys, application only)
-- Ember: $500/month, 8 Estate Credits
-- Flame: $1,500/month, 20 Estate Credits
-- Blaze: $3,000/month, 44 Estate Credits
-- Torch Executive: $4,500/month, 60 Estate Credits, two roster artists on the account
-- 1 Estate Credit = 1 hour across Studio B, Studio C, the Strategy Room, or the Content Wall
-- Initiation: $500 or $1,000 by tier
+## Torch Membership (twenty seats, application only)
+- Flame: 10 studio hours a month; bring your own engineer or book one at the member rate; book open slots up to 72 hours ahead
+- Blaze: 10 studio hours a month with a Torch engineer included; priority booking up to 7 days ahead
+- Sessions: Monday to Saturday, 3-hour minimum; unused hours roll into the next month
+- Member rate on Torch events, camps, stays, and hosting; first notice of new dates
+- Three-month minimum, then month to month
+- Membership rates are not published; they are shared privately after an in-person tour
 - Open to artists, producers, writers, podcasters, creators, and brand studios
-- All tiers: preferred rates and priority booking on everything the estate offers. Details at https://torchatl.com/membership/
+- Details at https://torchatl.com/membership/
 
 ## Terms
 - Deposit: 50% of the reservation total on confirmation
