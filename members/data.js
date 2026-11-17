@@ -16,13 +16,13 @@ const TIERS = {
     },
     Flame: {
         name: 'Flame', monthlyRate: 500, foundingRate: 500, hours: 10, credits: 10,
-        access: 'Monday to Saturday, open slots', bookingWindow: 3, bookingWindowLabel: '72 hours ahead',
+        access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
         engineerIncluded: false, spaces: ['Studio B', 'Studio C'], memberDiscount: 10, guestLimit: 3, buyoutRate: 10, rosterArtists: 0,
         overageRate: 90, priority: 2, color: '#E0833A'
     },
     Blaze: {
         name: 'Blaze', monthlyRate: 750, foundingRate: 750, hours: 10, credits: 10,
-        access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead (priority)',
+        access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
         engineerIncluded: true, spaces: ['Studio B', 'Studio C'], memberDiscount: 15, guestLimit: 3, buyoutRate: 15, rosterArtists: 0,
         overageRate: 90, priority: 1, color: '#D4574A'
     },
