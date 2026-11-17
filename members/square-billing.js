@@ -15,24 +15,40 @@ const SquareBilling = {
     card: null,
     initialized: false,
 
-    // Load configuration from localStorage (shared with Operations Suite)
-    loadConfig: function() {
-        const savedConfig = localStorage.getItem('torch_square_config');
-        if (savedConfig) {
-            const config = JSON.parse(savedConfig);
-            this.config.applicationId = config.applicationId || '';
-            this.config.locationId = config.locationId || '';
-            this.config.environment = config.environment || 'sandbox';
+    // Load the public Square settings (application id, location, environment)
+    // from the backend, then load the matching Square card SDK. No secret ever
+    // reaches the browser; the access token lives only on the server.
+    loadConfig: async function() {
+        try {
+            const base = window.TORCH_API_URL || 'https://api.torchatl.com/api';
+            const r = await fetch(base + '/invitations/config');
+            const cfg = await r.json();
+            if (!cfg || !cfg.configured) return false;
+            this.config.applicationId = cfg.applicationId || '';
+            this.config.locationId = cfg.locationId || '';
+            this.config.environment = cfg.environment || 'sandbox';
+            if (typeof Square === 'undefined') {
+                await new Promise((resolve, reject) => {
+                    const el = document.createElement('script');
+                    el.src = this.config.environment === 'production'
+                        ? 'https://web.squarecdn.com/v1/square.js'
+                        : 'https://sandbox.web.squarecdn.com/v1/square.js';
+                    el.onload = resolve; el.onerror = () => reject(new Error('Square SDK failed to load'));
+                    document.head.appendChild(el);
+                });
+            }
             return true;
+        } catch (e) {
+            console.warn('[Square] Could not load payment settings:', e.message);
+            return false;
         }
-        return false;
     },
 
     // Initialize Square Payments
     init: async function() {
         // Load config
-        if (!this.loadConfig()) {
-            console.warn('[Square] No configuration found. Please configure Square in Operations Suite.');
+        if (!(await this.loadConfig())) {
+            console.warn('[Square] Card payments are not switched on.');
             this.showConfigNotice();
             return false;
         }
