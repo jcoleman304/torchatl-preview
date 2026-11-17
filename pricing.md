@@ -41,7 +41,7 @@ Private creative estate, east side of Atlanta, Georgia. Create. Gather. Stay. Al
 - Who: Torch members and label/partner accounts only
 
 ## Torch Membership (twenty seats, application only)
-- Spark (content creators): 10 hours a month on the stream-ready sets (Content Wall, Creative Lounge, Executive Lounge) or in a studio for podcast and voice audio; book open slots up to 72 hours ahead
+- Spark (content creators): 10 hours a month on the stream-ready sets (Content Wall, Creative Lounge, Executive Lounge) or in a studio for podcast and voice audio; book open slots up to 7 days ahead
 - Flame: 10 studio hours a month; bring your own engineer or book one at the member rate; book open slots up to 72 hours ahead
 - Blaze: 10 studio hours a month with a Torch engineer included; priority booking up to 7 days ahead
 - Sessions: Monday to Saturday, 3-hour minimum; unused hours roll into the next month

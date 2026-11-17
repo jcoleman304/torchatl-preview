@@ -9,7 +9,7 @@
 const TIERS = {
     Spark: {
         name: 'Spark', monthlyRate: 500, foundingRate: 500, hours: 10, credits: 10,
-        access: 'Monday to Saturday, open slots', bookingWindow: 3, bookingWindowLabel: '72 hours ahead',
+        access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
         engineerIncluded: false, spaces: ['Content Wall', 'Creative Lounge', 'Executive Lounge', 'Studio B', 'Studio C'],
         memberDiscount: 10, guestLimit: 3, buyoutRate: 10, rosterArtists: 0,
         overageRate: 90, priority: 3, color: '#E5C76B'
