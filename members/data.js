@@ -7,16 +7,23 @@
 // month. `credits` mirrors `hours` so existing math keeps working. Ember and
 // The Torch are retired tiers kept only so accounts still on them load.
 const TIERS = {
+    Spark: {
+        name: 'Spark', monthlyRate: 500, foundingRate: 500, hours: 10, credits: 10,
+        access: 'Monday to Saturday, open slots', bookingWindow: 3, bookingWindowLabel: '72 hours ahead',
+        engineerIncluded: false, spaces: ['Content Wall', 'Creative Lounge', 'Executive Lounge', 'Studio B', 'Studio C'],
+        memberDiscount: 10, guestLimit: 3, buyoutRate: 10, rosterArtists: 0,
+        overageRate: 90, priority: 3, color: '#E5C76B'
+    },
     Flame: {
         name: 'Flame', monthlyRate: 500, foundingRate: 500, hours: 10, credits: 10,
         access: 'Monday to Saturday, open slots', bookingWindow: 3, bookingWindowLabel: '72 hours ahead',
-        engineerIncluded: false, memberDiscount: 10, guestLimit: 3, buyoutRate: 10, rosterArtists: 0,
+        engineerIncluded: false, spaces: ['Studio B', 'Studio C'], memberDiscount: 10, guestLimit: 3, buyoutRate: 10, rosterArtists: 0,
         overageRate: 90, priority: 2, color: '#E0833A'
     },
     Blaze: {
         name: 'Blaze', monthlyRate: 750, foundingRate: 750, hours: 10, credits: 10,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead (priority)',
-        engineerIncluded: true, memberDiscount: 15, guestLimit: 3, buyoutRate: 15, rosterArtists: 0,
+        engineerIncluded: true, spaces: ['Studio B', 'Studio C'], memberDiscount: 15, guestLimit: 3, buyoutRate: 15, rosterArtists: 0,
         overageRate: 90, priority: 1, color: '#D4574A'
     },
     Ember: {

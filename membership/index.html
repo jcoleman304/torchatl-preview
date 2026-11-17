@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TORCH ATL | Membership — A Private Creative Estate</title>
-<meta name="description" content="Torch ATL is a gated creative estate in Atlanta. Two memberships, Flame and Blaze, capped at twenty seats. Studio hours every month, by application only.">
+<meta name="description" content="Torch ATL is a gated creative estate in Atlanta. Three memberships — Spark for content creators, Flame and Blaze for the studios — capped at twenty seats. By application only.">
 <meta property="og:title" content="Torch ATL Membership — A Private Creative Estate">
-<meta property="og:description" content="Two memberships. Twenty seats. Studio hours every month at a private creative estate in Atlanta. By application only.">
+<meta property="og:description" content="Three memberships. Twenty seats. Hours every month on the sets and in the studios of a private creative estate in Atlanta. By application only.">
 <meta property="og:url" content="https://torchatl.com/membership">
 <meta name="theme-color" content="#0A0A0A">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230A0A0A' width='100' height='100' rx='12'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%23D4AF37' font-family='Georgia'>T</text></svg>">
@@ -93,8 +93,9 @@ table.tiers .rowlabel{background:var(--panel)}
 .fineprint{color:var(--gray);font-size:13px;font-style:italic;margin-top:16px}
 
 /* tier cards */
-.tier-cards{display:grid;gap:22px;grid-template-columns:1fr 1fr;margin-top:8px}
-.tier-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:30px 30px 26px}
+.tier-cards{display:grid;gap:22px;grid-template-columns:repeat(3,1fr);margin-top:8px}
+@media(max-width:1000px){.tier-cards{grid-template-columns:1fr}}
+.tier-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:28px 24px 24px}
 .tier-card.featured{border-color:rgba(212,175,55,.45);background:linear-gradient(160deg,rgba(212,175,55,.09),var(--panel) 55%)}
 .tier-card .cad{display:inline-block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(212,175,55,.35);border-radius:999px;padding:4px 12px;margin-bottom:14px}
 .tier-card h3{font-size:32px;color:var(--gold)}
@@ -245,14 +246,27 @@ footer a{color:var(--gold)}
 <section id="tiers">
   <div class="wrap">
     <p class="eyebrow">Memberships</p>
-    <h2>Two memberships. Twenty seats.</h2>
+    <h2>Three memberships. Twenty seats.</h2>
     <div class="callout">
-      <b>Ten studio hours, every month. <span class="em">Use them how you want.</span></b>
-      <p>Both memberships load your account with ten hours a month in Studio B or Studio C. Book any open slot, Monday to Saturday, in sessions of three hours or longer. Hours you don’t use roll into the next month.</p>
+      <b>Ten hours, every month. <span class="em">Use them how you want.</span></b>
+      <p>Every membership loads your account with ten hours a month: on the sets for creators, in Studio B or Studio C for music. Book any open slot, Monday to Saturday, in sessions of three hours or longer. Hours you don’t use roll into the next month.</p>
     </div>
     <div class="tier-cards">
       <article class="tier-card">
-        <span class="cad">Membership</span>
+        <span class="cad">Content Creators</span>
+        <h3>Spark</h3>
+        <p class="tier-for">For podcasters, streamers, and creators who need a set, not a booth.</p>
+        <ul>
+          <li><b>10 hours</b> a month on the sets</li>
+          <li><b>Content Wall, Creative Lounge, Executive Lounge</b>, stream-ready with power and ethernet</li>
+          <li><b>Broadcast audio</b> in a studio for podcasts and voice-over</li>
+          <li>Book open slots up to <b>72 hours ahead</b></li>
+          <li>Member rate on events, camps, stays, and hosting</li>
+          <li>First notice of new events and camp dates</li>
+        </ul>
+      </article>
+      <article class="tier-card">
+        <span class="cad">Studio</span>
         <h3>Flame</h3>
         <p class="tier-for">For artists, writers, and producers who run their own sessions.</p>
         <ul>
@@ -264,7 +278,7 @@ footer a{color:var(--gold)}
         </ul>
       </article>
       <article class="tier-card featured">
-        <span class="cad">Membership + Engineer</span>
+        <span class="cad">Studio + Engineer</span>
         <h3>Blaze</h3>
         <p class="tier-for">For members who want a Torch engineer on every session.</p>
         <ul>
@@ -325,7 +339,7 @@ footer a{color:var(--gold)}
     <div class="faq" style="margin-top:22px">
       <details>
         <summary>How do the hours work?</summary>
-        <p>Every month your account loads with ten studio hours, good in Studio B or Studio C. One hour is one hour, any time of day. Sessions are three hours or longer, so most members use their hours across two or three sessions.</p>
+        <p>Every month your account loads with ten hours. Spark hours are for the sets and for podcast or voice audio in a studio; Flame and Blaze hours are for Studio B and Studio C. One hour is one hour, any time of day. Sessions are three hours or longer, so most members use their hours across two or three sessions.</p>
       </details>
       <details>
         <summary>What if I don’t use all my hours?</summary>
@@ -336,8 +350,8 @@ footer a{color:var(--gold)}
         <p>Monday through Saturday, any open slot on the calendar. Flame members book up to 72 hours ahead; Blaze members get priority and book up to seven days ahead. Camps and whole-estate bookings are scheduled first, and members fill the open time around them.</p>
       </details>
       <details>
-        <summary>What’s the difference between Flame and Blaze?</summary>
-        <p>The engineer and the booking window. Flame is the room and the hours: bring your own engineer, or book one of ours when you need one. Blaze includes a Torch engineer on every session and opens the calendar to you earlier.</p>
+        <summary>Which membership is for me?</summary>
+        <p>Spark is for content: podcasts, streams, shoots, and batching days on the sets. Flame and Blaze are for music in the studios, and the difference between those two is the engineer and the booking window. Flame is the room and the hours: bring your own engineer, or book one of ours when you need one. Blaze includes a Torch engineer on every session and opens the calendar to you earlier.</p>
       </details>
       <details>
         <summary>What does it cost?</summary>
@@ -377,7 +391,7 @@ footer a{color:var(--gold)}
     <form id="apply-form" novalidate>
       <div class="row2">
         <div class="field"><label>1 · Your name *</label><input name="fullName" type="text" autocomplete="name" required></div>
-        <div class="field"><label>Your role *</label><input name="role" type="text" placeholder="Artist, producer, songwriter, manager…" required></div>
+        <div class="field"><label>Your role *</label><input name="role" type="text" placeholder="Artist, producer, podcaster, streamer, manager…" required></div>
       </div>
       <div class="row2">
         <div class="field"><label>Email *</label><input name="email" type="email" autocomplete="email" required></div>
@@ -390,6 +404,7 @@ footer a{color:var(--gold)}
       <div class="field">
         <label>6 · Which membership?</label>
         <div class="checks">
+          <label class="check"><input type="radio" name="tierInterest" value="Spark (content creator)"> Spark, for content</label>
           <label class="check"><input type="radio" name="tierInterest" value="Flame"> Flame</label>
           <label class="check"><input type="radio" name="tierInterest" value="Blaze (engineer included)"> Blaze, with an engineer</label>
           <label class="check"><input type="radio" name="tierInterest" value="Not sure yet" checked> Not sure yet</label>

@@ -79,7 +79,8 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
       <div style="color:var(--silver);font-size:14px;margin-top:4px" id="built-for"></div>
       <div class="rows">
         <div class="row"><span class="k">Monthly</span><span class="v"><b id="rate"></b> / month</span></div>
-        <div class="row"><span class="k">Studio time</span><span class="v"><span id="hours"></span> hours every month</span></div>
+        <div class="row"><span class="k">Your hours</span><span class="v"><span id="hours"></span> hours every month</span></div>
+        <div class="row hidden" id="spaces-row"><span class="k">Spaces</span><span class="v" id="spaces"></span></div>
         <div class="row"><span class="k">Engineer</span><span class="v" id="engineer"></span></div>
         <div class="row"><span class="k">Booking</span><span class="v">Open slots up to <span id="window"></span>, Monday to Saturday</span></div>
         <div class="row"><span class="k">Extra hours</span><span class="v">$<span id="extra"></span> / hour</span></div>
@@ -95,7 +96,7 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
       <div class="terms">
         <ul>
           <li>Three-month minimum, then month to month. Membership renews monthly at the rate above, billed to the card on file. After the minimum, cancel before your next billing date from the member portal or by emailing the studio.</li>
-          <li>Your studio hours load each month. Unused hours roll into the following month, up to one month's worth; they do not carry further.</li>
+          <li>Your hours load each month and are good in the spaces listed above. Unused hours roll into the following month, up to one month's worth; they do not carry further.</li>
           <li>Members book open slots through the member portal, inside the booking window above, Monday to Saturday. Sessions are three hours or longer. Camps and whole-estate bookings are never moved for a member session.</li>
           <li>Cancel a session at least 24 hours ahead and the hours return to your account. Inside 24 hours the hours for that session are used.</li>
           <li>The member rate applies to your own bookings only, one discount per booking, and does not combine with prepaid packages or label accounts.</li>
@@ -162,6 +163,7 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
     if(v.founding) $('founding-term').classList.remove('hidden');
     $('rate').textContent = money(v.tier.monthlyRate*100); $('rate2').textContent = money(v.tier.monthlyRate*100);
     $('hours').textContent = v.tier.hours;
+    if(v.tier.spacesLabel){ $('spaces').textContent = v.tier.spacesLabel; $('spaces-row').classList.remove('hidden'); }
     $('engineer').textContent = v.tier.engineerIncluded ? 'A Torch engineer is included on every session' : 'Bring your own, or book one of ours at the member rate';
     $('window').textContent = v.tier.bookingWindowLabel;
     $('extra').textContent = v.tier.extraHourRate;
