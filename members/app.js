@@ -575,7 +575,7 @@ async function submitBooking(event) {
         return;
     }
     if (guestCount > tier.guestLimit) {
-        showToast(`Your tier allows up to ${tier.guestLimit} collaborators per session.`, 'error');
+        showToast(`You can bring up to ${tier.guestLimit} guests. Anyone beyond that needs approval from management first.`, 'error');
         return;
     }
 
@@ -968,7 +968,7 @@ function populateBilling() {
             ['Spaces', (tier.spaces || ['Studio B', 'Studio C']).join(', ')],
             ['Engineer', tier.engineerIncluded === false ? 'Bring your own, or add one when you book' : 'Included on every session'],
             ['Booking Window', 'Open slots up to ' + (tier.bookingWindowLabel || tier.bookingWindow + ' days ahead')],
-            [`Collaborators (${tier.guestLimit} per session)`, 'Included']
+            [`Guests (up to ${tier.guestLimit} per session)`, 'Registered in the portal']
         ];
         if (tier.suitePrivileges) rows.push(['Suite Privileges', tier.suitePrivileges]);
         if (tier.memberDiscount > 0) rows.push(['Member rate — events, camps, stays, hosting', tier.memberDiscount + '% off']);

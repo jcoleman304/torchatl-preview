@@ -11,31 +11,31 @@ const TIERS = {
         name: 'Spark', monthlyRate: 500, foundingRate: 500, hours: 10, credits: 10,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
         engineerIncluded: false, spaces: ['Content Wall', 'Creative Lounge', 'Executive Lounge', 'Studio B', 'Studio C'],
-        memberDiscount: 10, guestLimit: 3, buyoutRate: 10, rosterArtists: 0,
+        memberDiscount: 10, guestLimit: 5, buyoutRate: 10, rosterArtists: 0,
         overageRate: 90, priority: 3, color: '#E5C76B'
     },
     Flame: {
         name: 'Flame', monthlyRate: 500, foundingRate: 500, hours: 10, credits: 10,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
-        engineerIncluded: false, spaces: ['Studio B', 'Studio C'], memberDiscount: 10, guestLimit: 3, buyoutRate: 10, rosterArtists: 0,
+        engineerIncluded: false, spaces: ['Studio B', 'Studio C'], memberDiscount: 10, guestLimit: 5, buyoutRate: 10, rosterArtists: 0,
         overageRate: 90, priority: 2, color: '#E0833A'
     },
     Blaze: {
         name: 'Blaze', monthlyRate: 750, foundingRate: 750, hours: 10, credits: 10,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
-        engineerIncluded: true, spaces: ['Studio B', 'Studio C'], memberDiscount: 15, guestLimit: 3, buyoutRate: 15, rosterArtists: 0,
+        engineerIncluded: true, spaces: ['Studio B', 'Studio C'], memberDiscount: 15, guestLimit: 5, buyoutRate: 15, rosterArtists: 0,
         overageRate: 90, priority: 1, color: '#D4574A'
     },
     Ember: {
         name: 'Ember', legacy: true, monthlyRate: 500, foundingRate: 500, hours: 8, credits: 8,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
-        engineerIncluded: true, memberDiscount: 0, guestLimit: 3, buyoutRate: 0, rosterArtists: 0,
+        engineerIncluded: true, memberDiscount: 0, guestLimit: 5, buyoutRate: 0, rosterArtists: 0,
         overageRate: 90, priority: 4, color: '#C2703D'
     },
     'The Torch': {
         name: 'The Torch', legacy: true, monthlyRate: 4500, foundingRate: 4500, hours: 56, credits: 56,
         access: 'Monday to Saturday, open slots', bookingWindow: 30, bookingWindowLabel: '30 days ahead',
-        engineerIncluded: true, memberDiscount: 20, guestLimit: 3, buyoutRate: 20, rosterArtists: 2,
+        engineerIncluded: true, memberDiscount: 20, guestLimit: 5, buyoutRate: 20, rosterArtists: 2,
         overageRate: 90, priority: 1, color: '#D4AF37'
     }
 };
@@ -65,7 +65,7 @@ const CONCIERGE_RESPONSES = {
         "Your hours are tracked in real-time. Check the 'My Hours' section for a detailed breakdown of used, scheduled, and available hours."
     ],
     guests: [
-        "All guests must be pre-registered at least 24 hours before your session. Use the 'Guests' tab to register them. Don't forget, your tier determines your guest limit!",
+        "All guests must be pre-registered at least 24 hours before your session. Use the 'Guests' tab to register them. You can bring up to five guests; anyone beyond that needs approval from management first.",
         "To register guests, go to the 'Guests' tab, select your upcoming session, and enter your guest's information. They'll need to show valid ID upon arrival."
     ],
     rules: [
