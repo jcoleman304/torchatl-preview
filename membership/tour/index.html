@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Book Your Tour — TORCH ATL</title>
+<title>Request Your Tour — TORCH ATL</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0A0A0A">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,12 +62,12 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
   <div id="pick" class="hidden">
     <p class="eyebrow">A Private Creative Estate · Estate Tour</p>
     <h1><span id="first"></span>, come see the estate.</h1>
-    <p class="lead">The tour takes about forty-five minutes: both studios, the rest of the estate, and a conversation about what you're building. Pick a time that works. All times are Eastern.</p>
+    <p class="lead">The tour takes about forty-five minutes: both studios, the rest of the estate, and a conversation about what you're building. Pick a time that works and we will confirm it by email. All times are Eastern.</p>
 
     <div class="current hidden" id="current">
-      <div class="k">Your tour is booked for</div>
+      <div class="k" id="current-k">Your tour is booked for</div>
       <div class="v" id="current-when"></div>
-      <p class="fine" style="margin-top:8px">Choose a different time below to move it.</p>
+      <p class="fine" id="current-fine" style="margin-top:8px">Choose a different time below to move it.</p>
     </div>
 
     <div id="days"></div>
@@ -81,9 +81,9 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
 
   <div id="done" class="state hidden">
     <div class="big">✦</div>
-    <p class="eyebrow" id="done-eyebrow">Tour booked</p>
+    <p class="eyebrow" id="done-eyebrow">Tour requested</p>
     <h1 id="done-when"></h1>
-    <p class="lead">A confirmation is on its way to your inbox with what you need for arrival. We look forward to having you at the estate.</p>
+    <p class="lead">This time is held for you while we confirm it on our side. You will get a confirmation email with what you need for arrival as soon as it is set.</p>
     <p class="fine">Need to change it? Open this same link again and pick a new time.</p>
   </div>
 </main>
@@ -124,7 +124,7 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
           Array.prototype.forEach.call(document.querySelectorAll('.slot.sel'), function(x){ x.classList.remove('sel'); });
           b.classList.add('sel'); selected = s; $('err').textContent = '';
           $('book').disabled = false;
-          $('book').textContent = (data.tour ? 'Move my tour to ' : 'Book ') + s.full;
+          $('book').textContent = (data.tour ? 'Change my request to ' : 'Request ') + s.full;
         });
         grid.appendChild(b);
       });
@@ -135,7 +135,12 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
   function render(d){
     data = d;
     $('first').textContent = d.firstName;
-    if(d.tour){ $('current-when').textContent = d.tour.full; $('current').classList.remove('hidden'); }
+    if(d.tour){
+      $('current-when').textContent = d.tour.full;
+      $('current-k').textContent = d.tour.confirmed ? 'Your tour is confirmed for' : 'You asked for';
+      $('current-fine').textContent = d.tour.confirmed ? 'Choose a different time below to ask for a change.' : 'We are confirming this time on our side. Choose a different time below to change your request.';
+      $('current').classList.remove('hidden');
+    }
     renderSlots(d.slots || []);
     show('pick');
   }
@@ -143,10 +148,10 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
   $('book').addEventListener('click', async function(){
     if(!selected) return;
     var btn = this, label = btn.textContent; $('err').textContent = '';
-    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Booking…';
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Sending…';
     try{
       var r = await call('/tours/'+encodeURIComponent(token)+'/book', { method:'POST', body: JSON.stringify({ date: selected.date, time: selected.time }) });
-      $('done-eyebrow').textContent = r.rescheduled ? 'Tour updated' : 'Tour booked';
+      $('done-eyebrow').textContent = r.unchanged ? 'Tour time' : (r.rescheduled ? 'New time requested' : 'Tour requested');
       $('done-when').textContent = r.tour.full;
       show('done'); window.scrollTo(0,0);
     }catch(ex){
