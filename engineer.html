@@ -287,6 +287,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div class="stat-card"><div class="stat-label">My Open Issues</div><div class="stat-value" id="stat-issues">—</div></div>
         <div class="stat-card"><div class="stat-label">Studio Docs</div><div class="stat-value" id="stat-docs">—</div></div>
       </div>
+      <div class="card" id="requests-card" style="display:none;border-color:var(--border-hover)">
+        <div class="card-title">Session Requests · Waiting For Your Answer</div>
+        <div id="requests-list"></div>
+      </div>
       <div class="card">
         <div class="card-title">Upcoming Sessions</div>
         <table class="data-table"><thead><tr><th>Date</th><th>Time</th><th>Client</th><th>Type</th><th>Status</th></tr></thead>
@@ -664,8 +668,54 @@ document.querySelectorAll('.seg').forEach(seg => {
   });
 });
 
+// ── Session requests: accept or pass ──
+function escHtml(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+async function loadRequests() {
+  const card = document.getElementById('requests-card');
+  const list = document.getElementById('requests-list');
+  let rows = [];
+  try { rows = await api('/engineer-response/portal/requests'); } catch (e) { card.style.display = 'none'; return; }
+  if (!rows.length) { card.style.display = 'none'; list.innerHTML = ''; return; }
+  card.style.display = '';
+  list.innerHTML = rows.map(r => {
+    const id = escHtml(r.id);
+    const meta = [r.memberName, r.room, r.type ? r.type.charAt(0).toUpperCase() + r.type.slice(1) : '', r.guests ? `${r.guests} guest${r.guests === 1 ? '' : 's'}` : ''].filter(Boolean).map(escHtml).join(' · ');
+    const state = r.response === 'accepted'
+      ? `<span class="pill pill-active">You accepted</span><div style="font-size:12px;color:var(--gray-light);margin-top:8px">Our team will approve the time and you will get a confirmation. Please hold it until then.</div>`
+      : r.response === 'declined'
+        ? `<span class="pill pill-issue">You passed</span><div style="font-size:12px;color:var(--gray-light);margin-top:8px">Our team is finding another engineer.</div>`
+        : `<div style="font-size:12px;color:var(--gray-light);margin-bottom:10px">${r.placedByTeam ? 'Our team would like to put you on this session. It is booked as soon as you accept.' : 'A member asked for you. Nothing is confirmed until you accept and our team approves the time.'}</div>`;
+    const buttons = `
+      ${r.response === 'accepted' ? '' : `<button class="btn btn-gold" onclick="answerRequest('${id}','accepted',this)">Accept this session</button>`}
+      ${r.response === 'declined' ? '' : `<button class="btn btn-outline" style="margin-left:8px" onclick="answerRequest('${id}','declined',this)">I can't do this one</button>`}`;
+    return `<div style="padding:16px 0;border-bottom:1px solid var(--border)">
+      <div style="font-size:16px;color:var(--white)">${escHtml(r.when)}</div>
+      <div style="font-size:12px;color:var(--gray-light);margin:4px 0 10px">${meta}</div>
+      ${r.notes ? `<div style="font-size:12px;color:var(--cream);margin-bottom:10px">Notes: ${escHtml(r.notes)}</div>` : ''}
+      ${state}
+      <div style="margin-top:12px">${buttons}</div>
+    </div>`;
+  }).join('');
+}
+async function answerRequest(id, answer, btn) {
+  let note = '';
+  if (answer === 'declined') {
+    const typed = window.prompt("You can tell us why, or when you are free instead (optional). Press OK to send.", '');
+    if (typed === null) return;
+    note = typed.trim();
+  }
+  btn.disabled = true;
+  try {
+    const r = await api(`/engineer-response/portal/requests/${encodeURIComponent(id)}`, { method: 'POST', body: JSON.stringify({ answer, note }) });
+    if (answer === 'accepted') showToast(r.confirmed ? 'You are booked' : 'Accepted', r.confirmed ? 'The session is confirmed. A confirmation email is on its way.' : 'Our team will approve the time and confirm with you.');
+    else showToast('Thanks for letting us know', 'Our team will find another engineer.');
+  } catch (e) { showToast('Could not save your answer', e.message); }
+  loadDashboard();
+}
+
 // ── Dashboard ──
 async function loadDashboard() {
+  loadRequests();
   try {
     const [schedule, reports, issues, docs] = await Promise.all([
       api(`/engineers/${engineer.id}/schedule?from=${new Date().toISOString().split('T')[0]}`).catch(() => []),
