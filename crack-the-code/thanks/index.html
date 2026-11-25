@@ -21,7 +21,7 @@ a.btn:hover{border-color:var(--gold);color:var(--gold)}
 </head>
 <body><div class="card">
   <div class="logo">TORCH<span>ATL</span></div>
-  <div class="eyebrow">Crack The Code · Nov 6–8, 2026</div>
+  <div class="eyebrow">Crack The Code · The 2027 Artist Blueprint · Dec 11–13, 2026</div>
   <h1 id="h">You're in.</h1>
   <p id="p1">Your payment went through. A confirmation is on its way to your email.</p>
   <p id="p2"></p>
@@ -31,8 +31,13 @@ a.btn:hover{border-color:var(--gold);color:var(--gold)}
 (function(){
   var q = new URLSearchParams(location.search), tier = q.get('tier');
   var h = document.getElementById('h'), p1 = document.getElementById('p1'), p2 = document.getElementById('p2');
-  if(tier === 'ga'){ h.textContent = "You're on the list."; p1.textContent = 'Your Code Mixer ticket is confirmed. Saturday November 7, doors 5:00 PM.'; p2.textContent = 'The estate address and gate instructions arrive by email and text 48 hours before. Bring one record if you want a Pass the Aux slot.'; }
-  else if(tier === 'residency' || tier === 'session'){ h.textContent = 'Seat confirmed.'; p1.textContent = 'Your payment went through and your seat is locked.'; p2.textContent = 'Your pre-work link is on its way to your inbox. It takes about 45 minutes and it is due October 30. That is how we build your session before you walk in.'; }
+  var id = (q.get('r')||'').replace(/\D/g,''), kind = q.get('k') || '';
+  if(tier === 'ga'){ h.textContent = "You're in."; p1.textContent = 'Your masterclass ticket is confirmed. Sunday, December 13, 2:00–5:00 PM. Registration opens at 1:00 PM.'; p2.textContent = 'The address and gate instructions arrive by email 48 hours before. Your Artist Blueprint workbook is handed to you at registration.'; }
+  else if(tier === 'vip'){ h.textContent = "You're in."; p1.textContent = 'Your VIP seat is confirmed. Sunday, December 13, 2:00–5:00 PM. Registration opens at 1:00 PM.'; p2.textContent = 'The address arrives by email 48 hours before. Your private A&R consultation is held by video call the week after the masterclass; the link to pick your time comes by email after the event.'; }
+  else if((tier === 'king' || tier === 'torch') && kind === 'balance'){ h.textContent = 'Paid in full.'; p1.textContent = 'Your balance went through. Nothing further is owed.'; p2.textContent = 'Check-in is Friday, December 11 at 12:00 PM. The address and your weekend schedule arrive by email 48 hours before.'; }
+  else if(tier === 'king' || tier === 'torch'){ h.textContent = 'Suite secured.'; p1.textContent = 'Your payment went through and your suite is yours.'; p2.textContent = 'Your pre-arrival assessment link is on its way to your inbox. It takes about 45 minutes and it is due December 9. That is how we build your weekend before you arrive.'; }
+  // Ask the server to confirm the payment with Square so the confirmation email goes out now.
+  if(id){ fetch('https://api.torchatl.com/api/crack-the-code/confirm', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: id, kind: kind }) }).catch(function(){}); }
   if(q.get('r')) p2.textContent += ' Reference CTC-' + q.get('r').replace(/\D/g,'') + '.';
 })();
 </script>

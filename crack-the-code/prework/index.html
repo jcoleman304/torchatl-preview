@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pre-work · Crack The Code</title>
+<title>Pre-arrival assessment · Crack The Code</title>
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -40,11 +40,11 @@ p{color:var(--silver)}
 </head>
 <body><div class="wrap">
   <div class="logo">TORCH<span>ATL</span></div>
-  <div id="invalid" class="hidden"><div class="eyebrow">Crack The Code</div><h1>This link isn't valid.</h1><p>Pre-work links are personal and sent by email after payment. If yours is not working, email <a href="mailto:admin@torchatl.com" style="color:var(--gold)">admin@torchatl.com</a>.</p></div>
+  <div id="invalid" class="hidden"><div class="eyebrow">Crack The Code</div><h1>This link isn't valid.</h1><p>Assessment links are personal and sent by email after payment. If yours is not working, email <a href="mailto:admin@torchatl.com" style="color:var(--gold)">admin@torchatl.com</a>.</p></div>
   <div id="main" class="hidden">
     <div class="eyebrow">Crack The Code · <span id="tier"></span></div>
-    <h1 id="hello">Your pre-work.</h1>
-    <p>These answers build your session. Be honest and specific. Short answers are fine, vague ones are not. Your progress saves on this device and to Torch when you hit Save.</p>
+    <h1 id="hello">Your pre-arrival assessment.</h1>
+    <p>These answers build your sessions and your 2027 Artist Blueprint. Be honest and specific. Short answers are fine, vague ones are not. Your progress saves on this device and to Torch when you hit Save.</p>
     <div class="due">Due <span id="due"></span></div>
     <div id="done" class="done hidden"><strong style="color:#fff;font-weight:500">Submitted.</strong> <span id="done-when"></span> You can still edit and re-submit until the deadline.</div>
 
@@ -80,7 +80,7 @@ p{color:var(--silver)}
       <div class="q"><label><b>19</b>What evidence do you have? Streams, comments, DMs, shows, content performance.</label><textarea name="q19"></textarea></div>
 
       <h2><small>Strategy</small>Where you are going</h2>
-      <div class="q"><label><b>20</b>Biggest goal for the next 12 months.</label><textarea name="q20"></textarea></div>
+      <div class="q"><label><b>20</b>Biggest goal for 2027.</label><textarea name="q20"></textarea></div>
       <div class="q"><label><b>21</b>The one thing preventing you from getting there.</label><textarea name="q21"></textarea></div>
       <div class="q"><label><b>22</b>What you are currently doing to grow your career.</label><textarea name="q22"></textarea></div>
       <div class="q"><label><b>23</b>What you have tried that has not worked.</label><textarea name="q23"></textarea></div>
@@ -89,14 +89,14 @@ p{color:var(--silver)}
 
       <h2><small>The Code</small>Where you stand</h2>
       <div class="q"><label><b>26</b>What is your artist code right now? Music + Identity + Narrative + Audience + Strategy = ?</label><textarea name="q26"></textarea></div>
-      <div class="q"><label><b>27</b>The #1 question you want Joi and the Guest Decoder to answer.</label><textarea name="q27"></textarea></div>
+      <div class="q"><label><b>27</b>The #1 question you want answered during your residency.</label><textarea name="q27"></textarea></div>
       <div class="q"><label><b>28</b>What are you willing to hear? Is there anything you are afraid we may tell you about your music, identity or career?</label><textarea name="q28"></textarea></div>
     </form>
   </div>
 </div>
 <div class="bar" id="bar" style="display:none"><div class="in">
   <span id="st"></span>
-  <span><button class="btn" id="save">Save draft</button> <button class="btn btn-gold" id="submit">Submit pre-work</button></span>
+  <span><button class="btn" id="save">Save draft</button> <button class="btn btn-gold" id="submit">Submit assessment</button></span>
 </div></div>
 <script>
 (function(){
@@ -134,7 +134,7 @@ p{color:var(--silver)}
   if(!T){ show('invalid'); return; }
   fetch(API + encodeURIComponent(T)).then(function(r){ return r.ok ? r.json() : Promise.reject(); }).then(function(d){
     show('main'); document.getElementById('bar').style.display='block';
-    document.getElementById('tier').textContent = d.tierName; document.getElementById('hello').textContent = d.firstName + ', your pre-work.';
+    document.getElementById('tier').textContent = d.tierName; document.getElementById('hello').textContent = d.firstName + ', your pre-arrival assessment.';
     document.getElementById('due').textContent = fmt(d.due);
     try{ var local = JSON.parse(localStorage.getItem(LS)||'null'); if(local) fill(local.answers, local.records); }catch(e){}
     fill(d.answers, d.records);
