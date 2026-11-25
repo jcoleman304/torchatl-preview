@@ -32,6 +32,12 @@ h1{font-family:var(--font-display);font-weight:600;font-size:clamp(30px,5vw,42px
 .slot:hover{border-color:var(--gold);color:var(--gold)}
 .slot.sel{background:var(--gold);border-color:var(--gold);color:var(--black);font-weight:600}
 .slot.mine{border-color:rgba(212,175,55,.6)}
+.req{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px}
+@media(max-width:520px){.req{grid-template-columns:1fr}}
+.req label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.req input,.req select{width:100%;box-sizing:border-box;background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--cream);font-family:var(--font-body);font-size:16px;padding:14px 12px;color-scheme:dark}
+.req input:focus,.req select:focus{outline:none;border-color:var(--gold)}
+.req select:disabled{opacity:.55}
 .bar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--black) 30%);padding:28px 0 18px;margin-top:26px}
 .btn{display:block;border:none;cursor:pointer;font-family:var(--font-body);font-weight:600;font-size:15px;letter-spacing:.04em;padding:16px 30px;border-radius:6px;width:100%;transition:all .2s;background:var(--gold);color:var(--black)}
 .btn:hover{background:var(--gold-light)}
@@ -62,19 +68,23 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
   <div id="pick" class="hidden">
     <p class="eyebrow">A Private Creative Estate · Estate Tour</p>
     <h1><span id="first"></span>, come see the estate.</h1>
-    <p class="lead">The tour takes about thirty minutes: both studios, the rest of the estate, and a conversation about what you're building. Pick a time that works and we will confirm it by email. All times are Eastern.</p>
+    <p class="lead">The tour takes about thirty minutes: both studios, the rest of the estate, and a conversation about what you're building. Tell us the day and time that work for you and we will confirm it by email. All times are Eastern.</p>
 
     <div class="current hidden" id="current">
       <div class="k" id="current-k">Your tour is booked for</div>
       <div class="v" id="current-when"></div>
-      <p class="fine" id="current-fine" style="margin-top:8px">Choose a different time below to move it.</p>
+      <p class="fine" id="current-fine" style="margin-top:8px">Choose a different day or time below to move it.</p>
     </div>
 
-    <div id="days"></div>
-    <p class="lead hidden" id="none" style="margin-top:30px">There are no open tour times in the next two weeks. Reply to your email from Torch ATL and we'll find a time with you.</p>
+    <div id="days" class="req">
+      <div class="field"><label for="req-date">Day</label><input type="date" id="req-date"></div>
+      <div class="field"><label for="req-time">Time</label><select id="req-time" disabled><option value="">Choose a day first</option></select></div>
+    </div>
+    <p class="fine hidden" id="day-note" style="margin-top:12px"></p>
+    <p class="lead hidden" id="none" style="margin-top:30px">We can't take tour requests through this page right now. Reply to your email from Torch ATL and we'll find a time with you.</p>
 
     <div class="bar" id="bar">
-      <button class="btn" id="book" disabled>Choose a time</button>
+      <button class="btn" id="book" disabled>Choose a day and time</button>
       <p class="err" id="err"></p>
     </div>
   </div>
@@ -84,7 +94,7 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
     <p class="eyebrow" id="done-eyebrow">Tour requested</p>
     <h1 id="done-when"></h1>
     <p class="lead">This time is held for you while we confirm it on our side. You will get a confirmation email with what you need for arrival as soon as it is set.</p>
-    <p class="fine">Need to change it? Open this same link again and pick a new time.</p>
+    <p class="fine">Need to change it? Open this same link again and ask for a new time.</p>
   </div>
 </main>
 <footer>TORCH ATL · Where Comfort Ignites Creativity</footer>
@@ -107,29 +117,37 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
   }
 
   function renderSlots(slots){
-    var days = $('days'); days.textContent = '';
-    selected = null; $('book').disabled = true; $('book').textContent = 'Choose a time';
+    selected = null; $('book').disabled = true; $('book').textContent = 'Choose a day and time';
     $('none').classList.toggle('hidden', slots.length > 0);
     $('bar').classList.toggle('hidden', slots.length === 0);
+    $('days').classList.toggle('hidden', slots.length === 0);
     var byDay = {};
-    slots.forEach(function(s){ (byDay[s.date] = byDay[s.date] || { label: s.day, slots: [] }).slots.push(s); });
-    Object.keys(byDay).sort().forEach(function(d){
-      var sec = document.createElement('div'); sec.className = 'day';
-      var h = document.createElement('h2'); h.textContent = byDay[d].label; sec.appendChild(h);
-      var grid = document.createElement('div'); grid.className = 'times';
-      byDay[d].slots.forEach(function(s){
-        var b = document.createElement('button'); b.type = 'button'; b.className = 'slot'; b.textContent = s.timeLabel;
-        if(data.tour && data.tour.date === s.date && data.tour.time === s.time) b.classList.add('mine');
-        b.addEventListener('click', function(){
-          Array.prototype.forEach.call(document.querySelectorAll('.slot.sel'), function(x){ x.classList.remove('sel'); });
-          b.classList.add('sel'); selected = s; $('err').textContent = '';
-          $('book').disabled = false;
-          $('book').textContent = (data.tour ? 'Change my request to ' : 'Request ') + s.full;
-        });
-        grid.appendChild(b);
-      });
-      sec.appendChild(grid); days.appendChild(sec);
-    });
+    slots.forEach(function(s){ (byDay[s.date] = byDay[s.date] || []).push(s); });
+    var dates = Object.keys(byDay).sort();
+    var dateEl = $('req-date'), timeEl = $('req-time'), note = $('day-note');
+    if(dates.length){ dateEl.min = dates[0]; dateEl.max = dates[dates.length-1]; }
+
+    function pick(){
+      var s = (byDay[dateEl.value] || []).filter(function(x){ return x.time === timeEl.value; })[0] || null;
+      selected = s; $('err').textContent = '';
+      $('book').disabled = !s;
+      $('book').textContent = s ? ((data.tour ? 'Change my request to ' : 'Request ') + s.full) : 'Choose a day and time';
+    }
+    function fillTimes(){
+      var list = byDay[dateEl.value] || [];
+      timeEl.textContent = '';
+      var first = document.createElement('option'); first.value = '';
+      first.textContent = !dateEl.value ? 'Choose a day first' : (list.length ? 'Choose a time' : 'No times this day');
+      timeEl.appendChild(first);
+      list.forEach(function(s){ var o = document.createElement('option'); o.value = s.time; o.textContent = s.timeLabel; timeEl.appendChild(o); });
+      timeEl.disabled = !list.length;
+      note.classList.toggle('hidden', !dateEl.value || list.length > 0);
+      note.textContent = (dateEl.value && !list.length) ? 'We can\'t host a tour that day. Please choose another day.' : '';
+      pick();
+    }
+    dateEl.onchange = fillTimes; dateEl.oninput = fillTimes; timeEl.onchange = pick;
+    if(data.tour && byDay[data.tour.date]){ dateEl.value = data.tour.date; }
+    fillTimes();
   }
 
   function render(d){
@@ -138,7 +156,7 @@ footer{text-align:center;color:var(--gray);font-size:12px;padding:20px;border-to
     if(d.tour){
       $('current-when').textContent = d.tour.full;
       $('current-k').textContent = d.tour.confirmed ? 'Your tour is confirmed for' : 'You asked for';
-      $('current-fine').textContent = d.tour.confirmed ? 'Choose a different time below to ask for a change.' : 'We are confirming this time on our side. Choose a different time below to change your request.';
+      $('current-fine').textContent = d.tour.confirmed ? 'Choose a different day or time below to ask for a change.' : 'We are confirming this time on our side. Choose a different day or time below to change your request.';
       $('current').classList.remove('hidden');
     }
     renderSlots(d.slots || []);
