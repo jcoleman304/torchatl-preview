@@ -5,7 +5,7 @@ Private creative estate, east side of Atlanta, Georgia. Create. Gather. Stay. Al
 ## Estate Day
 - Price: from $1,800
 - Duration: up to 12 consecutive hours, no overnight
-- Includes: Studio B and Studio C, Content Wall, Strategy Room, both lounges, chef's kitchen, deck and grounds, gated parking, exclusive to one client
+- Includes: Suite B and Suite C, Content Wall, Strategy Room, both lounges, chef's kitchen, deck and grounds, gated parking, exclusive to one client
 - Use: productions, brand and film shoots, podcast and stream days, hosted days
 - Who: open by request
 
@@ -35,8 +35,8 @@ Private creative estate, east side of Atlanta, Georgia. Create. Gather. Stay. Al
 - Creator Residency: by the day, lodging included
 
 ## Member & partner block sessions (not a public rate)
-- Studio B: $95/hr with house engineer
-- Studio C: $85/hr with house engineer
+- Suite B: $95/hr with house engineer
+- Suite C: $85/hr with house engineer
 - Minimum: 4 hours
 - Who: Torch members and label/partner accounts only
 

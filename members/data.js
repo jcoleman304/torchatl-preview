@@ -10,20 +10,20 @@ const TIERS = {
     Spark: {
         name: 'Spark', monthlyRate: 500, foundingRate: 500, hours: 10, credits: 10,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
-        engineerIncluded: false, spaces: ['Content Wall', 'Creative Lounge', 'Executive Lounge', 'Studio B', 'Studio C'],
+        engineerIncluded: false, spaces: ['Content Wall', 'Creative Lounge', 'Executive Lounge', 'Suite B', 'Suite C'],
         memberDiscount: 10, guestLimit: 5, buyoutRate: 10, rosterArtists: 0,
         overageRate: 90, priority: 3, color: '#E5C76B'
     },
     Flame: {
         name: 'Flame', monthlyRate: 500, foundingRate: 500, hours: 10, credits: 10,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
-        engineerIncluded: false, spaces: ['Studio B', 'Studio C'], memberDiscount: 10, guestLimit: 5, buyoutRate: 10, rosterArtists: 0,
+        engineerIncluded: false, spaces: ['Suite B', 'Suite C'], memberDiscount: 10, guestLimit: 5, buyoutRate: 10, rosterArtists: 0,
         overageRate: 90, priority: 2, color: '#E0833A'
     },
     Blaze: {
         name: 'Blaze', monthlyRate: 750, foundingRate: 750, hours: 10, credits: 10,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
-        engineerIncluded: true, spaces: ['Studio B', 'Studio C'], memberDiscount: 15, guestLimit: 5, buyoutRate: 15, rosterArtists: 0,
+        engineerIncluded: true, spaces: ['Suite B', 'Suite C'], memberDiscount: 15, guestLimit: 5, buyoutRate: 15, rosterArtists: 0,
         overageRate: 90, priority: 1, color: '#D4574A'
     },
     Ember: {
