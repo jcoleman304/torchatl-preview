@@ -1121,10 +1121,15 @@ function populateEngineers() {
     const container = document.getElementById('engineers-grid');
     if (!container) return;
 
-    const engineers = engineersList.length > 0 ? engineersList : [];
-
-    if (engineers.length === 0) {
+    if (engineersList.length === 0) {
         container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Loading engineers...</p>';
+        return;
+    }
+
+    // Engineers the team has deactivated are not shown to members at all.
+    const engineers = engineersList.filter(e => e.available);
+    if (engineers.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No engineers are listed right now.</p>';
         return;
     }
 
