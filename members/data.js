@@ -2,41 +2,43 @@
 // API-first with localStorage cache fallback
 
 // Membership Tier Configuration (also served by backend, kept here for offline/instant UI)
+// No prices in this file: it is publicly readable. A member's rate comes from
+// their own account after they sign in.
 // Membership v4: Flame and Blaze. 10 studio hours a month, 3-hour minimum
 // sessions, Monday to Saturday, no peak weighting, unused hours roll over one
 // month. `credits` mirrors `hours` so existing math keeps working. Ember and
 // The Torch are retired tiers kept only so accounts still on them load.
 const TIERS = {
     Spark: {
-        name: 'Spark', monthlyRate: 500, foundingRate: 500, hours: 10, credits: 10,
+        name: 'Spark', hours: 10, credits: 10,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
         engineerIncluded: false, spaces: ['Content Wall', 'Creative Lounge', 'Executive Lounge', 'Suite B', 'Suite C'],
         memberDiscount: 10, guestLimit: 5, buyoutRate: 10, rosterArtists: 0,
-        overageRate: 90, priority: 3, color: '#E5C76B'
+        priority: 3, color: '#E5C76B'
     },
     Flame: {
-        name: 'Flame', monthlyRate: 500, foundingRate: 500, hours: 10, credits: 10,
+        name: 'Flame', hours: 10, credits: 10,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
         engineerIncluded: false, spaces: ['Suite B', 'Suite C'], memberDiscount: 10, guestLimit: 5, buyoutRate: 10, rosterArtists: 0,
-        overageRate: 90, priority: 2, color: '#E0833A'
+        priority: 2, color: '#E0833A'
     },
     Blaze: {
-        name: 'Blaze', monthlyRate: 750, foundingRate: 750, hours: 10, credits: 10,
+        name: 'Blaze', hours: 10, credits: 10,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
         engineerIncluded: true, spaces: ['Suite B', 'Suite C'], memberDiscount: 15, guestLimit: 5, buyoutRate: 15, rosterArtists: 0,
-        overageRate: 90, priority: 1, color: '#D4574A'
+        priority: 1, color: '#D4574A'
     },
     Ember: {
-        name: 'Ember', legacy: true, monthlyRate: 500, foundingRate: 500, hours: 8, credits: 8,
+        name: 'Ember', legacy: true, hours: 8, credits: 8,
         access: 'Monday to Saturday, open slots', bookingWindow: 7, bookingWindowLabel: '7 days ahead',
         engineerIncluded: true, memberDiscount: 0, guestLimit: 5, buyoutRate: 0, rosterArtists: 0,
-        overageRate: 90, priority: 4, color: '#C2703D'
+        priority: 4, color: '#C2703D'
     },
     'The Torch': {
-        name: 'The Torch', legacy: true, monthlyRate: 4500, foundingRate: 4500, hours: 56, credits: 56,
+        name: 'The Torch', legacy: true, hours: 56, credits: 56,
         access: 'Monday to Saturday, open slots', bookingWindow: 30, bookingWindowLabel: '30 days ahead',
         engineerIncluded: true, memberDiscount: 20, guestLimit: 5, buyoutRate: 20, rosterArtists: 2,
-        overageRate: 90, priority: 1, color: '#D4AF37'
+        priority: 1, color: '#D4AF37'
     }
 };
 

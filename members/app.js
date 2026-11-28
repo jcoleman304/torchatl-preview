@@ -226,7 +226,7 @@ function selectMemberCalDay(dateStr) {
                 + `<span class="cal-ev-label">${escapeHtml(typeLabel)}${e.engineerName ? ' · ' + escapeHtml(e.engineerName) : ''}`
                 + `${e.status === 'pending' ? ' <em>(pending approval)</em>' : ''}</span></div>`;
         }
-        return `<div class="cal-ev busy"><span class="cal-ev-time">${formatTime(e.startTime)}–${formatTime(e.endTime)}</span>`
+        return `<div class="cal-ev busy"><span class="cal-ev-time">${e.allDay ? 'All day' : formatTime(e.startTime) + '–' + formatTime(e.endTime)}</span>`
             + `<span class="cal-ev-label">Unavailable</span></div>`;
     }).join('');
     el.innerHTML = `<h4>${label}</h4>${rows}`;
@@ -443,10 +443,13 @@ function checkSelectedSlot() {
     };
     const req = toWin(startTime, endTime);
     const overlap = (dayAvailability.existingBookings || []).filter(b => {
+        if (b.allDay) return true;
         const w = toWin(b.startTime, b.endTime);
         return req.start < w.end && w.start < req.end;
     });
     const capacity = dayAvailability.capacity || 2;
+    // The whole property is held (an estate day or a camp): nothing is open.
+    if (overlap.some(b => b.estate)) return { full: true, remaining: 0 };
     return { full: overlap.length >= capacity, remaining: Math.max(0, capacity - overlap.length) };
 }
 
@@ -949,14 +952,19 @@ function populateBilling() {
     if (!currentMember) return;
 
     const tier = currentMember.tierConfig || TIERS[currentMember.tier];
-    const rate = currentMember.founding ? tier.foundingRate : tier.monthlyRate;
+    // The rate comes from the signed-in account, never from a file on the site.
+    const sub0 = currentMember.subscription || {};
+    const rateRaw = sub0.monthlyRate != null ? sub0.monthlyRate
+        : (currentMember.founding ? tier.foundingRate : tier.monthlyRate);
+    const rate = rateRaw != null && !isNaN(Number(rateRaw)) ? Number(rateRaw) : null;
+    const rateLabel = rate != null ? '$' + rate.toLocaleString() : '';
 
     const tierNameEl = document.getElementById('billing-tier-name');
     const amountEl = document.getElementById('billing-amount');
     const memberSinceEl = document.getElementById('billing-member-since');
 
     if (tierNameEl) tierNameEl.textContent = currentMember.tier + ' Membership';
-    if (amountEl) amountEl.textContent = '$' + rate.toLocaleString();
+    if (amountEl) amountEl.textContent = rateLabel;
     if (memberSinceEl) memberSinceEl.textContent = formatDate(parseLocalDate(currentMember.joinDate));
 
     // Membership Value breakdown — driven by the member's actual tier.
@@ -977,7 +985,7 @@ function populateBilling() {
         valueEl.innerHTML = rows.map(([label, val]) =>
             `<div class="value-item"><span>${escapeHtml(label)}</span><span class="value-amount">${escapeHtml(val)}</span></div>`
         ).join('') +
-            `<div class="value-total"><span>You Pay${currentMember.founding ? ' (Founding — locked)' : ''}</span><span class="value-amount gold">$${rate.toLocaleString()}/mo</span></div>`;
+            `<div class="value-total"><span>You Pay${currentMember.founding ? ' (Founding — locked)' : ''}</span><span class="value-amount gold">${rateLabel ? rateLabel + '/mo' : ''}</span></div>`;
     }
 
     // Show subscription details from backend
