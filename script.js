@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (duration === 'Multi-Day (2–7 days)') sessionType = 'estate_daily';
             else if (duration === 'Extended production') sessionType = 'estate_monthly';
             else sessionType = 'full_day';
-            const roomMap = { 'Studio B': 'b_room', 'Studio C': 'c_room', 'Both Studios': 'both' };
+            const roomMap = { 'Suite B': 'b_room', 'Suite C': 'c_room', 'Both Suites': 'both' };
             const room = (roomGroup && roomGroup.style.display !== 'none') ? (roomMap[g('room')] || null) : null;
 
             // Fold everything the API has no dedicated field for into special_requests

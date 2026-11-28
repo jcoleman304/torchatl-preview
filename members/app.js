@@ -267,7 +267,7 @@ function populateDashboard() {
     // Spaces this membership covers (Spark: sets + studios; Flame / Blaze: studios).
     const roomSel = document.getElementById('booking-room');
     if (roomSel && !roomSel.options.length) {
-        (tier.spaces || ['Studio B', 'Studio C']).forEach((r) => {
+        (tier.spaces || ['Suite B', 'Suite C']).forEach((r) => {
             const o = document.createElement('option'); o.value = r; o.textContent = r; roomSel.appendChild(o);
         });
         if (currentMember.tier === 'Spark') {
@@ -965,7 +965,7 @@ function populateBilling() {
         const credits = tier.credits || tier.hours || 0;
         const rows = [
             [`Hours (${credits} a month)`, 'Unused hours roll over one month'],
-            ['Spaces', (tier.spaces || ['Studio B', 'Studio C']).join(', ')],
+            ['Spaces', (tier.spaces || ['Suite B', 'Suite C']).join(', ')],
             ['Engineer', tier.engineerIncluded === false ? 'Bring your own, or add one when you book' : 'Included on every session'],
             ['Booking Window', 'Open slots up to ' + (tier.bookingWindowLabel || tier.bookingWindow + ' days ahead')],
             [`Guests (up to ${tier.guestLimit} per session)`, 'Registered in the portal']
